@@ -2,13 +2,9 @@
 #include "CUDAErrors.h"
 #include <vector>
 
-#define COMPILE_TIME 0
-#define USE_GPU_ARCH 1
-
 void CUDACompile::CompileOptions(std::vector<std::string>& options)
 {
     options.clear();
-#if USE_GPU_ARCH
     // Use the primary GPU's compute architecture
     CUdevice device = 0;
     checkCUDAErrors(cuCtxGetDevice(&device));
@@ -17,10 +13,15 @@ void CUDACompile::CompileOptions(std::vector<std::string>& options)
     checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMajor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, device));
     checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMinor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, device));
     options.push_back(Format("-arch=compute_%d%d", computeCapabilityMajor, computeCapabilityMinor));
-#else
-    options.push_back(Format("-arch=compute_75"));
-#endif
     options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
+
+    // Note: For divisions and square roots, IEEE 754 mode has a 3x to 10x performance penalty compared to fast math mode.
+    // However, fast math mode can produce incorrect results for some inputs.
+    // For example, 1.0f / 0.0f produces NaN in fast math mode, but produces +Inf in IEEE 754 mode.
+    // Therefore, IEEE 754 mode is used by default.
+    // For mathematical simulations (like this code), IEEE 754 mode is preferred for accuracy, even if it is slower.
+    // Currently division and square roots are not used in the generated code. However denormalized numbers may end up
+    // being used by the optimized register values and help the evolution converge.
 #if 1
     // IEEE 754 mode (default)
     options.push_back("-ftz=false");        // Flush denormalized numbers to zero
@@ -46,8 +47,14 @@ bool CUDACompile::Compile(std::string& ptx, std::string& log, const std::string&
         return false;
 
     std::vector<const char*> compileOptions;
-    for (const std::string& string : options)
-        compileOptions.push_back(string.c_str());
+    std::vector<std::string> defaultOptions;
+    if (options.empty()) {
+        CompileOptions(defaultOptions);
+        for (const std::string& string : defaultOptions)
+            compileOptions.push_back(string.c_str());
+    } else
+        for (const std::string& string : options)
+            compileOptions.push_back(string.c_str());
 
     nvrtcResult result = nvrtcCompileProgram(prog, (int)compileOptions.size(), compileOptions.data());
     if (result) {
@@ -74,6 +81,7 @@ bool CUDACompile::Compile(std::string& ptx, std::string& log, const std::string&
     return ptxSize > 0;
 } // Compile
 
+#if 0
 bool CUDACompile::CompilePTX(std::string& ptx, const std::string& program, const std::string& programName)
 {
 #if COMPILE_TIME
@@ -159,3 +167,4 @@ CUfunction CUDACompile::GetFunction(CUmodule& cuda_module, const std::string& fu
     return function;
 } // GetFunction
 
+#endif

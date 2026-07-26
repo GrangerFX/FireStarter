@@ -50,8 +50,8 @@ FireStarterBuildSettings::FireStarterBuildSettings(void) : CUDAThread("FireStart
 {
     DispatchSync([this] {
         // Compile FireSettings
-        if (LoadFireSettingsCode() && CUDACompile::CompileProgram(m_fireSettingsModule, m_fireSettingsCode, "FireSettings"))
-            m_fireSettingsFunction = CUDACompile::GetFunction(m_fireSettingsModule, "FireSettings");
+        if (LoadFireSettingsCode() && Module().CompileProgram(m_fireSettingsCode, "FireSettings"))
+            m_fireSettingsFunction = Module().GetFunction("FireSettings");
     });
 } // FireStarterBuildSettings
 

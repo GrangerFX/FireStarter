@@ -4,58 +4,7 @@
 #include "FireStarterManager.h"
 #include "FireSinSim.h"
 #include "CUDAThread.h"
-#include "CUDACompile.h"
 #include "MoneyMakerStocks.h"
-
-class CUDAModule {
-public:
-    CUmodule m_executeModule = nullptr;
-    CUfunction m_executeFunction = nullptr;
-    CUfunction m_executeTest = nullptr;
-
-    inline bool CompileProgram(const std::string& programCode, const std::string& programName, const std::string& functionName, const std::string& testName, bool sync = false)
-    {
-        // Compile the code and get the Evolver function from the module.
-        if (CUDACompile::CompileProgram(m_executeModule, programCode, programName)) {
-            m_executeFunction = CUDACompile::GetFunction(m_executeModule, functionName);
-            if (m_executeFunction) {
-                m_executeTest = CUDACompile::GetFunction(m_executeModule, testName);
-                return true;
-            }
-            CUDACompile::ReleaseModule(m_executeModule);
-            m_executeFunction = nullptr;
-            m_executeTest = nullptr;
-        }
-        return false;
-    } // CompileProgram
-
-    inline bool CompileModule(const std::string& ptx, const std::string& functionName, const std::string& testName, bool sync = false)
-    {
-        // Compile the code and get the Evolver function from the module.
-        if (CUDACompile::CompileModule(m_executeModule, ptx)) {
-            m_executeFunction = CUDACompile::GetFunction(m_executeModule, functionName);
-            if (m_executeFunction) {
-                m_executeTest = CUDACompile::GetFunction(m_executeModule, testName);
-                return true;
-            }
-        }
-        m_executeFunction = nullptr;
-        m_executeTest = nullptr;
-        return false;
-    } // CompileModule
-
-    inline void ClearModule(void)
-    {
-        CUDACompile::ReleaseModule(m_executeModule);
-        m_executeFunction = nullptr;
-        m_executeTest = nullptr;
-    } // ClearModule
-
-    inline ~CUDAModule(void)
-    {
-        ClearModule();
-    } // ~CUDAModule
-}; // class CUDAModule
 
 template<typename T>
 class CUDAMemory {
@@ -68,7 +17,6 @@ private:
     size_t m_elementSize = 0;
 
 public:
-    
     inline void Clear(void)
     {
         if (m_hostPtr) {
@@ -186,7 +134,6 @@ public:
 class FireStarterExecute : public CUDAThread
 {
 private:
-    CUDAModule m_CUDAModule;
     CUDAMemory<FireStarterSettings> m_CUDASettings;
     CUDAMemory<float> m_CUDAResults;
     CUDAMemory<FireStarterCode> m_CUDACodes;

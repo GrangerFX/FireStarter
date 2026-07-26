@@ -73,6 +73,8 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
     DispatchAsync([this, state, stocks, tradingResults] {
         const FireStarterSettings& settings = state.Settings();
         uchar4* pixels = (uchar4*)m_window.GetPixels();
+        if (!pixels)
+            return;
         unsigned int width = m_window.m_width;
         unsigned int height = m_window.m_height;
 
@@ -288,6 +290,8 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
     window.Erase();
     std::string statusString = "FireStarter:";
     uchar4* pixels = (uchar4*)window.GetPixels();
+    if (!pixels)
+        return;
     unsigned int width = window.m_width;
     unsigned int height = window.m_height;
     float maxError = 0.0f;

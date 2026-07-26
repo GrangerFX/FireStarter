@@ -51,14 +51,14 @@ unsigned int FireStarterGenerate::RegisterInfo(const FireStarterCode* code, std:
 
 bool FireStarterGenerate::InitGenerateGPU(const FireStarterSettings& settings)
 {
-    if (!m_CUDAContext || m_generateCode.empty() || !FIRESTARTER_GENERATE_GPU)
+    if (!m_generateGPU)
         return false;
 
     // Compile the GPU code generator.
     CUstream stream = m_CUDAContext->Stream();
-    if (!m_module && CUDACompile::CompileProgram(m_module, m_generateCode, "FireGenerate")) {
-        m_evaluateFunction = CUDACompile::GetFunction(m_module, "FireGenerateEvaluate");
-        m_solutionFunction = CUDACompile::GetFunction(m_module, "FireGenerateSolution");
+    if (m_CUDAModule->CompileProgram(m_generateCode, "FireGenerate")) {
+        m_evaluateFunction = m_CUDAModule->GetFunction("FireGenerateEvaluate");
+        m_solutionFunction = m_CUDAModule->GetFunction("FireGenerateSolution");
     }
 
     // Allocate the instructions.
@@ -96,9 +96,6 @@ bool FireStarterGenerate::InitGenerateGPU(const FireStarterSettings& settings)
 
 void FireStarterGenerate::GenerateEvaluate(const FireStarterSettings& settings, const FireStarterCodeGenerate* code, std::string& text)
 {
-    // Allocate the device memory needed to generate the solution code.
-    bool generateGPU = InitGenerateGPU(settings);
-
     // Generate the evaluate function.
     unsigned int numInstructions = settings.m_instructions;
     std::vector<FireStarterRegisterInfo> registerInfo;
@@ -108,7 +105,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterSettings& settings, 
     unsigned int tabs = 1;
 
     // Allocate the device memory needed to generate the evaluate code.
-    if (generateGPU) {
+    if (InitGenerateGPU(settings)) {
         // Generate the evaluate function via the GPU (dynamic code generation).
         // First pass: Determine the length of the code string.
         dim3 cudaBlockSize(FIRESTARTER_WARP_THREADS, 1, 1);
@@ -296,24 +293,20 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     }
 } // GenerateSolution
 
-FireStarterGenerate::FireStarterGenerate(const CUDAContext* context) : m_CUDAContext(context)
+FireStarterGenerate::FireStarterGenerate(const CUDAContext* context, CUDAModule* theModule) : m_CUDAContext(context), m_CUDAModule(theModule)
 {
     FireStarterSource::LoadSource(m_generateCode, "FireGenerate.cu");
+    m_generateGPU = FIRESTARTER_GENERATE_GPU && (m_CUDAContext != nullptr) && (m_CUDAModule != nullptr) && !m_generateCode.empty();
 } // FireStarterGenerate
 
 FireStarterGenerate::~FireStarterGenerate(void)
 {
-    if (m_CUDAContext) {
-        if (m_module)
-            checkCUDAErrors(cuModuleUnload(m_module));
-        if (m_deviceCode)
-            checkCUDAErrors(cuMemFree(m_deviceCode));
-        if (m_deviceRegisters)
-            checkCUDAErrors(cuMemFree(m_deviceRegisters));
-        if (m_deviceData)
-            checkCUDAErrors(cuMemFree(m_deviceData));
-        if (m_deviceString)
-            checkCUDAErrors(cuMemFree(m_deviceString));
-        checkCUDAErrors(cuStreamSynchronize(m_CUDAContext->Stream()));
-    }
+    if (m_deviceCode)
+        checkCUDAErrors(cuMemFree(m_deviceCode));
+    if (m_deviceRegisters)
+        checkCUDAErrors(cuMemFree(m_deviceRegisters));
+    if (m_deviceData)
+        checkCUDAErrors(cuMemFree(m_deviceData));
+    if (m_deviceString)
+        checkCUDAErrors(cuMemFree(m_deviceString));
 } // ~FireStarterGenerate

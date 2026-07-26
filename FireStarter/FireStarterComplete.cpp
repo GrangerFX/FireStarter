@@ -77,7 +77,7 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
         std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%lld", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
         std::string solutionCode;
 
-        FireStarterGenerate generate;
+        FireStarterGenerate generate;   // Note: CPU only generation in Complete to avoid stalling the GPU.
         generate.GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
         FireStarterSource::SaveSource(solutionCode, savePath);
         if (bestState.m_precision < bestSolution) {

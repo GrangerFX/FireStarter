@@ -8,7 +8,6 @@ private:
     {
         m_reference = other.m_reference ? other.m_reference : &other;
         m_window = other.m_window;
-        Clear(); // Deallocate the buffers
         if (m_reference)
             Resize();
         else
@@ -23,6 +22,7 @@ public:
     unsigned long m_width = 0;                      // Number of columns
     unsigned long m_height = 0;                     // Number of rows
     size_t m_size = 0;                              // The total size of the buffer in bytes
+    bool m_sizeDirty = false;                       // Flag to indicate that the size has changed and needs to be reallocated
 
     inline FireStarterWindow& operator = (const FireStarterWindow& other)
     {
@@ -32,13 +32,18 @@ public:
 
     inline void Allocate(CUstream stream = nullptr)
     {
+        if (m_sizeDirty)
+            Clear();
         if (m_size) {
-            if (!m_deviceBase)
-                if (stream && !m_deviceBase)
-                    checkCUDAErrors(cuMemAllocAsync(&m_deviceBase, m_size, stream));
+            if (!m_deviceBase && stream)
+                checkCUDAErrors(cuMemAllocAsync(&m_deviceBase, m_size, stream));
             if (!m_hostBase)
-                checkCUDAErrors(cuMemHostAlloc((void**)&m_hostBase, m_size, 0));
+                if (stream)
+                    checkCUDAErrors(cuMemHostAlloc((void**)&m_hostBase, m_size, 0));
+                else
+                    calloc(m_size, 1);
         }
+        m_sizeDirty = false;
     } // Allocate
 
     inline void Erase(CUstream stream = nullptr)
@@ -76,15 +81,16 @@ public:
         }
         m_width = 0;
         m_height = 0;
+        m_sizeDirty = false;
     } // Clear
 
     inline void Resize(unsigned long width, unsigned long height)
     {
         if ((m_width != width) || (m_height != height)) {
-            Clear();
             m_width = width;
             m_height = height;
             m_size = m_width * m_height * sizeof(uchar4);
+            m_sizeDirty = true;
         }
     } // Resize
 

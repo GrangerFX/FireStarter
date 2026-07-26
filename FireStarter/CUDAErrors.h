@@ -4,7 +4,7 @@
 #include "Format.h"
 #include <nvrtc.h>
 
-template <typename T> void __check_cuda_errors(T result, char const* const func, const char* const file, int const line) {
+template <typename T> bool __check_cuda_errors(T result, char const* const func, const char* const file, int const line) {
 	if (result) {
 		const char* errorName = nullptr;
 		const char* errorString = nullptr;
@@ -14,7 +14,9 @@ template <typename T> void __check_cuda_errors(T result, char const* const func,
 		}
 		printf("CUDA error at %s:%d code=%d: \"%s\": \"%s\" \"%s\"\n", file, line, static_cast<unsigned int>(result), errorName, errorString, func);
 		std::terminate();
+        return false;
 	}
+    return true;
 }
 #define checkCUDAErrors(val) __check_cuda_errors((val), #val, __FILE__, __LINE__)
 
