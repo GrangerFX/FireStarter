@@ -89,3 +89,5 @@ A conversation with Claude:
 https://claude.ai/share/502e63e3-1fba-4ef4-a597-53525351f161
 
 That's the entire project in a nutshell. I had no idea about any of this when I started. I had to observe it and then test my hypotheses to learn anything. Essentially the AI is teaching me. Considering all the computations it does, this is not terribly surprising. That's the thing about trying to work on general AI. The challenge is not creating an AI smarter than a human but accepting that it was smarter to begin with.
+
+Mark Granger
