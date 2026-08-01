@@ -429,11 +429,11 @@ public:
             if (work)
                 work();
             syncSemaphore.notify();
-            })) {
-            // If this is a main-thread polling instance, we may need to 
-            // pump the queue ourselves to avoid blocking the very thread 
-            // that's supposed to do the work.
-            if (m_pollThread)
+        })) {
+            // If this is a main-thread polling instance AND the caller is the
+            // polling thread, we may need to pump the queue ourselves to avoid
+            // blocking the very thread that's supposed to do the work.
+            if (m_pollThread && std::this_thread::get_id() == m_threadId)
                 PollThread();
 
             // Wait for the contditional variable to be notified.
