@@ -1,6 +1,7 @@
 #pragma once
 #include "CUDAThread.h"
 #include "CUDAErrors.h"
+#include <algorithm>
 
 class FireStarterWindow : public CUDAThread {
 private:
@@ -36,20 +37,23 @@ private:
         }
     } // AllocateBuffers
 
-    inline void EraseBuffers(void)
-    {
-        if (m_size) {
-            if (m_deviceBase)
-                checkCUDAErrors(cuMemsetD8Async(m_deviceBase, 0, m_size, Stream()));
-            memset(m_hostBase, 0, m_size);
-        }
-    } // EraseBuffers
 public:
 
-    inline void Erase(void)
+    inline void EraseBuffers(uchar4 pixel_value = { 0, 0, 0, 0 })
     {
-        DispatchAsync([this] {
-            EraseBuffers();
+        if (m_size) {
+            if (m_deviceBase) {
+                unsigned int pixel_uint_value = (pixel_value.w << 24) | (pixel_value.z << 16) | (pixel_value.y << 8) | pixel_value.x;
+                checkCUDAErrors(cuMemsetD32Async(m_deviceBase, pixel_uint_value, m_size / sizeof(unsigned int), Stream()));
+            }
+            std::fill((uchar4*)m_hostBase, (uchar4*)(m_hostBase + m_size), pixel_value);
+        }
+    } // EraseBuffers
+
+    inline void Erase(uchar4 pixel_value = { 0, 0, 0, 0 })
+    {
+        DispatchAsync([this, pixel_value] {
+            EraseBuffers(pixel_value);
         });
     } // Erase
 

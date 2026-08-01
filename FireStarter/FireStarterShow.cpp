@@ -79,7 +79,8 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
             return;
 
         // Erase the window.
-        m_window.Erase();
+        // Note: Erase() would be called asynchronously following the drawing below and leavign the buffer black.
+        m_window.EraseBuffers();
 
         if ((settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE)) {
             const MoneyMakerStock& stock = stocks->Stock(settings.m_stock);
