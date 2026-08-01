@@ -907,6 +907,18 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
 
 void FireStarterExecute::GenerateCode(FireStarterJob* job)
 {
+    // Generate the optimize code
+    if (m_executeCode.empty()) {
+        unsigned int mode = job->m_state.Settings().m_mode;
+        m_executeProgramName = FireStarterSettings::OptimizeProgramName(mode);
+        m_executeFunctionName = FireStarterSettings::OptimizeFunctionName(mode);
+        m_executeTestName = FireStarterSettings::OptimizeTestName(mode);
+        if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
+            printf("%s could not be loaded!\n", m_executeProgramName.c_str());
+            std::terminate();
+        }
+    }
+
     // Generate the evaluate code
     std::string evaluateCode;
     m_executeGenerate.GenerateEvaluate(job->m_state.Settings(), job->m_state.Code(), evaluateCode);
@@ -914,7 +926,7 @@ void FireStarterExecute::GenerateCode(FireStarterJob* job)
 
     // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
     CUDACompile::CompileOptions(job->m_options);
-    job->m_programName = FireStarterSettings::EvolveProgramName(FIRESTARTER_OPTIMIZE);
+    job->m_programName = m_executeProgramName;
     job->m_program = m_executeCode;
     FireStarterSource::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
     m_executeManager->AddCode(job);

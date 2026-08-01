@@ -70,13 +70,13 @@ void FireStarterShow::EvaluateEvolve(const FireStarterState& state, unsigned int
 
 void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerStocks* stocks, const MoneyMakerStocks* tradingResults)
 {
-    DispatchAsync([this, state, stocks, tradingResults] {
+    m_window.DispatchAsync([this, state, stocks, tradingResults] {
         const FireStarterSettings& settings = state.Settings();
-        uchar4* pixels = (uchar4*)m_window.GetPixels();
+        unsigned int width = 0;
+        unsigned int height = 0;
+        uchar4* pixels = (uchar4*)this->m_window.GetHostPixels(width, height);
         if (!pixels)
             return;
-        unsigned int width = m_window.m_width;
-        unsigned int height = m_window.m_height;
 
         // Erase the window.
         m_window.Erase();
@@ -287,62 +287,65 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
 
 void FireStarterShow::FireSolution(FireStarterWindow& window)
 {
-    window.Erase();
-    std::string statusString = "FireStarter:";
-    uchar4* pixels = (uchar4*)window.GetPixels();
-    if (!pixels)
-        return;
-    unsigned int width = window.m_width;
-    unsigned int height = window.m_height;
-    float maxError = 0.0f;
-    for (unsigned int v = 0; v < SOLUTION_VARIATIONS; v++) {
-        int xScale = height / 8;
-        int yScale = height / 16;
-        for (unsigned int y = 0; y < height; y++) {
-            int x0 = (width / 2) - xScale;
-            int x1 = (width / 2) + xScale;
-            if (x0 >= 0) {
-                uchar4& pixel(pixels[y * width + x0]);
-                pixel.x = 64;
-                pixel.y = 128;
-                pixel.z = 64;
-            };
-            if (x1 < (int)width) {
-                uchar4& pixel(pixels[y * width + x1]);
-                pixel.x = 64;
-                pixel.y = 128;
-                pixel.z = 64;
-            };
-        }
-        for (unsigned int x = 0; x < width; x++) {
-            float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
-            float center = height * 0.66f;
-            float target = SolutionTarget(theta, v + SOLUTION_VARIATION);
-#if SOLUTION_VARIATIONS == 1
-            float solution = Solution(theta);
-#else
-            float solution = Solution(theta, v);
-#endif
-            if ((theta >= SOLUTION_MIN) && (theta <= SOLUTION_MAX)) {
-                float error = fabsf(solution - target);
-                maxError = std::max(maxError, error);
+    window.DispatchAsync([&window] {
+        window.Erase();
+        std::string statusString = "FireStarter:";
+        unsigned int width = 0;
+        unsigned int height = 0;
+        uchar4* pixels = (uchar4*)window.GetHostPixels(width, height);
+        if (!pixels)
+            return;
+        float maxError = 0.0f;
+        for (unsigned int v = 0; v < SOLUTION_VARIATIONS; v++) {
+            int xScale = height / 8;
+            int yScale = height / 16;
+            for (unsigned int y = 0; y < height; y++) {
+                int x0 = (width / 2) - xScale;
+                int x1 = (width / 2) + xScale;
+                if (x0 >= 0) {
+                    uchar4& pixel(pixels[y * width + x0]);
+                    pixel.x = 64;
+                    pixel.y = 128;
+                    pixel.z = 64;
+                };
+                if (x1 < (int)width) {
+                    uchar4& pixel(pixels[y * width + x1]);
+                    pixel.x = 64;
+                    pixel.y = 128;
+                    pixel.z = 64;
+                };
             }
-            int y = (int)(center + target * yScale);
-            if ((y >= 0) && (y < (int)height)) {
-                uchar4& pixel(pixels[y * width + x]);
-                pixel.x = 255;
-                pixel.y = 128;
-            };
-            y = (int)(center + solution * yScale);
-            if ((y >= 0) && (y < (int)height)) {
-                uchar4& pixel(pixels[y * width + x]);
-                pixel.x = pixel.y = pixel.z = 255;
-            };
+            for (unsigned int x = 0; x < width; x++) {
+                float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
+                float center = height * 0.66f;
+                float target = SolutionTarget(theta, v + SOLUTION_VARIATION);
+    #if SOLUTION_VARIATIONS == 1
+                float solution = Solution(theta);
+    #else
+                float solution = Solution(theta, v);
+    #endif
+                if ((theta >= SOLUTION_MIN) && (theta <= SOLUTION_MAX)) {
+                    float error = fabsf(solution - target);
+                    maxError = std::max(maxError, error);
+                }
+                int y = (int)(center + target * yScale);
+                if ((y >= 0) && (y < (int)height)) {
+                    uchar4& pixel(pixels[y * width + x]);
+                    pixel.x = 255;
+                    pixel.y = 128;
+                };
+                y = (int)(center + solution * yScale);
+                if ((y >= 0) && (y < (int)height)) {
+                    uchar4& pixel(pixels[y * width + x]);
+                    pixel.x = pixel.y = pixel.z = 255;
+                };
+            }
+            statusString += Format(" Solution %d = %.8f", v, maxError);
         }
-        statusString += Format(" Solution %d = %.8f", v, maxError);
-    }
-    window.DisplayImage();
-    window.DisplayText(statusString);
+        window.DisplayText(statusString);
+        window.DisplayImage();
+    });
+
 } // FireSolution
 
 void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double generationTime, double runTime, bool sync)
@@ -473,7 +476,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     m_window.DisplayText(statusString, sync);
 } // ShowStatus
 
-FireStarterShow::FireStarterShow(const FireStarterWindow& window) : SerialThread("FireStarterShow"), m_window(window)
+FireStarterShow::FireStarterShow(FireStarterWindow& window) : SerialThread("FireStarterShow"), m_window(window)
 {
 } // FireStarterShow
 

@@ -1,75 +1,18 @@
 #pragma once
-#include "SerialThread.h"
+#include "CUDAThread.h"
 #include "CUDAErrors.h"
 
-class FireStarterWindow {
+class FireStarterWindow : public CUDAThread {
 private:
-    inline void swap(const FireStarterWindow& other)
-    {
-        m_reference = other.m_reference ? other.m_reference : &other;
-        m_window = other.m_window;
-        if (m_reference)
-            Resize();
-        else
-            Resize(other.m_width, other.m_height); // Allocate new buffers.
-    } // swap
-
-public:
-    const FireStarterWindow* m_reference = nullptr; // Reference window for resolution changes.
     void* m_window = nullptr;                       // Handle to the app's main window (HWND)
     unsigned char* m_hostBase = nullptr;            // Pointer to the alligned native pixel format buffer in host memory
     CUdeviceptr m_deviceBase = 0;                   // Pointer to the alligned native pixel format buffer in device memory
     unsigned long m_width = 0;                      // Number of columns
     unsigned long m_height = 0;                     // Number of rows
     size_t m_size = 0;                              // The total size of the buffer in bytes
-    bool m_sizeDirty = false;                       // Flag to indicate that the size has changed and needs to be reallocated
+    bool m_CUDABuffer = false;                      // True if the buffer is allocated in CUDA device memory in addition to host memory.
 
-    inline FireStarterWindow& operator = (const FireStarterWindow& other)
-    {
-        swap(other);
-        return *this;
-    } // operator =
-
-    inline void Allocate(CUstream stream = nullptr)
-    {
-        if (m_sizeDirty)
-            Clear();
-        if (m_size) {
-            if (!m_deviceBase && stream)
-                checkCUDAErrors(cuMemAllocAsync(&m_deviceBase, m_size, stream));
-            if (!m_hostBase)
-                if (stream)
-                    checkCUDAErrors(cuMemHostAlloc((void**)&m_hostBase, m_size, 0));
-                else
-                    calloc(m_size, 1);
-        }
-        m_sizeDirty = false;
-    } // Allocate
-
-    inline void Erase(CUstream stream = nullptr)
-    {
-        if (m_size) {
-            Allocate(stream);
-            if (stream)
-                checkCUDAErrors(cuMemsetD8Async(m_deviceBase, 0, m_size, stream));
-            else
-                memset(m_hostBase, 0, m_size);
-        }
-    } // Erase
-
-    inline const unsigned char* GetPixels(CUstream stream = nullptr)
-    {
-        if (m_size) {
-            Allocate(stream);
-            if (stream) {
-                checkCUDAErrors(cuMemcpyDtoHAsync(m_hostBase, m_deviceBase, m_size, stream));
-                checkCUDAErrors(cuStreamSynchronize(stream));
-            }
-        }
-        return m_hostBase;
-    } // GetPixels
-
-    inline void Clear(void)
+    inline void ClearBuffers(void)
     {
         if (m_hostBase) {
             checkCUDAErrors(cuMemFreeHost(m_hostBase));
@@ -79,59 +22,103 @@ public:
             checkCUDAErrors(cuMemFree((CUdeviceptr)m_deviceBase));
             m_deviceBase = 0;
         }
-        m_width = 0;
-        m_height = 0;
-        m_sizeDirty = false;
+    } // ClearBuffers
+
+    inline void AllocateBuffers(void)
+    {
+        ClearBuffers();
+        if (m_size) {
+            if (m_CUDABuffer && !m_deviceBase)
+                checkCUDAErrors(cuMemAllocAsync(&m_deviceBase, m_size, Stream()));
+            if (!m_hostBase)
+                checkCUDAErrors(cuMemHostAlloc((void**)&m_hostBase, m_size, 0));
+            Erase();
+        }
+    } // AllocateBuffers
+
+    inline void EraseBuffers(void)
+    {
+        if (m_size) {
+            if (m_deviceBase)
+                checkCUDAErrors(cuMemsetD8Async(m_deviceBase, 0, m_size, Stream()));
+            memset(m_hostBase, 0, m_size);
+        }
+    } // EraseBuffers
+public:
+
+    inline void Erase(void)
+    {
+        DispatchAsync([this] {
+            EraseBuffers();
+        });
+    } // Erase
+
+    inline const unsigned char* GetHostPixels(unsigned int& width, unsigned int& height)
+    {
+        width = m_width;
+        height = m_height;
+        if (m_size && m_CUDABuffer)
+            checkCUDAErrors(cuMemcpyDtoH(m_hostBase, m_deviceBase, m_size));
+        return m_hostBase;
+    } // GetHostPixels
+
+    inline const CUdeviceptr GetDevicePixels(unsigned int& width, unsigned int& height)
+    {
+        width = m_width;
+        height = m_height;
+        return m_deviceBase;
+    } // GetDevicePixels
+
+    inline void Clear(void)
+    {
+        DispatchSync([this] {
+            ClearBuffers();
+        });
     } // Clear
 
     inline void Resize(unsigned long width, unsigned long height)
     {
-        if ((m_width != width) || (m_height != height)) {
-            m_width = width;
-            m_height = height;
-            m_size = m_width * m_height * sizeof(uchar4);
-            m_sizeDirty = true;
-        }
+        DispatchAsync([this, width, height] {
+            if ((m_width != width) || (m_height != height)) {
+                m_width = width;
+                m_height = height;
+                m_size = m_width * m_height * sizeof(uchar4);
+                AllocateBuffers();
+            }
+        });
     } // Resize
 
-    inline void Resize(void)
+    inline void DisplayImage(void)
     {
-        unsigned long width = 0;
-        unsigned long height = 0;
-        if (m_reference) {
-            width = m_reference->m_width;
-            height = m_reference->m_height;
-        }
-        Resize(width, height);
-    } // Resize
+        DispatchAsync([this] {
+            if (m_size && m_CUDABuffer)
+                checkCUDAErrors(cuMemcpyDtoH(m_hostBase, m_deviceBase, m_size));
+            const unsigned char* pixels = (const unsigned char*)m_hostBase;
+            if (pixels)
+                SerialThread::DispatchMainSync([this, pixels] {
+                    if (m_window && m_width && m_height) {
+                        unsigned char buffer[4096];
+                        BITMAPINFO* bm = (BITMAPINFO*)buffer;
+                        bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                        bm->bmiHeader.biHeight = -(int)m_height;
+                        bm->bmiHeader.biPlanes = 1;
+                        bm->bmiHeader.biCompression = BI_RGB;
+                        bm->bmiHeader.biSizeImage = 0;
+                        bm->bmiHeader.biXPelsPerMeter = 0;
+                        bm->bmiHeader.biYPelsPerMeter = 0;
+                        bm->bmiHeader.biClrUsed = 0;
+                        bm->bmiHeader.biClrImportant = 0;
+                        bm->bmiHeader.biWidth = m_width;
+                        bm->bmiHeader.biBitCount = 32;
 
-    inline void DisplayImage(CUstream stream = nullptr)
-    {
-        const unsigned char* pixels = GetPixels(stream);
-        if (pixels)
-            SerialThread::DispatchMainAsync([this, pixels] {
-                if (m_window && m_width && m_height) {
-                    unsigned char buffer[4096];
-                    BITMAPINFO* bm = (BITMAPINFO*)buffer;
-                    bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-                    bm->bmiHeader.biHeight = -(int)m_height;
-                    bm->bmiHeader.biPlanes = 1;
-                    bm->bmiHeader.biCompression = BI_RGB;
-                    bm->bmiHeader.biSizeImage = 0;
-                    bm->bmiHeader.biXPelsPerMeter = 0;
-                    bm->bmiHeader.biYPelsPerMeter = 0;
-                    bm->bmiHeader.biClrUsed = 0;
-                    bm->bmiHeader.biClrImportant = 0;
-                    bm->bmiHeader.biWidth = m_width;
-                    bm->bmiHeader.biBitCount = 32;
-
-                    HDC hdc = GetDC((HWND)m_window);
-                    if (hdc) {
-                        SetDIBitsToDevice(hdc, 0, 0, m_width, m_height, 0, 0, 0, m_height, pixels, bm, DIB_RGB_COLORS);
-                        GdiFlush();
+                        HDC hdc = GetDC((HWND)m_window);
+                        if (hdc) {
+                            SetDIBitsToDevice(hdc, 0, 0, m_width, m_height, 0, 0, 0, m_height, pixels, bm, DIB_RGB_COLORS);
+                            GdiFlush();
+                        }
                     }
-                }
-            });
+                });
+        });
     } // DisplayImage
 
     inline void DisplayText(const std::string& string, bool sync = false)
@@ -141,18 +128,14 @@ public:
         }, sync);
     } // DisplayText
 
-    inline FireStarterWindow(const FireStarterWindow& other)
+    inline FireStarterWindow(void* window, unsigned long width = 0, unsigned long height = 0, int device = -1) : CUDAThread("FireStarterWindow", MAX(device, 0)), m_window(window)
     {
-        swap(other);
-    } // FireStarterWindow
-
-    inline FireStarterWindow(void* window, unsigned long width, unsigned long height) : m_window(window)
-    {
+        m_CUDABuffer = device >= 0;
         Resize(width, height);
     } // FireStarterWindow
 
     inline ~FireStarterWindow(void)
     {
-        Resize(0, 0);
+        Clear();
     } // ~FireStarterWindow
 }; // class FireStarterWindow

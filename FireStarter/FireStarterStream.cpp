@@ -26,7 +26,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
         FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, randomSettings);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, randomSettings, manager, false);
 
         // Loop until the the completion condition or the host program is quit.
         unsigned int tests = MAX(randomSettings.m_tests, 1);
@@ -110,7 +110,7 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
             executeOptimize = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, selectSettings, FIRESTARTER_SAVE_BESTSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, selectSettings, manager);
 
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned long long evolveTests = MAX(selectSettings.m_tests, 1);
@@ -244,7 +244,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
             execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings, manager);
 
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
@@ -369,7 +369,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         }
 
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings);
 
         // Create the execution unit used to evolve and optimize the best states.
         FireStarterUnits evolveUnits(numDevices, "Evolve");
@@ -461,7 +461,7 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
         FireStarterManager* manager = new FireStarterManager();
 
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings, manager);
 
         // Create the execution unit used to evolve the best states.
         FireStarterExecute* executeEvolve = new FireStarterExecute(manager);
@@ -537,7 +537,7 @@ void FireStarterStream::EvolveSinSimStream(FireStarterServer* server, std::atomi
         FireStarterManager* manager = new FireStarterManager();
 
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings, manager);
 
         // Create the execution unit used to evolve the best states.
         FireStarterExecute* executeEvolve = new FireStarterExecute(manager);
@@ -615,7 +615,7 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
         SerialThread compiler;
 
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, sinSimSettings);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, sinSimSettings, manager, false);
 
         // Create the execution unit used to evolve the best states.
         FireStarterExecute* executeSinSim = new FireStarterExecute(manager);
@@ -695,7 +695,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         unsigned long long optimizeID = 0;
 
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(nullptr, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings);
 
         // Load the stock market data;
         MoneyMakerManager stockManager(evolveSettings);
@@ -1003,7 +1003,7 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
         FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, speedTestSettings);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, speedTestSettings, manager);
 
         // Generate the optimize code.
         FireStarterState evolveState = FireStarterState(speedTestSettings);
@@ -1079,7 +1079,7 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
         FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, optimizeSettings);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, optimizeSettings, manager);
 
         // Generate the optimize code.
         if (execute->ExecuteGenerateOptimize(evolveState)) {
@@ -1133,7 +1133,7 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
     }, sync);
 } // OptimizeStream
 
-FireStarterStream::FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings) : SerialThread(Format("FireStarterStream%zu", index)),
+FireStarterStream::FireStarterStream(size_t index, FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings) : SerialThread(Format("FireStarterStream%zu", index)),
     m_streamIndex(index),
     m_streamWindow(window),
     m_streamBestState(bestState),
@@ -1236,7 +1236,7 @@ void FireStarterStreams::ExecuteStreams(void)
     });
 } // ExecuteStreams
 
-FireStarterStreams::FireStarterStreams(const FireStarterWindow& window) : SerialThread("FireStarterStreams"), m_window(window), m_testCount(0)
+FireStarterStreams::FireStarterStreams(FireStarterWindow& window) : SerialThread("FireStarterStreams"), m_window(window), m_testCount(0)
 {
 } // FireStarterStreams
 

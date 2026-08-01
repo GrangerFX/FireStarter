@@ -301,12 +301,7 @@ void FireStarterComplete::InitComplete(void)
 {
 } // InitComplete
 
-FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : SerialThread("FireStarterComplete"), m_manager(manager), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
-{
-    InitComplete();
-} // FireStarterComplete
-
-FireStarterComplete::FireStarterComplete(const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : SerialThread("FireStarterComplete"), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
+FireStarterComplete::FireStarterComplete(FireStarterWindow& window, const FireStarterSettings& settings, FireStarterManager* manager, bool saveBestState) : SerialThread("FireStarterComplete"), m_window(window), m_settings(settings), m_manager(manager), m_saveBestState(saveBestState), m_fireShow(window)
 {
     InitComplete();
 } // FireStarterComplete

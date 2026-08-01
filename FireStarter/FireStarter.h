@@ -3,7 +3,7 @@
 
 class FireStarter : public SerialThread {
 private:
-    FireStarterWindow m_window;
+    FireStarterWindow& m_window;
 
     void ControlSolution(void);
     void ControlStreams(void);
@@ -11,6 +11,6 @@ private:
 
 public:
     bool ShouldQuit(void);
-    FireStarter(const FireStarterWindow &window);
+    FireStarter(FireStarterWindow& window);
     ~FireStarter(void);
 }; // class FireStarter

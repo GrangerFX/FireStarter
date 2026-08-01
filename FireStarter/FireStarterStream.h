@@ -4,7 +4,7 @@
 
 class FireStarterStream : public SerialThread {
 private:
-	FireStarterWindow m_streamWindow;
+	FireStarterWindow& m_streamWindow;
 	FireStarterState& m_streamBestState;
 	FireStarterSettings m_streamSettings;
 	FireStarterSettings m_optimizeSettings;
@@ -22,13 +22,13 @@ public:
     void MoneyMakerStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
     void SpeedTestStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
     void OptimizeStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
-    FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings);
+    FireStarterStream(size_t index, FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings);
 	~FireStarterStream(void);
 }; // class FireStarterStream
 
 class FireStarterStreams : public SerialThread {
 private:
-	FireStarterWindow m_window;
+	FireStarterWindow& m_window;
 	FireStarterSettings m_streamSettings;
 	FireStarterSettings m_optimizeSettings;
 	FireStarterServer* m_server = nullptr;
@@ -37,6 +37,6 @@ private:
 public:
 	bool SynchronizeStreams(std::vector<FireStarterStream*>& streams);
 	void ExecuteStreams(void);
-	FireStarterStreams(const FireStarterWindow& window);
+	FireStarterStreams(FireStarterWindow& window);
 	~FireStarterStreams(void);
 }; // class FireStarterStreams

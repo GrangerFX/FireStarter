@@ -7,7 +7,7 @@
 
 class FireStarterShow : public SerialThread {
 private:
-	FireStarterWindow m_window;
+	FireStarterWindow& m_window;
     size_t m_evaluateSize = 0;
     size_t m_dataSize = 0;
     std::vector<float> m_targetData;
@@ -23,6 +23,6 @@ public:
     static void FireSolution(FireStarterWindow& window);
     void FireShow(const FireStarterState& state, const MoneyMakerStocks *stocks = nullptr, const MoneyMakerStocks* tradingResults = nullptr);
 	void ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double generationTime, double runTime, bool sync = false);
-	FireStarterShow(const FireStarterWindow& window);
+	FireStarterShow(FireStarterWindow& window);
 	~FireStarterShow(void);
 }; // class FireStarterShow

@@ -205,7 +205,7 @@ bool FireStarter::ShouldQuit(void)
 #endif
 } // ShouldQuit
 
-FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireStarter"), m_window(window)
+FireStarter::FireStarter(FireStarterWindow& window) : SerialThread("FireStarter"), m_window(window)
 {
 #if 0
     TestRandom();

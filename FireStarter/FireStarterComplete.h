@@ -5,7 +5,7 @@
 
 class FireStarterComplete : public SerialThread {
 private:
-	FireStarterWindow m_window;
+	FireStarterWindow& m_window;
 	FireStarterShow m_fireShow;
     FireStarterSettings m_settings;
 	FireStarterManager* m_manager = nullptr;
@@ -32,7 +32,6 @@ public:
     bool CompleteSelect(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
     void CompleteSaveResults(const FireStarterState& bestState);
     void InitComplete(void);
-    FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState = false);
-    FireStarterComplete(const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState = false);
+    FireStarterComplete(FireStarterWindow& window, const FireStarterSettings& settings, FireStarterManager* manager = nullptr, bool saveBestState = FIRESTARTER_SAVE_BESTSTATE);
     ~FireStarterComplete(void);
 }; // class FireStarterEvolve
