@@ -485,7 +485,5 @@ FireStarterShow::~FireStarterShow(void)
 {
     DispatchSync([this] {
         DeallocateEvaluateData();
-        MainSynchronize();
-        m_window.Clear();
     });
 } // ~FireStarterShow

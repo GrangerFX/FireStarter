@@ -171,6 +171,7 @@ protected:
     inline static std::mutex s_parallelMutex;
     inline static std::condition_variable s_parallelCV;
     inline static std::once_flag s_poolInitFlag;
+    inline static std::atomic<SerialThread*> g_mainThread{ nullptr };
 
     static void StaticParallelWorker()
     {
@@ -265,12 +266,6 @@ protected:
 
     SerialThreadTimers m_timers;
 #endif
-
-    static SerialThread*& MainThread()
-    {
-        static SerialThread* g_mainThread = nullptr;
-        return g_mainThread;
-    } // MainThread
 
     inline bool Wait(SerialThreadWork& work)
     {
@@ -373,7 +368,7 @@ public:
 
     inline bool DispatchMainAfter(double duration, const SerialThreadWork& work)
     {
-        SerialThread* mainThread = MainThread();
+        SerialThread* mainThread = g_mainThread;
         if (mainThread)
             return mainThread->DispatchAfter(duration, work);
         return false;
@@ -399,7 +394,7 @@ public:
 
     static inline bool DispatchMainAsync(const SerialThreadWork& work)
     {
-        SerialThread* mainThread = MainThread();
+        SerialThread* mainThread = g_mainThread;
         if (mainThread)
             return mainThread->DispatchAsync(work);
         return false;
@@ -446,7 +441,7 @@ public:
 
     static inline bool DispatchMainSync(const SerialThreadWork& work)
     {
-        SerialThread* mainThread = MainThread();
+        SerialThread* mainThread = g_mainThread;
         if (mainThread)
             return mainThread->DispatchSync(work);
         return false;
@@ -474,12 +469,14 @@ public:
 
     static inline SerialThread* GetMainThread(void)
     {
-        return MainThread();
+        return g_mainThread;
     } // GetMainThread
 
     static inline void SetMainThread(SerialThread* mainThread = nullptr)
     {
-        MainThread() = mainThread;
+        SerialThread* oldMainThread = g_mainThread.exchange(mainThread);
+        if (oldMainThread)
+            oldMainThread->TerminateThread();
     } // SetMainThread
 
     inline virtual bool TerminateThread(void)
@@ -491,7 +488,6 @@ public:
         // 1. Kill Serial or Parallel Worker
         if (m_pollThread) {
             // Polling thread: drain any queued work, then set terminate and notify.
-            PollThread();
             std::unique_lock<std::mutex> lock(m_mutex);
 #if HAS_DISPATCH_AFTER
             m_timers.StopTimers();

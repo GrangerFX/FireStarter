@@ -42,7 +42,7 @@ LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 } // Winproc
 
 // ----------------------------------------------------------------------------
-HRESULT Initialize(HINSTANCE hInstance)
+HRESULT MainLoop(HINSTANCE hInstance)
 {
 	HRESULT result = E_FAIL;
 
@@ -87,16 +87,8 @@ HRESULT Initialize(HINSTANCE hInstance)
 			do {
 				MSG	msg;
 				if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
-                    if (msg.message == WM_QUIT) {
-                        // Tell the threads to quit.
-                        SerialThread::QuitThreads();
-
-                        // Force each device to reset its primary context, which will clean up all resources and stop any stuck kernels.
-                        // Note: This does not work unless the CUDA kernels exited cleanly. Otherwise it leaves them in zombie state.
-                        // I reported this issue to NVIDIA and they apppear to have accepted it as a bug.
-                        CUDAContext::CUDAShutdown();
+                    if (msg.message == WM_QUIT)
                         break;
-                    }
 					TranslateMessage(&msg);
 					DispatchMessage(&msg);
 				} else if (fireStarter->ShouldQuit())
@@ -106,18 +98,27 @@ HRESULT Initialize(HINSTANCE hInstance)
 			} while (1);
 
 			SetWindowText(hwnd, "Quitting");
-			mainSerialThread.Synchronize(); // No more updates will be accepted.
+
+            // Tell the threads to quit.
+            SerialThread::QuitThreads();
+
+            // Force each device to reset its primary context, which will clean up all resources and stop any stuck kernels.
+            // Note: This does not work unless the CUDA kernels exited cleanly. Otherwise it leaves them in zombie state.
+            // I reported this issue to NVIDIA and they apppear to have accepted it as a bug.
+            CUDAContext::CUDAShutdown();
+
+            // Stop the main thread.
             SerialThread::SetMainThread(nullptr);
             delete fireStarter;
 			result = S_OK;
 		}
 	}
 	return result;
-} // Initialize
+} // MainLoop
 
 // ----------------------------------------------------------------------------
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
 {
-	Initialize(hInstance);
+    MainLoop(hInstance);
 	return 0;
 } // WinMain
