@@ -4,6 +4,7 @@
 #define HALF_WARP_THREADS 16
 
 #ifdef __CUDACC__
+
 #define GPU_FUNCTION __device__
 #define GPU_GLOBAL extern "C" __global__
 #define GPU_ENTRY(grid, block) <<<grid, block>>>
@@ -12,7 +13,11 @@
 #define GPU_SYNCWARP() __syncwarp()
 #define GPU_SHARED __shared__
 #define nullptr 0
+
+__device__ int* g_GPUKillSwitch = 0;
+
 #else
+
 #define CUDA_API_PER_THREAD_DEFAULT_STREAM
 #include <cuda.h>
 #include <vector_types.h>
@@ -32,6 +37,9 @@ inline float __int_as_float(int x) { union int_float { int i; float f; } u; u.i 
 inline int __float_as_int(float x) { union int_float { int i; float f; } u; u.f = x; return u.i; }
 inline float __uint_as_float(unsigned int x) { union int_float { unsigned int i; float f; } u; u.i = x; return u.f; }
 inline unsigned int __float_as_uint(float x) { union int_float { unsigned int i; float f; } u; u.f = x; return u.i; }
+
+volatile static int* g_GPUKillSwitch = 0;
+
 #endif
 
 #define MIN(a, b) ((a) <= (b) ? (a) : (b))

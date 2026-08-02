@@ -480,7 +480,6 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
     unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    int* killSwitch = GPUKillSwitch();
     unsigned long long evolutionSeed = state.EvolutionSeed();
     unsigned int stock = 0;
 
@@ -501,8 +500,7 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
                                             m_CUDACodes.HostPtr(),
                                             populationPtr,
                                             m_CUDAStocks.HostPtr(),
-                                            evolutionSeed,
-                                            killSwitch);
+                                            evolutionSeed);
     } else {
         m_CUDASettings.Copy(&settings, m_settingsSize);
 #if 0
@@ -512,7 +510,6 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
                 reinterpret_cast<void*>(&m_CUDAPopulation0.DevicePtr()),
                 reinterpret_cast<void*>(&m_CUDAStocks.DevicePtr()),
                 reinterpret_cast<void*>(&evolutionSeed),
-                reinterpret_cast<void*>(&killSwitch),
         };
 
         checkCUDAErrors(cuLaunchKernel(Module().m_executeFunction,
@@ -523,7 +520,7 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
             &arr[0],                                            // arguments
             0));
 #elif 0
-        CUDAParameters parameters(m_CUDASettings.DevicePtr(), m_CUDAResults.DevicePtr(), m_CUDACodes.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDAStocks.DevicePtr(), evolutionSeed, killSwitch);
+        CUDAParameters parameters(m_CUDASettings.DevicePtr(), m_CUDAResults.DevicePtr(), m_CUDACodes.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDAStocks.DevicePtr(), evolutionSeed);
 
         checkCUDAErrors(cuLaunchKernel(Module().m_executeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
@@ -533,7 +530,7 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
             parameters.Parameters(),                            // arguments
             0));
 #else
-        CUDALaunch(m_executeFunctionName, threadsPerBlock, blocksPerGrid, m_CUDASettings.DevicePtr(), m_CUDAResults.DevicePtr(), m_CUDACodes.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDAStocks.DevicePtr(), evolutionSeed, killSwitch);
+        CUDALaunch(m_executeFunctionName, threadsPerBlock, blocksPerGrid, m_CUDASettings.DevicePtr(), m_CUDAResults.DevicePtr(), m_CUDACodes.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDAStocks.DevicePtr(), evolutionSeed);
 #endif
 
         m_CUDAResults.DeviceToHost();

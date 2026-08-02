@@ -984,7 +984,6 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         }
 
         // Delete the completion unit.
-        complete->Synchronize();
         delete complete;
     }, sync);
 } // MoneyMakerStream

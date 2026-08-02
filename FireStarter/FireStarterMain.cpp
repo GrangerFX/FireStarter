@@ -107,7 +107,8 @@ HRESULT Initialize(HINSTANCE hInstance)
 
 			SetWindowText(hwnd, "Quitting");
 			mainSerialThread.Synchronize(); // No more updates will be accepted.
-			delete fireStarter;
+            SerialThread::SetMainThread(nullptr);
+            delete fireStarter;
 			result = S_OK;
 		}
 	}
