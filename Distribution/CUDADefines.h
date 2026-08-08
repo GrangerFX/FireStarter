@@ -20,6 +20,9 @@ __device__ int g_KillSwitchValue = 0;
 // Initialize g_GPUKillSwitch to point to this safe default location
 __device__ int* g_GPUKillSwitch = &g_KillSwitchValue;
 
+// Macro to check the GPU kill switch and return if it's set
+#define CHECK_GPU_KILL_SWITCH() if (*(volatile int*)g_GPUKillSwitch != 0) return;
+
 #else
 
 #define CUDA_API_PER_THREAD_DEFAULT_STREAM
@@ -43,10 +46,13 @@ inline float __uint_as_float(unsigned int x) { union int_float { unsigned int i;
 inline unsigned int __float_as_uint(float x) { union int_float { unsigned int i; float f; } u; u.f = x; return u.i; }
 
 // Define a device-side integer initialized to 0 in global memory
-volatile static int g_KillSwitchValue = 0;
+static int g_KillSwitchValue = 0;
 
 // Initialize g_GPUKillSwitch to point to this safe default location
-volatile static int* g_GPUKillSwitch = &g_KillSwitchValue;
+static int* g_GPUKillSwitch = &g_KillSwitchValue;
+
+// Macro to check the GPU kill switch and return if it's set
+#define CHECK_GPU_KILL_SWITCH() if (*(volatile int*)g_GPUKillSwitch != 0) return;
 
 #endif
 

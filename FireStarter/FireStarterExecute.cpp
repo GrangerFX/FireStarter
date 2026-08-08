@@ -503,35 +503,7 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
                                             evolutionSeed);
     } else {
         m_CUDASettings.Copy(&settings, m_settingsSize);
-#if 0
-        void* arr[] = { reinterpret_cast<void*>(&m_CUDASettings.DevicePtr()),
-                reinterpret_cast<void*>(&m_CUDAResults.DevicePtr()),
-                reinterpret_cast<void*>(&m_CUDACodes.DevicePtr()),
-                reinterpret_cast<void*>(&m_CUDAPopulation0.DevicePtr()),
-                reinterpret_cast<void*>(&m_CUDAStocks.DevicePtr()),
-                reinterpret_cast<void*>(&evolutionSeed),
-        };
-
-        checkCUDAErrors(cuLaunchKernel(Module().m_executeFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-            0,                                                  // shared mem
-            Stream(),                                           // stream
-            &arr[0],                                            // arguments
-            0));
-#elif 0
-        CUDAParameters parameters(m_CUDASettings.DevicePtr(), m_CUDAResults.DevicePtr(), m_CUDACodes.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDAStocks.DevicePtr(), evolutionSeed);
-
-        checkCUDAErrors(cuLaunchKernel(Module().m_executeFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-            0,                                                  // shared mem
-            Stream(),                                           // stream
-            parameters.Parameters(),                            // arguments
-            0));
-#else
         CUDALaunch(m_executeFunctionName, threadsPerBlock, blocksPerGrid, m_CUDASettings.DevicePtr(), m_CUDAResults.DevicePtr(), m_CUDACodes.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDAStocks.DevicePtr(), evolutionSeed);
-#endif
 
         m_CUDAResults.DeviceToHost();
         m_CUDACodes.DeviceToHost();

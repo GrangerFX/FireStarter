@@ -131,8 +131,7 @@ inline bool MoneyEvolveEvaluateStocks(const FireStarterSettings* settings, const
 GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results, FireStarterCode* codes, FireStarterResult* population, MoneyMakerStocks* stocks, const unsigned long long evolutionSeed)
 {
     // Check if the user is trying to abort and quit the application.
-    if (*g_GPUKillSwitch)
-        return;
+    CHECK_GPU_KILL_SWITCH();
 
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -171,8 +170,7 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
     // Evolve the code and data for each pass.
     for (unsigned int pass = 0; pass < settings->m_passes; pass++) {
         // Check if the user is trying to abort and quit the application.
-        if (*g_GPUKillSwitch)
-            return;
+        CHECK_GPU_KILL_SWITCH();
 
         // Evolve the code and data.
         float evolutionScale;
