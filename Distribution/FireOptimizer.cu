@@ -28,8 +28,7 @@ inline bool OptimizeEvaluate(const FireStarterData& data, const float target[], 
 GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int populationCount)
 {
     // Check if the user is trying to abort and quit the application.
-    if (*g_GPUKillSwitch)
-        return;
+    CHECK_GPU_KILL_SWITCH();
 
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;

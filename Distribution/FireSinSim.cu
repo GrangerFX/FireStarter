@@ -5,8 +5,7 @@
 GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, const unsigned long long generation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Check if the user is trying to abort and quit the application.
-    if (*g_GPUKillSwitch)
-        return;
+    CHECK_GPU_KILL_SWITCH();
 
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -27,8 +26,7 @@ GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, co
     SinSimNetwork passNetwork = bestNetwork;
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Check if the user is trying to abort and quit the application.
-        if (*g_GPUKillSwitch)
-            return;
+        CHECK_GPU_KILL_SWITCH();
 
         // Iterate to evolve the data.
         if (passNetwork.age > SINSIM_NETWORK_MAXAGE)

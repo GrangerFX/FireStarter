@@ -793,7 +793,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                         optimizeUnits[0]->ExecuteGenerateOptimize(optimizeState);
                         unsigned int numTradingResults = optimizeState.Settings().m_stocks;
 
-                        std::vector<FireStarterState> bestStates(numOptimize);
+                        FireStarterStates bestStates(numOptimize);
 #if MONEYMAKER_OPTIMIZE_ALL
                         float bestEvolveReturns = MoneyMakerReturns(1.0f - bestEvolveResult); // Remove inversion.
                         std::string bestResturnsText = Format("\nBest Returns[%d]=%7.2f%%\n", bestCount, bestEvolveReturns);
