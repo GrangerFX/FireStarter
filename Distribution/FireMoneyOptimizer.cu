@@ -164,6 +164,10 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, con
 
 GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass)
 {
+    // Check if the user is trying to abort and quit the application.
+    if (*g_GPUKillSwitch)
+        return;
+
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= settings->m_population)

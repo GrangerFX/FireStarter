@@ -14,7 +14,11 @@
 #define GPU_SHARED __shared__
 #define nullptr 0
 
-__device__ int* g_GPUKillSwitch = 0;
+// Define a device-side integer initialized to 0 in global memory
+__device__ int g_KillSwitchValue = 0;
+
+// Initialize g_GPUKillSwitch to point to this safe default location
+__device__ int* g_GPUKillSwitch = &g_KillSwitchValue;
 
 #else
 
@@ -38,7 +42,11 @@ inline int __float_as_int(float x) { union int_float { int i; float f; } u; u.f 
 inline float __uint_as_float(unsigned int x) { union int_float { unsigned int i; float f; } u; u.i = x; return u.f; }
 inline unsigned int __float_as_uint(float x) { union int_float { unsigned int i; float f; } u; u.f = x; return u.i; }
 
-volatile static int* g_GPUKillSwitch = 0;
+// Define a device-side integer initialized to 0 in global memory
+volatile static int g_KillSwitchValue = 0;
+
+// Initialize g_GPUKillSwitch to point to this safe default location
+volatile static int* g_GPUKillSwitch = &g_KillSwitchValue;
 
 #endif
 
