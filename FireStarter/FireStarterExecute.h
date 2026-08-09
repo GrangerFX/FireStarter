@@ -234,6 +234,13 @@ public:
         ExecuteSynchronize();
     } // ExecuteGenerateEvolve
 
+    void ExecuteGenerateOptimize(FireStarterStates& optimizeStates)
+    {
+        for (FireStarterExecute* unit : *this)
+            unit->ExecuteGenerateOptimize(optimizeStates[unit->ExecuteIndex()], false);
+        ExecuteSynchronize();
+    } // ExecuteGenerateOptimize
+
     void ExecuteEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)
     {
         for (FireStarterExecute* unit : *this)
@@ -247,6 +254,13 @@ public:
             unit->ExecuteMoneyEvolve(evolveStates[unit->ExecuteIndex()], bestCodes, false);
         ExecuteSynchronize();
     } // ExecuteMoneyEvolve
+
+    void ExecuteMoneyOptimize(FireStarterStates& optimizeStates, FireStarterState& bestState, FireStarterComplete* complete)
+    {
+        for (FireStarterExecute* unit : *this)
+            unit->ExecuteMoneyOptimize(optimizeStates[unit->ExecuteIndex()], bestState, complete, false);
+        ExecuteSynchronize();
+    } // ExecuteMoneyOptimize
 
     FireStarterUnits(FireStarterManager* manager, size_t numUnits = 1, const std::string& unitName = "FireStarterUnit")
     {

@@ -1313,7 +1313,7 @@ void FireStarterExecute::ExecuteMoneyOptimize(FireStarterState& optimizeState, F
             if (InitPopulation(optimizeState.Settings())) {
                 // Initialize the optimize pass at zero.
                 optimizeState.m_optimize_pass = 0;
-                while (!WillTerminate() && !bestState.Complete() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
+                while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                     // Execute the optimization passes.
                     optimizeState.m_timer.Start();
                     ExecuteMoneyOptimizePass(optimizeState);

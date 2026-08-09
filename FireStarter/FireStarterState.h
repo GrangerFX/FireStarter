@@ -446,6 +446,7 @@ private:
         size_t m_numCodes = 0;
         float m_worstResult = 0.0f;
 
+        size_t Size(void);
         float GetBestResult(void);
         const float GetBestCode(FireStarterCodeVector& bestCode);
         bool AddCode(const FireStarterCode* code, float result);
@@ -456,6 +457,7 @@ private:
     } m_bestCodes;
 
 public:
+    inline size_t Size(void);
     float GetBestResult(void);
     const float GetBestCode(FireStarterCodeVector& bestCode);
     bool AddCode(const FireStarterCode* code, float result);
