@@ -805,17 +805,20 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                         FireStarterSource::AppendSource(bestReturnsText, streamResultsPath);
 #endif
                         for (unsigned int optimize = 0; optimize < numOptimize; optimize += numDevices) {
+                            // Determine the maximum number of parallel optimize devices that are needed.
+                            unsigned int optimizeDevices = MIN(numDevices, numOptimize - optimize);
+
                             // Optimize the evolved code for the current stock.
-                            for (size_t device = 0; device < numDevices; device++) {
+                            for (size_t device = 0; device < optimizeDevices; device++) {
                                 optimizeStates[device].InitState(optimizeSettings, evolveStates[0].m_generation + 1, 0, evolveID, test);
 #if MONEYMAKER_OPTIMIZE_ALL
                                 optimizeStates[device].Settings().m_stock = startStock + optimize + device;
 #endif
                                 optimizeStates[device].CopyCode(bestCode);
                             }
-                            optimizeUnits.ExecuteMoneyOptimize(optimizeStates, bestStates[optimize], complete);
+                            optimizeUnits.ExecuteMoneyOptimize(optimizeStates, bestStates[optimize], complete, optimizeDevices);
 
-                            for (size_t device = 0; device < numDevices; device++) {
+                            for (size_t device = 0; device < optimizeDevices; device++) {
                                 // Output the results.
                                 std::string optimizeText;
                                 if (numTradingResults == 1) {

@@ -248,17 +248,25 @@ public:
         ExecuteSynchronize();
     } // ExecuteEvolve
 
-    void ExecuteMoneyEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)
+    void ExecuteMoneyEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes, unsigned int numDevices = 0)
     {
-        for (FireStarterExecute* unit : *this)
+        if (!numDevices)
+            numDevices = (unsigned int)size();
+        for (unsigned int i = 0; i < numDevices; i++) {
+            FireStarterExecute* unit = (*this)[i];
             unit->ExecuteMoneyEvolve(evolveStates[unit->ExecuteIndex()], bestCodes, false);
+        }
         ExecuteSynchronize();
     } // ExecuteMoneyEvolve
 
-    void ExecuteMoneyOptimize(FireStarterStates& optimizeStates, FireStarterState& bestState, FireStarterComplete* complete)
+    void ExecuteMoneyOptimize(FireStarterStates& optimizeStates, FireStarterState& bestState, FireStarterComplete* complete, unsigned int numDevices = 0)
     {
-        for (FireStarterExecute* unit : *this)
+        if (!numDevices)
+            numDevices = (unsigned int)size();
+        for (unsigned int i = 0; i < numDevices; i++) {
+            FireStarterExecute* unit = (*this)[i];
             unit->ExecuteMoneyOptimize(optimizeStates[unit->ExecuteIndex()], bestState, complete, false);
+        }
         ExecuteSynchronize();
     } // ExecuteMoneyOptimize
 
