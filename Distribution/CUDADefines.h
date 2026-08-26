@@ -21,7 +21,7 @@ __device__ int g_KillSwitchValue = 0;
 __device__ int* g_GPUKillSwitch = &g_KillSwitchValue;
 
 // Macro to check the GPU kill switch and return if it's set
-#define CHECK_GPU_KILL_SWITCH() if (*(volatile int*)g_GPUKillSwitch != 0) return;
+#define GPU_KILL_SWITCH (*(volatile int*)g_GPUKillSwitch != 0)
 
 #else
 
@@ -52,7 +52,7 @@ static int g_KillSwitchValue = 0;
 static int* g_GPUKillSwitch = &g_KillSwitchValue;
 
 // Macro to check the GPU kill switch and return if it's set
-#define CHECK_GPU_KILL_SWITCH() if (*(volatile int*)g_GPUKillSwitch != 0) return;
+#define GPU_KILL_SWITCH (*(volatile int*)g_GPUKillSwitch != 0)
 
 #endif
 

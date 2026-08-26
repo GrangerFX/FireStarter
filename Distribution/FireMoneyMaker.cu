@@ -110,6 +110,8 @@ inline bool MoneyEvolveEvaluateStocks(const FireStarterSettings* settings, const
     unsigned int variation = settings->m_variation + 1;
 
     for (unsigned int session = 0; session < sessions; session++) {
+        if (GPU_KILL_SWITCH)
+            return false;
         unsigned long long sessionSeed = SEED9(session) + seed;
         unsigned int sessionStart = RANDOMMOD(sessionSeed, variation);
         unsigned int sessionDays = settings->m_trading;
@@ -131,7 +133,8 @@ inline bool MoneyEvolveEvaluateStocks(const FireStarterSettings* settings, const
 GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results, FireStarterCode* codes, FireStarterResult* population, MoneyMakerStocks* stocks, const unsigned long long evolutionSeed)
 {
     // Check if the user is trying to abort and quit the application.
-    CHECK_GPU_KILL_SWITCH();
+    if (GPU_KILL_SWITCH)
+        return;
 
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -170,7 +173,8 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
     // Evolve the code and data for each pass.
     for (unsigned int pass = 0; pass < settings->m_passes; pass++) {
         // Check if the user is trying to abort and quit the application.
-        CHECK_GPU_KILL_SWITCH();
+        if (GPU_KILL_SWITCH)
+            return;
 
         // Evolve the code and data.
         float evolutionScale;

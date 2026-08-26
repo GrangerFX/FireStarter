@@ -236,36 +236,45 @@ public:
 
     void ExecuteGenerateOptimize(FireStarterStates& optimizeStates)
     {
-        for (FireStarterExecute* unit : *this)
-            unit->ExecuteGenerateOptimize(optimizeStates[unit->ExecuteIndex()], false);
+        size_t numStates = optimizeStates.size();
+        size_t numUnits = this->size();
+        for (size_t index = 0; index < numStates; index++) {
+            FireStarterExecute* unit = (*this)[index % numUnits];
+            unit->ExecuteGenerateOptimize(optimizeStates[index], false);
+        }
         ExecuteSynchronize();
     } // ExecuteGenerateOptimize
 
     void ExecuteEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)
     {
-        for (FireStarterExecute* unit : *this)
-            unit->ExecuteEvolveGPU(evolveStates[unit->ExecuteIndex()], bestCodes, false);
+        size_t numStates = evolveStates.size();
+        size_t numUnits = this->size();
+        for (size_t index = 0; index < numStates; index++) {
+            FireStarterExecute* unit = (*this)[index % numUnits];
+            unit->ExecuteEvolveGPU(evolveStates[index], bestCodes, false);
+        }
         ExecuteSynchronize();
     } // ExecuteEvolve
 
-    void ExecuteMoneyEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes, unsigned int numDevices = 0)
+    void ExecuteMoneyEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)
     {
-        if (!numDevices)
-            numDevices = (unsigned int)size();
-        for (unsigned int i = 0; i < numDevices; i++) {
-            FireStarterExecute* unit = (*this)[i];
-            unit->ExecuteMoneyEvolve(evolveStates[unit->ExecuteIndex()], bestCodes, false);
+        size_t numStates = evolveStates.size();
+        size_t numUnits = this->size();
+        for (size_t index = 0; index < numStates; index++) {
+            FireStarterExecute* unit = (*this)[index % numUnits];
+            unit->ExecuteMoneyEvolve(evolveStates[index], bestCodes, false);
         }
         ExecuteSynchronize();
     } // ExecuteMoneyEvolve
 
-    void ExecuteMoneyOptimize(FireStarterStates& optimizeStates, FireStarterState& bestState, FireStarterComplete* complete, unsigned int numDevices = 0)
+    void ExecuteMoneyOptimize(FireStarterStates& optimizeStates, FireStarterState& bestState, FireStarterComplete* complete)
     {
-        if (!numDevices)
-            numDevices = (unsigned int)size();
-        for (unsigned int i = 0; i < numDevices; i++) {
-            FireStarterExecute* unit = (*this)[i];
-            unit->ExecuteMoneyOptimize(optimizeStates[unit->ExecuteIndex()], bestState, complete, false);
+        size_t numStates = optimizeStates.size();
+        size_t numUnits = this->size();
+        for (size_t index = 0; index < numStates; index++) {
+            FireStarterExecute* unit = (*this)[index % numUnits];
+            unit->ExecuteGenerateOptimize(optimizeStates[index], false);
+            unit->ExecuteMoneyOptimize(optimizeStates[index], bestState, complete, false);
         }
         ExecuteSynchronize();
     } // ExecuteMoneyOptimize

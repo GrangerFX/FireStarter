@@ -1,19 +1,19 @@
 #pragma once
 #include "MoneyMakerStocks.h"
 
-// Run date: 08/01/26 09:30:35 Pacific Daylight Time
-// Run duration = 150.608388 seconds
+// Run date: 08/26/26 11:44:07 Pacific Daylight Time
+// Run duration = 463.233327 seconds
 // Run test = 0
-// Run generation = 1
+// Run generation = 0
 // Run evolution = 0
-// Run max result = 0.99985176
+// Run max result = 0.99938369
 
 // Run variations = 1
 // Run instructions = 32
 // Run registers = 30
 // Run opcodes = 4
 
-// Run stocks = 1
+// Run stocks = 4
 // Run sessions = 256
 // Run history = 384
 // Run variation = 256
@@ -27,7 +27,7 @@
 // Run streams = 1
 // Run units = 1
 // Run states = 1
-// Run population = 196608
+// Run population = 16384
 // Run generations = 1
 // Run passes = 384
 // Run samples = 15
@@ -44,63 +44,59 @@
 inline float MoneyMakerSolution(MoneyMakerStock& stock)
 {
     float n = 0.0f;
-    float r0 = 0.75704956f;
-    float r1 = -0.92630017f;
-    float r2 = -0.27036074f;
-    float r3 = 0.26260376f;
-    float r4 = 0.27732283f;
-    float r5 = -0.14258401f;
-    float r6 = 0.08169714f;
-    float r7 = 0.63302332f;
-    float r8 = -0.44506016f;
-    float r9 = 0.67114621f;
-    float r10 = -0.40140522f;
-    float r11 = 0.27736554f;
-    float r12 = -0.22825547f;
-    float r13 = 0.36515242f;
-    float r14 = 0.28296751f;
-    float r15 = 0.89736181f;
-    float r16 = -0.08160832f;
-    float r17 = 0.95927006f;
-    float r18 = -0.93500090f;
-    float r19 = 0.23775847f;
-    float r20 = 0.60703427f;
-    float r21 = -0.62293029f;
+    float r0 = -0.79709959f;
+    float r1 = 0.14007784f;
+    float r2 = 0.43271270f;
+    float r3 = -0.86444610f;
+    float r4 = 0.99065614f;
+    float r5 = -0.96328735f;
+    float r6 = -0.55096495f;
+    float r7 = 0.30948189f;
+    float r8 = -0.41280749f;
+    float r9 = -0.73599893f;
+    float r10 = -0.13529176f;
+    float r11 = -0.64560074f;
+    float r12 = 0.06013080f;
+    float r13 = -0.95382369f;
+    float r14 = 0.13389470f;
+    float r15 = 0.27548701f;
+    float r16 = -0.37427714f;
+    float r17 = 0.29901204f;
 
     for (unsigned int d = 0; d < stock.numDays; d++) {
         n = stock[d];
-        n *= r0;
-        r1 = n;
+        r0 = n;
+        n = r1;
         r2 = n;
-        r3 = n;
-        n *= r4;
-        n += r5;
+        n *= r3;
+        r4 = n;
+        n *= r5;
+        n += r6;
         r1 = n;
-        n = r6;
         n = r7;
-        r8 = n;
-        r9 = n;
-        r5 = n;
+        n += r8;
+        n = r7;
+        n = r9;
         r10 = n;
-        r11 = n;
-        r12 = n;
-        r13 = n;
-        n = r14;
+        n *= r11;
+        r6 = n;
+        n *= r12;
+        n += r13;
+        r2 = n;
         r1 = n;
+        r7 = n;
+        n *= r14;
+        n = r13;
+        n += r0;
         n += r15;
+        r6 = n;
         r16 = n;
         n += r17;
-        r18 = n;
-        n += r17;
-        n = r13;
-        r15 = n;
-        r18 = n;
-        r19 = n;
-        n *= r11;
-        n *= r20;
-        n += r3;
-        n *= r7;
-        n += r21;
+        n += r8;
+        r12 = n;
+        n = r4;
+        n += r9;
+        n *= r4;
     }
     return n;
 } // MoneyMakerSolution

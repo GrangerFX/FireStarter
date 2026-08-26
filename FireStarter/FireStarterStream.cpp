@@ -682,13 +682,11 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 #else
         unsigned int numDevices = 1;
 #endif
-
+        
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         // Note: These are used by the units so they must be declared first so they are destroyed last.
         FireStarterSettings evolveSettings(FIRESTARTER_MONEYMAKER);
         FireStarterSettings optimizeSettings(FIRESTARTER_MONEYOPTIMIZE);
-        FireStarterStates evolveStates(numDevices);
-        FireStarterStates optimizeStates(numDevices);
         FireStarterBestCodes bestCodes;
         std::string streamResultsPath = Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str());
         unsigned long long evolveID = 0;
@@ -709,7 +707,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amd.us.txt",  'AMD ', evolveSettings.m_offset);
         MoneyMakerStocks* stocks = stockManager.Stocks();
         unsigned int numStocks = stocks->size();
-
+ 
         // Create the execution unit used to evolve and optimize the best states.
         FireStarterUnits evolveUnits(numDevices, "MoneyEvolve");
         FireStarterUnits optimizeUnits(numDevices, "MoneyOptimize");
@@ -717,284 +715,164 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         optimizeUnits.ExecuteSetStocks(stocks);
         evolveUnits.ExecuteGenerateEvolve(evolveSettings.m_mode); // Generate and compile the evolve code.
 
+        size_t numEvolve = (MONEYMAKER_EVOLVE_COUNT + (numDevices - 1)) / numDevices;
+        size_t numOptimize = (MONEYMAKER_OPTIMIZE_COUNT + (numDevices - 1)) / numDevices;
         unsigned int startStock = evolveSettings.m_stock;
-#if MONEYMAKER_EVOLVE_EACH
-        // Evolve and optimize each stock individually
-        unsigned int numEvolve = evolveSettings.m_stocks;
-        unsigned int numOptimize = 1;
-        evolveSettings.m_stocks = 1;
-        optimizeSettings.m_stocks = 1;
-#if MONEYMAKER_OPTIMIZE_EACH
-        // Optimize the entire trading and variation ranges in a single session.
-        optimizeSettings.m_stocks = 1;
-#endif
-#elif MONEYMAKER_OPTIMIZE_EACH
-        // Optimize each stock individually.
-        unsigned int numEvolve = 1;
-        unsigned int numOptimize = optimizeSettings.m_stocks;
-        optimizeSettings.m_stocks = 1;
-#else
-        unsigned int numEvolve = 1;
-        unsigned int numOptimize = MONEYMAKER_OPTIMIZE_COUNT;
-#endif
 
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             unsigned long long test = FIRESTARTER_START_TEST + t;
+            FireStarterStates evolveStates(numEvolve);
+            FireStarterStates optimizeStates(numOptimize);
 
-            for (unsigned int evolve = 0; (evolve < numEvolve) && !WillTerminate(); evolve++) {
-                // Initialize the states for the current test.
-                evolveSettings.m_stock = startStock;
-                evolveStates.InitStates(evolveSettings, 0, evolveID, test);
+            // Initialize the states for the current test.
+            evolveSettings.m_stock = startStock;
+            evolveStates.InitStates(evolveSettings, 0, evolveID, test);
 
-                // Initialize the evolve state's best codes
-                bestCodes.InitBestCodes(evolveSettings);
+            // Initialize the evolve state's best codes
+            bestCodes.InitBestCodes(evolveSettings);
 
-                // Evolve the current test.
-                while (!WillTerminate() && !evolveStates.Complete()) {
-                    // Execute the initial GPU evolve.
-                    evolveUnits.ExecuteMoneyEvolve(evolveStates, bestCodes);
-                    if (WillTerminate())
-                        break;
+            // Exit after a set number of generations.
+            if (WillTerminate())
+                break;
+            // Execute the initial GPU evolve.
+            evolveUnits.ExecuteMoneyEvolve(evolveStates, bestCodes);
+            if (WillTerminate())
+                break;
 
-                    std::string evolveText;
-                    double duration = evolveStates.Duration();
-                    double runDuration = evolveStates.RunDuration();
-                    float evolveResult = bestCodes.GetBestResult();
+            std::string evolveText;
+            double duration = evolveStates.Duration();
+            double runDuration = evolveStates.RunDuration();
+            float evolveResult = bestCodes.GetBestResult();
 #if MONEYMAKER_WINS
-                    float evolveReturns = (1.0f - evolveResult) * 100.0f; // Remove inversion.
+            float evolveReturns = (1.0f - evolveResult) * 100.0f; // Remove inversion.
 #else
-                    float evolveReturns = MoneyMakerReturns(1.0f - evolveResult); // Remove inversion.
+            float evolveReturns = MoneyMakerReturns(1.0f - evolveResult); // Remove inversion.
 #endif
-                    if (evolveSettings.m_stocks == 1) {
-                        const MoneyMakerStock& stock = stocks->Stock(evolveSettings.m_stock % numStocks);
-                        char* symbol = (char*)&stock.symbol;
-                        evolveText += Format("%c%c%c%c:  ", symbol[3], symbol[2], symbol[1], symbol[0]);
-                    }
-
-                    evolveText += Format("Seed: %u  Test: %3llu  Generation=%3llu  Evolve Returns=%7.2f%%  Duration: %7.1f  Run Duration: %7.1f\n", evolveSettings.m_evolveSeed, test, evolveStates[0].m_generation, evolveReturns, duration, runDuration);
-                    FireStarterSource::AppendSource(evolveText, streamResultsPath);
-
-                    // Get the best code to optimize.
-                    unsigned int bestCount = 0;
-                    float bestEvolveResult = 0.0f;
-#if MONEYMAKER_OPTIMIZE_ALL
-                    unsigned int optimizeCount = MONEYMAKER_OPTIMIZE_COUNT;
-#else
-                    unsigned int optimizeCount = MONEYMAKER_OPTIMIZE_COUNT;
-#endif
-                    if (optimizeCount > 1)
-                        evolveText += "\n";
-                    while (!WillTerminate() && ((bestEvolveResult = bestCodes.GetBestResult()) != 0.0f) && (optimizeCount > 0)) {
-                        FireStarterCodeVector bestCode(optimizeSettings);
-                        bestCodes.GetBestCode(bestCode);
-
-                        // Compile the optimize code asynchronously.
-                        for (size_t device = 0; device < numDevices; device++) {
-                            optimizeStates[device].InitState(optimizeSettings, evolveStates[0].m_generation + 1, 0, evolveID, test);
-                            optimizeStates[device].CopyCode(bestCode);
-                        }
-                        optimizeUnits.ExecuteGenerateOptimize(optimizeStates);
-
-                        unsigned int numTradingResults = evolveSettings.m_stocks;
-                        FireStarterStates bestStates(numOptimize);
-#if MONEYMAKER_OPTIMIZE_ALL
-                        float bestEvolveReturns = MoneyMakerReturns(1.0f - bestEvolveResult); // Remove inversion.
-                        std::string bestReturnsText = Format("\nBest Returns[%d]=%7.2f%%\n", bestCount, bestEvolveReturns);
-                        FireStarterSource::AppendSource(bestReturnsText, streamResultsPath);
-#endif
-                        for (unsigned int optimize = 0; optimize < numOptimize; optimize += numDevices) {
-                            // Determine the maximum number of parallel optimize devices that are needed.
-                            unsigned int optimizeDevices = MIN(numDevices, numOptimize - optimize);
-
-                            // Optimize the evolved code for the current stock.
-                            for (size_t device = 0; device < optimizeDevices; device++) {
-                                optimizeStates[device].InitState(optimizeSettings, evolveStates[0].m_generation + 1, 0, evolveID, test);
-#if MONEYMAKER_OPTIMIZE_ALL
-                                optimizeStates[device].Settings().m_stock = startStock + optimize + device;
-#endif
-                                optimizeStates[device].CopyCode(bestCode);
-                            }
-                            optimizeUnits.ExecuteMoneyOptimize(optimizeStates, bestStates[optimize], complete, optimizeDevices);
-
-                            for (size_t device = 0; device < optimizeDevices; device++) {
-                                // Output the results.
-                                std::string optimizeText;
-                                if (numTradingResults == 1) {
-                                    char* symbol = (char*)&stocks->Stock(optimizeStates[device].Settings().m_stock).symbol;
-                                    optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
-                                }
-
-                                float optimizeResult = optimizeStates[device].MaxResults();
-                                float bestResult = bestStates[optimize + device].MaxResults();
-    #if MONEYMAKER_WINS
-                                float optimizeReturns = (1.0f - optimizeResult) * 100.0f; // Remove inversion.
-                                float bestReturns = (1.0f - bestResult) * 100.0f; // Remove inversion.
-    #else
-                                float optimizeReturns = MoneyMakerReturns(1.0f - optimizeResult); // Remove inversion.
-                                float bestReturns = MoneyMakerReturns(1.0f - bestResult); // Remove inversion.
-    #endif
-                                double curDuration = evolveStates.Duration();
-                                double optimizeDuration = curDuration - duration;
-                                duration = curDuration;
-                                runDuration = bestStates[optimize + device].RunDuration();
-
-    #if MONEYMAKER_OPTIMIZE_ALL
-                                optimizeText += Format("Optimize Returns=%7.2f%%  Best Returns=%7.2f%%  Duration: %7.1f  Run Duration: %7.1f", optimizeReturns, bestReturns, optimizeDuration, runDuration);
-                                if (optimizeResult == bestResult)
-                                    optimizeText += " *******";
-                                optimizeText += "\n";
-    #else
-                                optimizeText += Format("Optimize Returns=%7.2f%%  Optimize Duration: %7.1f  Run Duration: %7.1f  ", optimizeReturns, optimizeDuration, runDuration);
-                                optimizeText += "\n";
-    #endif
-
-    #if 0
-                                unsigned int numTests = 10;
-                                for (unsigned int i = 0; i <= numTests; i++) {
-                                    unsigned int testStartDay, testNumDays;
-                                    // Test the trading on the same stocks used for optimization.
-                                    if (i == numTests) {
-                                        testStartDay = optimizeSettings.m_variation + optimizeSettings.m_trading;
-                                        testNumDays = optimizeSettings.m_validation;
-                                    } else {
-                                        testStartDay = (optimizeSettings.m_variation * i) / (numTests - 1);
-                                        testNumDays = optimizeSettings.m_trading;
-                                    }
-                                    optimizeUnits[device]->ExecuteMoneyTest(optimizeStates[device], testStartDay, testNumDays, 0);
-                                    const MoneyMakerStocks* tradingResults = optimizeUnits[device]->GetTradingResults();
-                                    if (tradingResults) {
-                                        float tradingAverage = 0.0f;
-                                        float differenceAverage = 0.0f;
-                                        float tradingWinsAverage = 0.0f;
-                                        for (unsigned int tradeIndex = 0; tradeIndex < numTradingResults; tradeIndex++) {
-                                            unsigned int stockIndex = optimizeStates[device].Settings().m_stock + tradeIndex;
-                                            const MoneyMakerStock& stock = stocks->Stock(stockIndex);
-                                            const MoneyMakerStock& tester = tradingResults->Stock(stockIndex);
-
-                                            if (numTradingResults > 1) {
-                                                char* symbol = (char*)&stock.symbol;
-                                                optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
-                                            }
-
-                                            unsigned int tradeFirstDay = testStartDay;
-                                            unsigned int tradeLastDay = testStartDay + testNumDays;
-                                            float tradeFirstValue = stock[tradeFirstDay];
-                                            float tradeLastValue = stock[tradeLastDay - 1];
-                                            float tradingProfit = tradeLastValue - tradeFirstValue;
-                                            float tradingPercent = tradingProfit / tradeFirstValue;
-                                            float tradingDailyPercent = tradingPercent / (testNumDays - 1);
-                                            float stockTradeReturns = MoneyMakerReturns(tradingDailyPercent);
-
-                                            float tradingResult = tester.tradingResult;
-                                            if (tradingResult) {
-                                                float tradingWins = 100.0f * tester.tradingWins;
-                                                float tradingReturns = MoneyMakerReturns(tradingResult);
-                                                float tradingDifference = tradingReturns - stockTradeReturns;
-                                                tradingAverage += tradingReturns / numOptimize;
-                                                differenceAverage += tradingDifference / numOptimize;
-                                                tradingWinsAverage += tradingWins / numOptimize;
-                                                if (i == numTests)
-                                                    optimizeText += "Validation: ";
-                                                else
-                                                    optimizeText += Format("Trading %u: ", i);
-                                                optimizeText += Format("Wins=%7.2f%%  Returns=%7.2f%%  Stock=%7.2f%%  Difference==%7.2f%%   ", tradingWins, tradingReturns, stockTradeReturns, tradingDifference);
-                                            } else
-                                                optimizeText += "Trading Failed!";
-                                            optimizeText += "\n";
-                                        }
-                                        if (numTradingResults > 1)
-                                            optimizeText += Format("Average Returns=%7.2f%%  Average Difference=%7.2f%%  Average Trading Wins=%7.2f%%  Average Validation Wins=%7.2f%%\n\n", tradingAverage, differenceAverage, 100.0f * tradingWinsAverage);
-                                    }
-                                }
-    #else
-                                optimizeUnits[device]->ExecuteMoneyTest(optimizeStates[device], optimizeSettings.m_variation, optimizeSettings.m_trading, optimizeSettings.m_validation);
-                                const MoneyMakerStocks* tradingResults = optimizeUnits[device]->GetTradingResults();
-                                if (tradingResults) {
-                                    float tradingAverage = 0.0f;
-                                    float differenceAverage = 0.0f;
-                                    float tradingWinsAverage = 0.0f;
-                                    for (unsigned int tradeIndex = 0; tradeIndex < numTradingResults; tradeIndex++) {
-                                        unsigned int stockIndex = optimizeStates[device].Settings().m_stock + tradeIndex;
-                                        const MoneyMakerStock& stock = stocks->Stock(stockIndex);
-                                        const MoneyMakerStock& tester = tradingResults->Stock(stockIndex);
-
-                                        if (numTradingResults > 1) {
-                                            char* symbol = (char*)&stock.symbol;
-                                            optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
-                                        }
-
-                                        unsigned int tradingDays = optimizeSettings.m_trading;
-                                        unsigned int tradeFirstDay = optimizeSettings.m_variation;
-                                        unsigned int tradeLastDay = tradeFirstDay + tradingDays;
-                                        unsigned int validationDays = optimizeSettings.m_validation;
-                                        unsigned int validationFirstDay = tradeLastDay;
-                                        unsigned int validationLastDay = tradeLastDay + validationDays;
-                                        float tradeFirstValue = stock[tradeFirstDay];
-                                        float tradeLastValue = stock[tradeLastDay - 1];
-                                        float validationFirstValue = stock[validationFirstDay];
-                                        float validationLastValue = stock[validationLastDay - 1];
-                                        float tradingProfit = tradeLastValue - tradeFirstValue;
-                                        float tradingPercent = tradingProfit / tradeFirstValue;
-                                        float tradingDailyPercent = tradingPercent / (tradingDays - 1);
-                                        float validationProfit = validationLastValue - validationFirstValue;
-                                        float validationPercent = validationProfit / validationFirstValue;
-                                        float validationDailyPercent = validationPercent / (validationDays - 1);
-                                        float stockTradeReturns = MoneyMakerReturns(tradingDailyPercent);
-                                        float stockValidationReturns = MoneyMakerReturns(validationDailyPercent);
-
-                                        float tradingResult = tester.tradingResult;
-                                        if (tradingResult) {
-                                            float tradingWins = 100.0f * tester.tradingWins;
-                                            float tradingReturns = MoneyMakerReturns(tradingResult);
-                                            float tradingDifference = tradingReturns - stockTradeReturns;
-                                            tradingAverage += tradingReturns / numOptimize;
-                                            differenceAverage += tradingDifference / numOptimize;
-                                            tradingWinsAverage += tradingWins / numOptimize;
-                                            optimizeText += Format("Trading: Wins=%7.2f%%  Returns=%7.2f%%  Stock=%7.2f%%  Difference==%7.2f%%   ", tradingWins, tradingReturns, stockTradeReturns, tradingDifference);
-
-                                            float validationResult = tester.validationResult;
-                                            if (validationResult) {
-                                                float validationWins = 100.0f * tester.validationWins;
-                                                float validationReturns = MoneyMakerReturns(validationResult);
-                                                float validationDifference = validationReturns - stockValidationReturns;
-                                                optimizeText += Format("Validation: Wins=%7.2f%%  Returns=%7.2f%%  Stock=%7.2f%%  Difference==%7.2f%%   ", validationWins, validationReturns, stockValidationReturns, validationDifference);
-                                            } else
-                                                optimizeText += Format("Validation Failed!");
-
-                                        } else
-                                            optimizeText += "Trading Failed!";
-                                        optimizeText += "\n";
-                                    }
-                                    if (numTradingResults > 1)
-                                        optimizeText += Format("Average Returns=%7.2f%%  Average Difference=%7.2f%%  Average Trading Wins=%7.2f%%  Average Validation Wins=%7.2f%%\n\n", tradingAverage, differenceAverage, 100.0f * tradingWinsAverage);
-                                }
-    #endif
-                                FireStarterSource::AppendSource(optimizeText, streamResultsPath);
-                            }
-
-                            // Save the best state. Note: TODO: Output all evolve and optimize states?
-    #if FIRESTARTER_SAVE_BESTSTATE
-                            if ((evolve == 0) && (bestStates[0].m_optimizeValid))
-                                complete->CompleteSaveResults(bestStates[0]);
-    #endif
-                            bestCount++;
-                            optimizeCount--;
-                        }
-                    }
-                    startStock += numDevices;
-
-                    // Exit after a set number of generations.
-                    if (++evolveStates[0].m_generation == evolveSettings.m_generations)
-                        break;
-                }
+            if (evolveSettings.m_stocks == 1) {
+                const MoneyMakerStock& stock = stocks->Stock(evolveSettings.m_stock % numStocks);
+                char* symbol = (char*)&stock.symbol;
+                evolveText += Format("%c%c%c%c:  ", symbol[3], symbol[2], symbol[1], symbol[0]);
             }
-            
-#if 0
-            // Increment the evolve ID to make every evolution unique.
-            // This will unfairly benefit some evolutions over others but create more opportumities for success.
-            evolveID++;
+
+            evolveText += Format("Seed: %u  Test: %3llu  Generation=%3llu  Evolve Returns=%7.2f%%  Duration: %7.1f  Run Duration: %7.1f\n", evolveSettings.m_evolveSeed, test, evolveStates[0].m_generation, evolveReturns, duration, runDuration);
+            FireStarterSource::AppendSource(evolveText, streamResultsPath);
+                    
+            // Get the best code to optimize.
+            float bestEvolveResult = 0.0f;
+            if (numOptimize > 1)
+                evolveText += "\n";
+
+            optimizeStates.InitStates(optimizeSettings, 0, optimizeID, test);
+            std::vector<float> bestEvolveResults(numOptimize, 0.0f);
+            for (size_t i = 0; i < numOptimize; i++) {
+                FireStarterCodeVector bestCode;
+                bestEvolveResults[i] = bestCodes.GetBestCode(bestCode);
+                optimizeStates[i].CopyCode(bestCode);
+            }
+            optimizeUnits.ExecuteGenerateOptimize(optimizeStates);
+
+            FireStarterState bestState = FireStarterState(optimizeSettings);
+
+            optimizeUnits.ExecuteMoneyOptimize(optimizeStates, bestState, complete);
+
+            for (size_t optimize = 0; optimize < numOptimize; optimize++) {
+                // Output the results.
+                std::string optimizeText;
+                if (evolveSettings.m_stocks == 1) {
+                    char* symbol = (char*)&stocks->Stock(optimizeStates[optimize].Settings().m_stock).symbol;
+                    optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
+                }
+
+                float optimizeResult = optimizeStates[optimize].MaxResults();
+                float bestResult = bestState.MaxResults();
+#if MONEYMAKER_WINS
+                float optimizeReturns = (1.0f - optimizeResult) * 100.0f; // Remove inversion.
+                float bestReturns = (1.0f - bestResult) * 100.0f; // Remove inversion.
+#else
+                float optimizeReturns = MoneyMakerReturns(1.0f - optimizeResult); // Remove inversion.
+                float bestReturns = MoneyMakerReturns(1.0f - bestResult); // Remove inversion.
+#endif
+                double curDuration = evolveStates.Duration();
+                double optimizeDuration = curDuration - duration;
+                duration = curDuration;
+                runDuration = bestState.RunDuration();
+
+                optimizeText += Format("Optimize Returns=%7.2f%%  Optimize Duration: %7.1f  Run Duration: %7.1f  ", optimizeReturns, optimizeDuration, runDuration);
+                optimizeText += "\n";
+
+#if MONEYMAKER_TEST_RESULTS
+                // Note: This is not multi-gpu but is fast.
+                optimizeUnits[0]->ExecuteMoneyTest(optimizeStates[state], optimizeSettings.m_variation, optimizeSettings.m_trading, optimizeSettings.m_validation);
+                const MoneyMakerStocks* tradingResults = optimizeUnits[0]->GetTradingResults();
+                if (tradingResults) {
+                    float tradingAverage = 0.0f;
+                    float differenceAverage = 0.0f;
+                    float tradingWinsAverage = 0.0f;
+                    for (unsigned int tradeIndex = 0; tradeIndex < numTradingResults; tradeIndex++) {
+                        unsigned int stockIndex = optimizeStates[state].Settings().m_stock + tradeIndex;
+                        const MoneyMakerStock& stock = stocks->Stock(stockIndex);
+                        const MoneyMakerStock& tester = tradingResults->Stock(stockIndex);
+
+                        if (numTradingResults > 1) {
+                            char* symbol = (char*)&stock.symbol;
+                            optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
+                        }
+
+                        unsigned int tradingDays = optimizeSettings.m_trading;
+                        unsigned int tradeFirstDay = optimizeSettings.m_variation;
+                        unsigned int tradeLastDay = tradeFirstDay + tradingDays;
+                        unsigned int validationDays = optimizeSettings.m_validation;
+                        unsigned int validationFirstDay = tradeLastDay;
+                        unsigned int validationLastDay = tradeLastDay + validationDays;
+                        float tradeFirstValue = stock[tradeFirstDay];
+                        float tradeLastValue = stock[tradeLastDay - 1];
+                        float validationFirstValue = stock[validationFirstDay];
+                        float validationLastValue = stock[validationLastDay - 1];
+                        float tradingProfit = tradeLastValue - tradeFirstValue;
+                        float tradingPercent = tradingProfit / tradeFirstValue;
+                        float tradingDailyPercent = tradingPercent / (tradingDays - 1);
+                        float validationProfit = validationLastValue - validationFirstValue;
+                        float validationPercent = validationProfit / validationFirstValue;
+                        float validationDailyPercent = validationPercent / (validationDays - 1);
+                        float stockTradeReturns = MoneyMakerReturns(tradingDailyPercent);
+                        float stockValidationReturns = MoneyMakerReturns(validationDailyPercent);
+
+                        float tradingResult = tester.tradingResult;
+                        if (tradingResult) {
+                            float tradingWins = 100.0f * tester.tradingWins;
+                            float tradingReturns = MoneyMakerReturns(tradingResult);
+                            float tradingDifference = tradingReturns - stockTradeReturns;
+                            tradingAverage += tradingReturns / numOptimize;
+                            differenceAverage += tradingDifference / numOptimize;
+                            tradingWinsAverage += tradingWins / numOptimize;
+                            optimizeText += Format("Trading: Wins=%7.2f%%  Returns=%7.2f%%  Stock=%7.2f%%  Difference==%7.2f%%   ", tradingWins, tradingReturns, stockTradeReturns, tradingDifference);
+
+                            float validationResult = tester.validationResult;
+                            if (validationResult) {
+                                float validationWins = 100.0f * tester.validationWins;
+                                float validationReturns = MoneyMakerReturns(validationResult);
+                                float validationDifference = validationReturns - stockValidationReturns;
+                                optimizeText += Format("Validation: Wins=%7.2f%%  Returns=%7.2f%%  Stock=%7.2f%%  Difference==%7.2f%%   ", validationWins, validationReturns, stockValidationReturns, validationDifference);
+                            } else
+                                optimizeText += Format("Validation Failed!");
+
+                        } else
+                            optimizeText += "Trading Failed!";
+                        optimizeText += "\n";
+                    }
+                    if (numTradingResults > 1)
+                        optimizeText += Format("Average Returns=%7.2f%%  Average Difference=%7.2f%%  Average Trading Wins=%7.2f%%  Average Validation Wins=%7.2f%%\n\n", tradingAverage, differenceAverage, 100.0f * tradingWinsAverage);
+                }
+#endif
+                FireStarterSource::AppendSource(optimizeText, streamResultsPath);
+            }
+
+            // Save the best state. Note: TODO: Output all evolve and optimize states?
+#if FIRESTARTER_SAVE_BESTSTATE
+            if (bestState.m_optimizeValid)
+                complete->CompleteSaveResults(bestState);
 #endif
         }
 

@@ -23,7 +23,8 @@ inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterD
 GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount)
 {
     // Check if the user is trying to abort and quit the application.
-    CHECK_GPU_KILL_SWITCH();
+    if (GPU_KILL_SWITCH)
+        return;
 
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -73,7 +74,8 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Check if the user is trying to abort and quit the application.
-        CHECK_GPU_KILL_SWITCH();
+        if (GPU_KILL_SWITCH)
+            return;
 
         // Evolve the code and data.
         float evolutionScale;

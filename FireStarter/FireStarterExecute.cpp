@@ -1209,7 +1209,6 @@ bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& optimizeState
         // Generate the evaluate code. Note: The same code is used by all GPU threads.
         optimizeState.m_evaluateCode.clear();
         m_executeGenerate.GenerateEvaluate(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode);
-
         return GenerateOptimize(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode, optimizeState.PassMode());
     }, sync);
     return sync ? result : true;
@@ -1287,6 +1286,12 @@ void FireStarterExecute::ExecuteMoneyEvolve(FireStarterState& evolveState, FireS
 void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync)
 {
     Dispatch([this, complete, &optimizeState, &bestState] {
+        if (!Module().m_executeFunction || optimizeState.m_evaluateCode.empty()) {
+            // Generate the evaluate code. Note: The same code is used by all GPU threads.
+            optimizeState.m_evaluateCode.clear();
+            m_executeGenerate.GenerateEvaluate(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode);
+            GenerateOptimize(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode, optimizeState.PassMode());
+        }
         if (Module().m_executeFunction) {
             if (InitPopulation(optimizeState.Settings())) {
                 while (!WillTerminate() && !bestState.Complete() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {

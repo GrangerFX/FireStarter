@@ -108,28 +108,6 @@ inline bool MoneyOptimizeEvaluate(const FireStarterSettings* settings, const Fir
 } // MoneyOptimizeEvaluate
 #endif
 
-#if MONEYMAKER_OPTIMIZE_SINGLE
-inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, const FireStarterData& data, const MoneyMakerStocks* stocks, unsigned long long seed, float& result)
-{
-    float sessionsResult = 0.0f;
-    unsigned int sessions = settings->m_stocks;
-    unsigned int sessionStart = settings->m_variation;
-    unsigned int sessionDays = settings->m_trading;
-
-    for (unsigned int session = 0; session < sessions; session++) {
-        float stockResult = settings->m_startResult;
-
-        if (!MoneyOptimizeEvaluate(settings, data, stocks->Stock(session), sessionStart, sessionDays, stockResult))
-            return false;
-        sessionsResult += stockResult / sessions;
-    }
-    if (sessionsResult < result) {
-        result = sessionsResult;
-        return true;
-    }
-    return false;
-} // MoneyOptimizeEvaluateStocks
-#else
 inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, const FireStarterData& data, const MoneyMakerStocks* stocks, unsigned long long seed, float& result)
 {
     float sessionsResult = 0.0f;
@@ -139,6 +117,10 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, con
     unsigned int trading = settings->m_trading;
 
     for (unsigned int session = 0; session < sessions; session++) {
+        // Check if the user is trying to abort and quit the application.
+        if (GPU_KILL_SWITCH)
+            return false;
+
         unsigned long long sessionSeed = SEED9(session) + seed;
         unsigned int sessionStart = RANDOMMOD(sessionSeed, variation);
         unsigned int sessionDays = trading;
@@ -146,11 +128,7 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, con
 
         if (!MoneyOptimizeEvaluate(settings, data, stocks->Stock(stock + settings->m_stock), sessionStart, sessionDays, stockResult))
             return false;
-#if 0
-        sessionsResult = MAX(sessionsResult, stockResult);
-#else
         sessionsResult += stockResult / sessions;
-#endif
         if (++stock == settings->m_stocks)
             stock = 0;
     }
@@ -160,12 +138,12 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, con
     }
     return false;
 } // MoneyOptimizeEvaluateStocks
-#endif
 
 GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass)
 {
     // Check if the user is trying to abort and quit the application.
-    CHECK_GPU_KILL_SWITCH();
+    if (GPU_KILL_SWITCH)
+        return;
 
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -214,6 +192,10 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
 
     // Iterate to optimize the data.
     for (unsigned int i = 0; i < settings->m_iterations; i++) {
+        // Check if the user is trying to abort and quit the application.
+        if (GPU_KILL_SWITCH)
+            return;
+
         unsigned int d = RANDOMMOD(memberSeed, registers);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
