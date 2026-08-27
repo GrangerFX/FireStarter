@@ -765,21 +765,26 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                 evolveText += "\n";
 
             optimizeStates.InitStates(optimizeSettings, 0, optimizeID, test);
-            std::vector<float> bestEvolveResults(numOptimize, 0.0f);
+            std::vector<float> bestEvolveResults(numOptimize, 0.0f); // Used for debugging only.
             for (size_t i = 0; i < numOptimize; i++) {
                 FireStarterCodeVector bestCode;
                 bestEvolveResults[i] = bestCodes.GetBestCode(bestCode);
                 optimizeStates[i].CopyCode(bestCode);
             }
-            optimizeUnits.ExecuteGenerateOptimize(optimizeStates);
 
+            // Optimize all the units using all available GPU devices.
             FireStarterState bestState = FireStarterState(optimizeSettings);
-
             optimizeUnits.ExecuteMoneyOptimize(optimizeStates, bestState, complete);
+
+            // Calculate the optimize duration.
+            double curDuration = evolveStates.Duration();
+            double optimizeDuration = curDuration - duration;
+            duration = curDuration;
+            runDuration = bestState.RunDuration();
+            std::string optimizeText = Format("Optimize Duration: %7.1f  Run Duration: %7.1f\n", optimizeDuration, runDuration);
 
             for (size_t optimize = 0; optimize < numOptimize; optimize++) {
                 // Output the results.
-                std::string optimizeText;
                 if (evolveSettings.m_stocks == 1) {
                     char* symbol = (char*)&stocks->Stock(optimizeStates[optimize].Settings().m_stock).symbol;
                     optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
@@ -794,28 +799,23 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                 float optimizeReturns = MoneyMakerReturns(1.0f - optimizeResult); // Remove inversion.
                 float bestReturns = MoneyMakerReturns(1.0f - bestResult); // Remove inversion.
 #endif
-                double curDuration = evolveStates.Duration();
-                double optimizeDuration = curDuration - duration;
-                duration = curDuration;
-                runDuration = bestState.RunDuration();
 
-                optimizeText += Format("Optimize Returns=%7.2f%%  Optimize Duration: %7.1f  Run Duration: %7.1f  ", optimizeReturns, optimizeDuration, runDuration);
-                optimizeText += "\n";
+                optimizeText += Format("Optimize Returns=%7.2f%%\n", optimizeReturns);
 
 #if MONEYMAKER_TEST_RESULTS
                 // Note: This is not multi-gpu but is fast.
-                optimizeUnits[0]->ExecuteMoneyTest(optimizeStates[state], optimizeSettings.m_variation, optimizeSettings.m_trading, optimizeSettings.m_validation);
+                optimizeUnits[0]->ExecuteMoneyTest(optimizeStates[optimize], optimizeSettings.m_variation, optimizeSettings.m_trading, optimizeSettings.m_validation);
                 const MoneyMakerStocks* tradingResults = optimizeUnits[0]->GetTradingResults();
                 if (tradingResults) {
                     float tradingAverage = 0.0f;
                     float differenceAverage = 0.0f;
                     float tradingWinsAverage = 0.0f;
-                    for (unsigned int tradeIndex = 0; tradeIndex < numTradingResults; tradeIndex++) {
-                        unsigned int stockIndex = optimizeStates[state].Settings().m_stock + tradeIndex;
+                    for (unsigned int tradeIndex = 0; tradeIndex < evolveSettings.m_stocks; tradeIndex++) {
+                        unsigned int stockIndex = optimizeStates[optimize].Settings().m_stock + tradeIndex;
                         const MoneyMakerStock& stock = stocks->Stock(stockIndex);
                         const MoneyMakerStock& tester = tradingResults->Stock(stockIndex);
 
-                        if (numTradingResults > 1) {
+                        if (evolveSettings.m_stocks > 1) {
                             char* symbol = (char*)&stock.symbol;
                             optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
                         }
@@ -862,7 +862,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             optimizeText += "Trading Failed!";
                         optimizeText += "\n";
                     }
-                    if (numTradingResults > 1)
+                    if (evolveSettings.m_stocks > 1)
                         optimizeText += Format("Average Returns=%7.2f%%  Average Difference=%7.2f%%  Average Trading Wins=%7.2f%%  Average Validation Wins=%7.2f%%\n\n", tradingAverage, differenceAverage, 100.0f * tradingWinsAverage);
                 }
 #endif

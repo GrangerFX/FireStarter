@@ -13,14 +13,14 @@
 #define MONEYMAKER_VALIDATION       64          // Days used for prediction validation
 #define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_TRADING + MONEYMAKER_VALIDATION)   // Days of stock history data
 #define MONEYMAKER_STOCK            0           // Starting stock
-#define MONEYMAKER_STOCKS           4           // Stocks with history data
+#define MONEYMAKER_STOCKS           1           // Stocks with history data
 #define MONEYMAKER_SESSIONS         256         // Number of trading sessions
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
 #define MONEYMAKER_ADDEDVALUE       1           // Set to 1 to compare the value of the predicted trades vs a buy-and-hold strategy.
 #define MONEYMAKER_WINS             0           // Set to 1 to grade by wins vs losses. Set to 0 for profits.
 #define MONEYMAKER_EVOLVE_COUNT     1           // The number of times to evolve each stock to generate bestCodes.
-#define MONEYMAKER_OPTIMIZE_COUNT   4           // The number of best evolved codes to optimize.
-#define MONEYMAKER_TEST_RESULTS     0           // Set to 1 to test the results to see how they perform on unseen data.
+#define MONEYMAKER_OPTIMIZE_COUNT   1           // The number of best evolved codes to optimize.
+#define MONEYMAKER_TEST_RESULTS     1           // Set to 1 to test the results to see how they perform on unseen data.
 
 #define FIRESTARTER_MULTI_GPU       0           // Use all NVIDIA GPUs to speed processing of each generation.
 #define FIRESTARTER_SIMULATE_GPU    0           // Simulate the GPU on the CPU for testing and debugging.

@@ -942,6 +942,7 @@ bool FireStarterExecute::GenerateEvolve(unsigned int mode)
 bool FireStarterExecute::GenerateOptimize(const FireStarterSettings& settings, const FireStarterCodeGenerate* code, std::string& evaluateCode, unsigned int mode)
 {
     // Load the base Optimizer code into memory.
+    // Note: The same execute code is used by all GPU device units.
     m_executeProgramName = FireStarterSettings::OptimizeProgramName(mode);
     m_executeFunctionName = FireStarterSettings::OptimizeFunctionName(mode);
     m_executeTestName = FireStarterSettings::OptimizeTestName(mode);
@@ -952,7 +953,7 @@ bool FireStarterExecute::GenerateOptimize(const FireStarterSettings& settings, c
         }
     }
 
-    // Generate the evaluate code. Note: The same code is used by all GPU threads.
+    // Generate the evaluate code.
     evaluateCode.clear();
     m_executeGenerate.GenerateEvaluate(settings, code, evaluateCode);
 
@@ -1209,7 +1210,7 @@ bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& optimizeState
         // Generate the evaluate code. Note: The same code is used by all GPU threads.
         optimizeState.m_evaluateCode.clear();
         m_executeGenerate.GenerateEvaluate(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode);
-        return GenerateOptimize(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode, optimizeState.PassMode());
+        result = GenerateOptimize(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode, optimizeState.PassMode());
     }, sync);
     return sync ? result : true;
 } // ExecuteGenerateOptimize
