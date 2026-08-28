@@ -667,6 +667,10 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
                     validResult = false;
                 }
             }
+
+            // Check if the user quit the app.
+            if (WillTerminate())
+                return;
         }
 
         // Resort the variation order with the highest invalidation count first.
@@ -691,8 +695,7 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
         state.m_oldResult = oldResult;
         state.m_bestResult = state.MaxResults();
         state.m_optimizeValid = validResult;
-    }
-    else
+    } else
         ExecuteOptimizePasses(state);
 } // ExecuteSmartOptimizePasses
 
@@ -756,6 +759,10 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
             // Synchronize all GPU threads and results.
             SynchronizeContext();
         }
+
+        // Check if the user quit the app.
+        if (WillTerminate())
+            break;  // Capture as much data as possible even if terminated.
     }
 
     if (m_simulateGPU) {
@@ -786,13 +793,16 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         }
     }
 
-    // Store the state's best result.
-    state.InitResult(settings, hostPopulation, minIndex);
+    // A zero result indicates that the program was terminated during the first pass.
+    if (minResult > 0.0f) {
+        // Store the state's best result.
+        state.InitResult(settings, hostPopulation, minIndex);
 
-    // Calculate the state's max result.
-    state.m_oldResult = state.m_bestResult;
-    state.m_bestResult = minResult;
-    state.m_optimizeValid = true;
+        // Calculate the state's max result.
+        state.m_oldResult = state.m_bestResult;
+        state.m_bestResult = minResult;
+        state.m_optimizeValid = true;
+    }
 } // ExecuteMoneyOptimizePass
 
 void FireStarterExecute::ExecuteMoneyTestPass(FireStarterState& state, unsigned int startDay, unsigned int tradingDays, unsigned int validationDays)

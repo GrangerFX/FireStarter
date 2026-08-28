@@ -42,6 +42,7 @@ public:
 
             // Allocate the host memory.
             checkCUDAErrors(cuMemHostAlloc((void**)&m_hostPtr, m_size, 0));
+            memset(m_hostPtr, 0, m_size);
 
             // Allocate device memory for each device and generate the split start and count for each device.
             checkCUDAErrors(cuMemAllocAsync(&m_devicePtr, m_size, m_context->Stream()));
