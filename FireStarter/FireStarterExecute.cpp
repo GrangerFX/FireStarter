@@ -273,20 +273,20 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state, FireStart
     state.MaxResult(variation) = minResult;
 } // ExecuteEvolveGPUPass
 
-void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation)
+void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, FireStarterBestCodes& bestCodes)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
     unsigned int populationCount = settings.m_population;
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    unsigned long long generation = state.m_generation;
     unsigned long long seed = state.EvolutionSeed();
     unsigned int passes = settings.m_passes;
+    unsigned int variation = FIRESTARTER_VARIATION;
 
     if (m_simulateGPU) {
+        unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+        unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
+        dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+        dim3 cudaGridSize(blocksPerGrid, 1, 1);
         blockDim = cudaBlockSize;
         for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
             for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
@@ -294,51 +294,50 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
                     for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
                         for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
                             for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                EvolverNew(m_CUDAResults.HostPtr(), m_CUDAPopulation0.HostPtr(), m_CUDACodes.HostPtr(), variation, seed, passes, populationCount);
+                                EvolverGPU(m_CUDAResults.HostPtr(), m_CUDAPopulation0.HostPtr(), m_CUDACodes.HostPtr(), variation, seed, passes, populationCount);
     } else {
-        void* arr[] = { reinterpret_cast<void*>(&m_CUDAResults.DevicePtr()),
-                        reinterpret_cast<void*>(&m_CUDAPopulation0.DevicePtr()),
-                        reinterpret_cast<void*>(&m_CUDACodes.DevicePtr()),
-                        reinterpret_cast<void*>(&variation),
-                        reinterpret_cast<void*>(&seed),
-                        reinterpret_cast<void*>(&passes),
-                        reinterpret_cast<void*>(&populationCount)
-        };
+        unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+        unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
+        CUDAParameters parameters(m_CUDAResults.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDACodes.DevicePtr(), variation, seed, passes, populationCount);
+
+        dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+        dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
         checkCUDAErrors(cuLaunchKernel(Module().m_executeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
             0,                                                  // shared mem
             Stream(),                                           // stream
-            &arr[0],                                            // arguments
+            parameters.Parameters(),                            // arguments
             0));
 
-        m_CUDAPopulation0.DeviceToHost();
+        m_CUDAResults.DeviceToHost();
         m_CUDACodes.DeviceToHost();
+        m_CUDAPopulation0.DeviceToHost();
         SynchronizeContext();
     }
 
-    // Get the best variation results.
     bool validResult = false;
-    float minResult = FireStarterPopulation::PopulationMaxResult(m_CUDAPopulation0.HostPtr(), settings, 0, variation);
+    float minResult = m_CUDAResults.HostPtr()[0];
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < populationCount; i++) {
-        const FireStarterCode* code = m_CUDACodes.HostPtr()->Member(settings, i);
-        float curResult = FireStarterPopulation::PopulationMaxResult(m_CUDAPopulation0.HostPtr(), settings, i, variation);
+        float curResult = m_CUDAResults.HostPtr()[i];
         if (curResult < minResult) {
+            if (!curResult) {
+                int foo = 1;
+            }
             minResult = curResult;
             minIndex = i;
         }
+        if (curResult < bestCodes.WorstResult())
+            bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);
     }
 
-    // Update the state's best results.
-    state.InitResult(settings, m_CUDACodes.HostPtr(), m_CUDAPopulation0.HostPtr(), minIndex, variation);
-
-    // Note: The above is used by Optimize and does not init the following variables:
-    state.m_oldResult = state.m_bestResult;
-    state.m_bestResult = minResult;
-    state.m_minIndex = minIndex;
-    state.m_optimizeValid = true;
+    // Update the state's best code.
+    state.InitCode(settings, m_CUDACodes.HostPtr(), minResult, minIndex);
+    if (m_CUDAPopulation0.HostPtr())
+        state.InitResult(settings, m_CUDAPopulation0.HostPtr(), minIndex, variation);
+    state.MaxResult(variation) = minResult;
 } // ExecuteEvolveNewPass
 
 void FireStarterExecute::ExecuteEvolveSinSimPass(FireStarterState& state, unsigned int variation)
@@ -1250,15 +1249,18 @@ void FireStarterExecute::ExecuteEvolveGPU(FireStarterState& evolveState, FireSta
     }, sync);
 } // ExecuteEvolveGPU
 
-void FireStarterExecute::ExecuteEvolveNew(FireStarterState& evolveState)
+void FireStarterExecute::ExecuteEvolveNew(FireStarterState& evolveState, FireStarterBestCodes& bestCodes, bool sync)
 {
-    DispatchSync([this, &evolveState] {
+    // Note: EvolveGPU has been converted to use multiple GPUs.
+    Dispatch([this, &evolveState, &bestCodes] {
         if (GenerateEvolve(evolveState.Settings().m_mode)) {
             evolveState.m_timer.Start();
-            if (InitPopulation(evolveState.Settings()))
-                ExecuteEvolveNewPass(evolveState);
+            if (InitPopulation(evolveState.Settings())) {
+                ExecuteEvolveNewPass(evolveState, bestCodes);
+                evolveState.m_generation++;
+            }
         }
-    });
+    }, sync);
 } // ExecuteEvolveNew
 
 void FireStarterExecute::ExecuteEvolveSinSim(FireStarterState& evolveState)

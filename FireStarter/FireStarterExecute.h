@@ -169,7 +169,7 @@ private:
     bool InitStocks(const MoneyMakerStocks* stocks);
     void ExecuteSelectPass(FireStarterState& state, const FireStarterSettings& selectSettings);
     void ExecuteEvolveGPUPass(FireStarterState& state, FireStarterBestCodes& bestCodes);
-    void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
+    void ExecuteEvolveNewPass(FireStarterState& state, FireStarterBestCodes& bestCodes);
     void ExecuteEvolveSinSimPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteMoneyEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes);
@@ -194,7 +194,7 @@ public:
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
     void ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings);
     void ExecuteEvolveGPU(FireStarterState& evolveState, FireStarterBestCodes& bestCodes, bool sync = true);
-    void ExecuteEvolveNew(FireStarterState& evolveState);
+    void ExecuteEvolveNew(FireStarterState& evolveState, FireStarterBestCodes& bestCodes, bool sync = true);
     void ExecuteEvolveSinSim(FireStarterState& evolveState);
     void ExecuteSinSim(FireStarterState& evolveState);
     void ExecuteMoneyEvolve(FireStarterState& evolveState, FireStarterBestCodes& bestCodes, bool sync = true);
