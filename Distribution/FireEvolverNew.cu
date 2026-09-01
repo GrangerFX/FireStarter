@@ -60,7 +60,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
         code.InitCode(memberSeed);
         registers = code.Optimize();
         data.InitData(memberSeed, registers);
-        if (EvolveEvaluate(sharedData, data, code, target, theta, memberResult))
+        if (EvolveNewEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
     }
 

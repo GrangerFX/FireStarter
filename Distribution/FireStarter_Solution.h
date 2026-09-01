@@ -1,13 +1,13 @@
 #pragma once
 #include <math.h>
 
-// Run date: 06/14/26 17:40:14 Pacific Daylight Time
-// Run duration = 8.632414 seconds
-// Run test = 0
-// Run generation = 7
+// Run date: 09/01/26 11:18:26 Pacific Daylight Time
+// Run duration = 61.936487 seconds
+// Run test = 2
+// Run generation = 3
 // Run evolution = 0
-// Run precision  = 0.00000060
-// Run max result = 0.00000012
+// Run precision  = 0.00000000
+// Run max result = 10.00000000
 
 // Run variations = 1
 // Run instructions = 32
@@ -18,7 +18,7 @@
 // Run targetMax = 6.283185f
 // Run target = 0.000001f
 
-// Run mode = FIRESTARTER_EVOLVE_GPU
+// Run mode = FIRESTARTER_EVOLVE_NEW
 // Run evolveSeed = 0
 // Run optimizeSeed = 0
 // Run tests = 256
@@ -66,39 +66,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6;
+    float r0, r1, r2, r3, r4, r5, r6, r7;
 
-    n += -0.81845975f;
-    n += -2.32313299f;
-    r0 = n *= 3.37804461f;
-    r1 = n *= 0.11375663f;
-    n *= -0.14926912f;
-    r2 = n *= 2.18402171f;
-    n *= -1.78420877f;
+    n *= 0.00000000f;
+    r0 = n += 0.00000000f;
+    r1 = n *= 0.00000000f;
+    r2 = n *= 0.00000000f;
+    r3 = n *= 0.00000000f;
+    n *= 0.00000000f;
+    n = r1 *= n;
+    n += 0.00000000f;
+    r4 = n *= 0.00000000f;
+    r5 = n *= 0.00000000f;
     n *= r1;
-    n += 0.48800564f;
-    r1 = n += -1.15429449f;
-    r3 = n *= -0.49844804f;
-    n += 2.65265489f;
-    n *= 0.34916547f;
-    r4 = n *= -1.52426577f;
-    r5 = n *= 5.17694759f;
-    r6 = n *= 1.59667325f;
-    n *= r3;
-    n *= -2.17490435f;
-    n += -4.14890718f;
-    n *= -0.00529444f;
-    n += -2.29026580f;
-    n *= 0.00666296f;
-    n = r5 *= n;
-    n = r5 *= n;
-    n += -2.04305553f;
-    n += r6;
-    n *= r1;
-    n *= r4;
+    n *= 0.00000000f;
+    r1 = n += 0.00000000f;
+    r6 = n *= 0.00000000f;
+    n += 0.00000000f;
+    r7 = n += 0.00000000f;
+    n += 0.00000000f;
     n *= r5;
+    n = r0 *= n;
+    n += r7;
+    n *= 0.00000000f;
+    n *= 0.00000000f;
+    n *= r2;
     n *= r0;
-    n += -0.00000001f;
-    n += r2;
+    n = r1 *= n;
+    n *= r1;
+    n *= 0.00000000f;
+    n += 0.00000000f;
+    n *= r6;
+    n *= r3;
+    n *= 0.00000000f;
+    n *= r4;
     return n;
 } // Solution

@@ -384,7 +384,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
             // Execute the initial GPU evolve.
             evolveStates.InitStates(evolveSettings, test);
-            evolveUnits.ExecuteEvolve(evolveStates, bestCodes);
+            evolveUnits.ExecuteEvolveGPU(evolveStates, bestCodes);
  
             // Evolve the current test.
             while (!WillTerminate() && !bestState.Complete()) {
@@ -394,28 +394,21 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     bestCodes.GetBestCode(bestCode);
                     optimizeStates[i].InitState(optimizeSettings, evolveStates[i].m_generation, i, 0, test);
                     optimizeStates[i].CopyCode(bestCode);
-
-                    // Compile the optimize code asynchronously.
-                    optimizeUnits[i]->ExecuteGenerateOptimize(optimizeStates[i], false);
                 }
+                optimizeUnits.ExecuteGenerateOptimize(optimizeStates);
 
                 // Execute the next GPU evolve while the optimize code is compiling.
-                if (!evolveSettings.m_generations || (evolveStates[0].m_generation < evolveSettings.m_generations)) {
-                    for (size_t i = 0; i < numDevices; i++) {
-                        evolveUnits[i]->ExecuteEvolveGPU(evolveStates[i], bestCodes, false);
-                        evolveStates[i].m_generation++;
-                    }
-                    evolveUnits.ExecuteSynchronize();
-                }
+                if (!evolveSettings.m_generations || (evolveStates[0].m_generation < evolveSettings.m_generations))
+                    evolveUnits.ExecuteEvolveGPU(evolveStates, bestCodes);
 
                 // Check for termination mid-generation.
-                if (WillTerminate())
+                if (WillTerminate()) {
+                    optimizeUnits.ExecuteSynchronize();
                     break;
+                }
 
                 // Execute optimize for each unit.
-                for (size_t i = 0; i < numDevices; i++)
-                    optimizeUnits[i]->ExecuteEvolveOptimize(optimizeStates[i], bestState, complete, false);
-                optimizeUnits.ExecuteSynchronize();
+                optimizeUnits.ExecuteEvolveOptimize(optimizeStates, bestState, complete);
 
                 // Exit after a set number of generations.
                 if (evolveSettings.m_generations && (evolveStates[0].m_generation >= evolveSettings.m_generations))
@@ -488,7 +481,7 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
 
             // Execute the initial GPU evolve.
             evolveStates.InitStates(evolveSettings, test);
-            evolveUnits.ExecuteEvolve(evolveStates, bestCodes);
+            evolveUnits.ExecuteEvolveNew(evolveStates, bestCodes);
  
             // Evolve the current test.
             while (!WillTerminate() && !bestState.Complete()) {
@@ -498,28 +491,21 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
                     bestCodes.GetBestCode(bestCode);
                     optimizeStates[i].InitState(optimizeSettings, evolveStates[i].m_generation, i, 0, test);
                     optimizeStates[i].CopyCode(bestCode);
-
-                    // Compile the optimize code asynchronously.
-                    optimizeUnits[i]->ExecuteGenerateOptimize(optimizeStates[i], false);
                 }
+                optimizeUnits.ExecuteGenerateOptimize(optimizeStates);
 
                 // Execute the next GPU evolve while the optimize code is compiling.
-                if (!evolveSettings.m_generations || (evolveStates[0].m_generation < evolveSettings.m_generations)) {
-                    for (size_t i = 0; i < numDevices; i++) {
-                        evolveUnits[i]->ExecuteEvolveGPU(evolveStates[i], bestCodes, false);
-                        evolveStates[i].m_generation++;
-                    }
-                    evolveUnits.ExecuteSynchronize();
-                }
+                if (!evolveSettings.m_generations || (evolveStates[0].m_generation < evolveSettings.m_generations))
+                    evolveUnits.ExecuteEvolveNew(evolveStates, bestCodes);
 
                 // Check for termination mid-generation.
-                if (WillTerminate())
+                if (WillTerminate()) {
+                    optimizeUnits.ExecuteSynchronize();
                     break;
+                }
 
                 // Execute optimize for each unit.
-                for (size_t i = 0; i < numDevices; i++)
-                    optimizeUnits[i]->ExecuteEvolveOptimize(optimizeStates[i], bestState, complete, false);
-                optimizeUnits.ExecuteSynchronize();
+                optimizeUnits.ExecuteEvolveOptimize(optimizeStates, bestState, complete);
 
                 // Exit after a set number of generations.
                 if (evolveSettings.m_generations && (evolveStates[0].m_generation >= evolveSettings.m_generations))

@@ -82,7 +82,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
         // Note: Erase() would be called asynchronously following the drawing below and leavign the buffer black.
         m_window.EraseBuffers();
 
-        if ((settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE)) {
+        if ((state.PassMode() == FIRESTARTER_MONEYMAKER) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
             const MoneyMakerStock& stock = stocks->Stock(settings.m_stock);
             const MoneyMakerStock& results = tradingResults->Stock(settings.m_stock);
             float minValue = stock.minValue;
@@ -132,7 +132,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
             float thetaEnd = TARGET_PI * ((0.5f * width) / xScale + 1.0f);
             float maxError = 0.0f;
 
-            if (settings.m_mode == FIRESTARTER_SINSIM) {
+            if (state.PassMode() == FIRESTARTER_SINSIM) {
                 size_t codeSize = 0;
                 size_t evaluateSize = width * sizeof(float);
                 AllocateEvaluateData(evaluateSize);
@@ -182,7 +182,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
                         pixel.x = pixel.y = pixel.z = 255;
                     };
                 }
-            } else if (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) {
+            } else if (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM) {
                 size_t codeSize = 0;
                 size_t evaluateSize = width * sizeof(float);
                 AllocateEvaluateData(evaluateSize);
@@ -423,7 +423,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
         if ((settings.m_tests > 0) || test)
             statusString += Format("  Test=%2u", test);
-        if ((state.PassMode() == FIRESTARTER_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_CPU) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM) || (state.PassMode() == FIRESTARTER_MONEYMAKER)) {
+        if ((state.PassMode() == FIRESTARTER_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_CPU) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM)) {
             if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
                 statusString += Format("  Index=%4llu  Id=%4llu", state.m_index, state.m_id);
             statusString += Format("  Generation=%3u", generation);
@@ -438,12 +438,12 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             else
                 resultString = ">New Result";
             statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), maxResult);
-            if ((state.PassMode() == FIRESTARTER_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM) || (state.PassMode() == FIRESTARTER_MONEYMAKER) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
+            if ((state.PassMode() == FIRESTARTER_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM)) {
                 statusString += Format("  MinIndex=%u", state.m_minIndex);
                 if (settings.m_variations == 1)
                     statusString += Format("  EvolveAge=%u", state.m_minIndex, (unsigned int)state.EvolveAge1(0));
             }
-        } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE)) {
+        } else if ((state.PassMode() == FIRESTARTER_RANDOM) || (state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
             statusString += Format("  Generation=%3u", generation);
             if ((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {
                 if (settings.m_optimize > 1)
@@ -457,8 +457,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             else
                 statusString += "  ";
             statusString += Format("Result=%.8f", maxResult);
-        } else if (settings.m_mode == FIRESTARTER_SINSIM)
-            statusString += Format("  Generation=%3u", generation);
+        }
 
         statusString += Format("  Best=%.8f ", bestResult);
         if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)

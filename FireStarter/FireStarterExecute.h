@@ -215,27 +215,27 @@ public:
 class FireStarterUnits : public std::vector<FireStarterExecute*>
 {
 public:
-    void ExecuteSynchronize(void)
+    inline void ExecuteSynchronize(void)
     {
         for (FireStarterExecute* unit : *this)
             unit->Synchronize();
     } // Synchronize
 
-    void ExecuteSetStocks(const MoneyMakerStocks* stocks)
+    inline void ExecuteSetStocks(const MoneyMakerStocks* stocks)
     {
         for (FireStarterExecute* unit : *this)
             unit->ExecuteSetStocks(stocks, false);
         ExecuteSynchronize();
     } // ExecuteSetStocks
 
-    void ExecuteGenerateEvolve(unsigned int mode)
+    inline void ExecuteGenerateEvolve(unsigned int mode)
     {
         for (FireStarterExecute* unit : *this)
             unit->ExecuteGenerateEvolve(mode, false);
         ExecuteSynchronize();
     } // ExecuteGenerateEvolve
 
-    void ExecuteGenerateOptimize(FireStarterStates& optimizeStates)
+    inline void ExecuteGenerateOptimize(FireStarterStates& optimizeStates)
     {
         size_t numStates = optimizeStates.size();
         size_t numUnits = this->size();
@@ -243,10 +243,9 @@ public:
             FireStarterExecute* unit = (*this)[index % numUnits];
             unit->ExecuteGenerateOptimize(optimizeStates[index], false);
         }
-        ExecuteSynchronize();
     } // ExecuteGenerateOptimize
 
-    void ExecuteEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)
+    inline void ExecuteEvolveGPU(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)
     {
         size_t numStates = evolveStates.size();
         size_t numUnits = this->size();
@@ -255,9 +254,31 @@ public:
             unit->ExecuteEvolveGPU(evolveStates[index], bestCodes, false);
         }
         ExecuteSynchronize();
-    } // ExecuteEvolve
+    } // ExecuteEvolveGPU
 
-    void ExecuteMoneyEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)
+    inline void ExecuteEvolveNew(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)
+    {
+        size_t numStates = evolveStates.size();
+        size_t numUnits = this->size();
+        for (size_t index = 0; index < numStates; index++) {
+            FireStarterExecute* unit = (*this)[index % numUnits];
+            unit->ExecuteEvolveNew(evolveStates[index], bestCodes, false);
+        }
+        ExecuteSynchronize();
+    } // ExecuteEvolveNew
+
+    inline void ExecuteEvolveOptimize(FireStarterStates& optimizeStates, FireStarterState& bestState, FireStarterComplete* complete)
+    {
+        size_t numStates = optimizeStates.size();
+        size_t numUnits = this->size();
+        for (size_t index = 0; index < numStates; index++) {
+            FireStarterExecute* unit = (*this)[index % numUnits];
+            unit->ExecuteEvolveOptimize(optimizeStates[index], bestState, complete, false);
+        }
+        ExecuteSynchronize();
+    } // ExecuteEvolveOptimize
+
+    inline void ExecuteMoneyEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)
     {
         size_t numStates = evolveStates.size();
         size_t numUnits = this->size();
@@ -268,7 +289,7 @@ public:
         ExecuteSynchronize();
     } // ExecuteMoneyEvolve
 
-    void ExecuteMoneyOptimize(FireStarterStates& optimizeStates, FireStarterState& bestState, FireStarterComplete* complete)
+    inline void ExecuteMoneyOptimize(FireStarterStates& optimizeStates, FireStarterState& bestState, FireStarterComplete* complete)
     {
         size_t numStates = optimizeStates.size();
         size_t numUnits = this->size();
@@ -280,21 +301,21 @@ public:
         ExecuteSynchronize();
     } // ExecuteMoneyOptimize
 
-    FireStarterUnits(FireStarterManager* manager, size_t numUnits = 1, const std::string& unitName = "FireStarterUnit")
+    inline FireStarterUnits(FireStarterManager* manager, size_t numUnits = 1, const std::string& unitName = "FireStarterUnit")
     {
         reserve(numUnits);
         for (size_t i = 0; i < numUnits; i++)
             push_back(new FireStarterExecute(manager, unitName, i));
     } // FireStarterUnits
 
-    FireStarterUnits(size_t numUnits = 1, const std::string& unitName = "FireStarterUnit")
+    inline FireStarterUnits(size_t numUnits = 1, const std::string& unitName = "FireStarterUnit")
     {
         reserve(numUnits);
         for (size_t i = 0; i < numUnits; i++)
             push_back(new FireStarterExecute(unitName, i));
     } // FireStarterUnits
 
-    ~FireStarterUnits(void)
+    inline ~FireStarterUnits(void)
     {
         for (FireStarterExecute* unit : *this)
             delete unit;

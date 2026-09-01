@@ -56,9 +56,9 @@
 // Original population size.
 //#define FIRESTARTER_POPULATION    8192 * FIRESTARTER_WARP_THREADS // = 262,144
 // Population size based on 4090 warp threads for testing FIRESTARTER_EVOLVE_GPU performance.
-//#define FIRESTARTER_POPULATION      FIRESTARTER_SM_COUNT_4090 * FIRESTARTER_SM_WARPS_4090 * FIRESTARTER_WARP_THREADS // Full occupancy = 196,608
+#define FIRESTARTER_POPULATION      FIRESTARTER_SM_COUNT_4090 * FIRESTARTER_SM_WARPS_4090 * FIRESTARTER_WARP_THREADS // Full occupancy = 196,608
 // Population size based on 5090 warp threads.
-#define FIRESTARTER_POPULATION    FIRESTARTER_SM_COUNT_5090 * FIRESTARTER_SM_WARPS_5090 * FIRESTARTER_WARP_THREADS // Full occupancy = 348,160
+//#define FIRESTARTER_POPULATION    FIRESTARTER_SM_COUNT_5090 * FIRESTARTER_SM_WARPS_5090 * FIRESTARTER_WARP_THREADS // Full occupancy = 348,160
 
 #define FIRESTARTER_PASSES          512         // Evolve or optimize passes
 #define FIRESTARTER_ITERATIONS      64          // Data evolution iterations
@@ -94,7 +94,7 @@
 #define FIRESTARTER_OPTIMIZE        11          // Optimize a previously evolved state.
 #define FIRESTARTER_SOLUTION        12          // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODES           13          // Number of modes
-#define FIRESTARTER_MODE            FIRESTARTER_MONEYMAKER
+#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_NEW
 
 #define FIRESTARTER_RANDOM_STREAMS              1
 #define FIRESTARTER_RANDOM_UNITS                1
