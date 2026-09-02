@@ -84,3 +84,11 @@ With sufficiently evolved DNA to code conversion and realistic environment simul
 Future GPU Hardware or Firmware
 
 Current GPUs are poorly suited to running code evolution because they do not have the ability to index registers. If you have an instruction like R[x] = R[y] * R[z] where x, y and z are indexes to the set of registers, a GPU must move the registers into RAM and then index the RAM addresses which is vastly slower than using fixed registers: R1 = R2 * R3. While it is unlikely that it would be cost effective to implement indexed registers, it may be possible to instead generate the fixed register code directly on the same GPU that is executing it. This would likely require minimal, or no hardware changes. As long as the instruction set was simple enough and the register array size was fixed and pre-declared, it should be reasonably safe to convert the instructions into GPU machine code between runs of the simulation. This would increase the speed of the testing of evolved GPU code greatly, at least ten times.
+
+A conversation with Claude:
+https://claude.ai/share/502e63e3-1fba-4ef4-a597-53525351f161
+
+That's the entire project in a nutshell. I had no idea about any of this when I started. I had to observe it and then test my hypotheses to learn anything. Essentially the AI is teaching me. Considering all the computations it does, this is not terribly surprising. That's the thing about trying to work on general AI. The challenge is not creating an AI smarter than a human but accepting that it was smarter to begin with.
+
+Mark Granger
+grangerfx@gmail.com
