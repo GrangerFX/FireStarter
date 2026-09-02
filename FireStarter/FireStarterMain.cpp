@@ -102,11 +102,6 @@ HRESULT MainLoop(HINSTANCE hInstance)
             // Tell the threads to quit.
             SerialThread::QuitThreads();
 
-            // Force each device to reset its primary context, which will clean up all resources and stop any stuck kernels.
-            // Note: This does not work unless the CUDA kernels exited cleanly. Otherwise it leaves them in zombie state.
-            // I reported this issue to NVIDIA and they apppear to have accepted it as a bug.
-            CUDAContext::CUDAShutdown();
-
             // Stop the main thread.
             SerialThread::SetMainThread(nullptr);
             delete fireStarter;

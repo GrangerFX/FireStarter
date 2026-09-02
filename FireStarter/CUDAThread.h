@@ -60,6 +60,7 @@ public:
     // Note: This must be called from this CUDAThread.
     inline void SynchronizeContext(void)
     {
+#if 0
         while (true) {
             // 1. Check stream status without blocking
             CUresult status = cuStreamQuery(Stream());
@@ -78,6 +79,9 @@ public:
                 return;
             }
         }
+#else
+        m_CUDAContext.SynchronizeContext();
+#endif
     } // SynchronizeContext
 
     // Note: This must be not called from this CUDAThread.
