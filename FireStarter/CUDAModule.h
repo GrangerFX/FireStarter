@@ -8,8 +8,8 @@ public:
     CUmodule m_module = nullptr;
     CUfunction m_executeFunction = nullptr;
     CUfunction m_executeTest = nullptr;
-    int* m_GPUKillSwitch = nullptr;
-    CUdeviceptr d_GPUKillSwitch = 0;
+    volatile int* m_hostGPUKillSwitch = nullptr;
+    CUdeviceptr m_deviceGPUKillSwitch = 0;
 
     inline bool Compile(const std::string& programCode, const std::string& programName)
     {
@@ -83,29 +83,32 @@ public:
         return false;
     } // SetGlobal
 
-    inline int* InitGPUKillSwitch(int killNow = 0)
+    inline volatile int* InitGPUKillSwitch(int killNow = 0)
     {
-        if (!m_GPUKillSwitch) {
-            // Allocate the kill switch in pinned host memory so that the GPU can access it.
-            if ((cuMemAllocHost((void**)&m_GPUKillSwitch, sizeof(int)) != CUDA_SUCCESS) || !m_GPUKillSwitch)
+        if (!m_hostGPUKillSwitch) {
+            // Allocate the kill switch in pinned host memory so that the host can access it.
+            if (cuMemHostAlloc((void**)&m_hostGPUKillSwitch, sizeof(int), CU_MEMHOSTALLOC_DEVICEMAP) != CUDA_SUCCESS)
+                return nullptr;
+
+            // Set the device pointer for the host memory kill switch so that the GPU kernel can access it.
+            if (cuMemHostGetDevicePointer(&m_deviceGPUKillSwitch, (void*)m_hostGPUKillSwitch, 0) != CUDA_SUCCESS)
                 return nullptr;
 
             // Initialize the value.
-            *m_GPUKillSwitch = killNow;
+            *m_hostGPUKillSwitch = killNow;
 
             // Set the global variable in the CUDA module to point to the kill switch in pinned host memory.
-            SetGlobal("g_GPUKillSwitch", &m_GPUKillSwitch, sizeof(int*));
+            SetGlobal("g_GPUKillSwitch", &m_deviceGPUKillSwitch, sizeof(CUdeviceptr));
         }
         if (killNow)
-            *m_GPUKillSwitch = killNow;
-        return m_GPUKillSwitch;
+            *m_hostGPUKillSwitch = killNow;
+        return m_hostGPUKillSwitch;
     } // InitGPUKillSwitch
 
     inline bool SetKillSwitch(void)
     {
         // Set the kill switch variable in pinned host memory.
-        int* killSwitch = InitGPUKillSwitch(1);
-        return killSwitch != nullptr;
+        return InitGPUKillSwitch(1) != nullptr;
     } // SetKillSwitch
 
     inline bool BuildModule(const std::string& functionName = {}, const std::string& testName = {})

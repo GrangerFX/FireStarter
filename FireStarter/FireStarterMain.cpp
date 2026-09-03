@@ -99,6 +99,9 @@ HRESULT MainLoop(HINSTANCE hInstance)
 
 			SetWindowText(hwnd, "Quitting");
 
+            // Set the kill switches for all running GPU kernels to terminate them.
+            CUDAThread::KillThreads();
+
             // Tell the threads to quit.
             SerialThread::QuitThreads();
 

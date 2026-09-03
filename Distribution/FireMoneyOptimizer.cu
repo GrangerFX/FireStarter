@@ -118,8 +118,8 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, con
 
     for (unsigned int session = 0; session < sessions; session++) {
         // Check if the user is trying to abort and quit the application.
-//      if (GPU_KILL_SWITCH)
-//          return false;
+        if (CheckSharedKillSwitch())
+            return false;
 
         unsigned long long sessionSeed = SEED9(session) + seed;
         unsigned int sessionStart = RANDOMMOD(sessionSeed, variation);
@@ -142,7 +142,7 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, con
 GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass)
 {
     // Check if the user is trying to abort and quit the application.
-    if (GPU_KILL_SWITCH)
+    if (SetSharedKillSwitch())
         return;
 
     // Determine the member to be optimized.
@@ -193,8 +193,8 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
     // Iterate to optimize the data.
     for (unsigned int i = 0; i < settings->m_iterations; i++) {
         // Check if the user is trying to abort and quit the application.
-//      if (GPU_KILL_SWITCH)
-//          return;
+        if (CheckSharedKillSwitch())
+            return;
 
         unsigned int d = RANDOMMOD(memberSeed, registers);
         float oldData = data[d];

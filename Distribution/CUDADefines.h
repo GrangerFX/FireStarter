@@ -3,6 +3,9 @@
 #define WARP_THREADS 32
 #define HALF_WARP_THREADS 16
 
+#define MIN(a, b) ((a) <= (b) ? (a) : (b))
+#define MAX(a, b) ((a) >= (b) ? (a) : (b))
+
 #ifdef __CUDACC__
 
 #define GPU_FUNCTION __device__
@@ -18,10 +21,35 @@
 __device__ int g_KillSwitchValue = 0;
 
 // Initialize g_GPUKillSwitch to point to this safe default location
+// Note: The actual pointer must be set in the host application.
 __device__ int* g_GPUKillSwitch = &g_KillSwitchValue;
 
-// Macro to check the GPU kill switch and return if it's set
-#define GPU_KILL_SWITCH (*(volatile int*)g_GPUKillSwitch != 0)
+// FILE SCOPE: Visible to all functions in this NVRTC translation unit.
+// Hardware still instantiates this per thread-block!
+__shared__ bool g_s_GPUKillSwitch;
+
+// Check the GPU kill switch and return true if it's set
+inline bool GPUKillSwitch(void)
+{
+    return *(volatile int*)g_GPUKillSwitch != 0;
+} // GPUKillSwitch
+
+// If the counter anded with the mask is zer0, then set the shared kill switch to the global kill switch value.
+// Return the current shared kill switch value.
+inline bool SetSharedKillSwitch(unsigned int counter = 0, unsigned int mask = 0)
+{
+    if ((counter & mask) == mask) {
+        if ((threadIdx.x == 0) && (threadIdx.y == 0) && (threadIdx.z == 0))
+            g_s_GPUKillSwitch = GPUKillSwitch();
+        __syncthreads();
+    }
+    return g_s_GPUKillSwitch;
+} // SetSharedKillSwitch
+
+inline bool CheckSharedKillSwitch(void)
+{
+    return g_s_GPUKillSwitch;
+} // CheckSharedKillSwitch
 
 #else
 
@@ -51,10 +79,22 @@ static int g_KillSwitchValue = 0;
 // Initialize g_GPUKillSwitch to point to this safe default location
 static int* g_GPUKillSwitch = &g_KillSwitchValue;
 
-// Macro to check the GPU kill switch and return if it's set
-#define GPU_KILL_SWITCH (*(volatile int*)g_GPUKillSwitch != 0)
+// Check the GPU kill switch and return true if it's set
+inline bool GPUKillSwitch(void)
+{
+    return *(volatile int*)g_GPUKillSwitch != 0;
+} // GPUKillSwitch
+
+// In the CPU simulation, we don't have shared memory, so we just return the global kill switch value.
+inline bool SetSharedKillSwitch(unsigned int counter = 0, unsigned int mask = 0)
+{
+    return GPUKillSwitch();
+} // SetSharedKillSwitch
+
+// In the CPU simulation, we don't have shared memory, so we just return the global kill switch value.
+inline bool CheckSharedKillSwitch(void)
+{
+    return GPUKillSwitch();
+} // CheckSharedKillSwitch
 
 #endif
-
-#define MIN(a, b) ((a) <= (b) ? (a) : (b))
-#define MAX(a, b) ((a) >= (b) ? (a) : (b))

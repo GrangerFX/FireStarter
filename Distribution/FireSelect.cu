@@ -23,7 +23,7 @@ inline bool SelectEvaluate(FireStarterSharedData& sharedData, const FireStarterD
 GPU_GLOBAL void Selecter(float* results, FireStarterResult* population, FireStarterCode* codes, FireStarterCode* parentCode, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount, const unsigned int variation)
 {
     // Check if the user is trying to abort and quit the application.
-    if (GPU_KILL_SWITCH)
+    if (SetSharedKillSwitch())
         return;
 
     // Determine the member to be optimized.
@@ -67,7 +67,7 @@ GPU_GLOBAL void Selecter(float* results, FireStarterResult* population, FireStar
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Check if the user is trying to abort and quit the application.
-        if (GPU_KILL_SWITCH)
+        if (SetSharedKillSwitch(pass, 0xFF))
             return;
 
         // Evolve the code and data.

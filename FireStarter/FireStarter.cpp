@@ -226,6 +226,5 @@ FireStarter::FireStarter(FireStarterWindow& window) : SerialThread("FireStarter"
 
 FireStarter::~FireStarter(void)
 {
-    QuitThreads();
     Synchronize();
 } // ~FireStarter
