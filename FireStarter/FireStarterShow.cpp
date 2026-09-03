@@ -70,7 +70,7 @@ void FireStarterShow::EvaluateEvolve(const FireStarterState& state, unsigned int
 
 void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerStocks* stocks, const MoneyMakerStocks* tradingResults)
 {
-    m_window.DispatchAsync([this, state, stocks, tradingResults] {
+    m_window.DispatchSync([this, state, stocks, tradingResults] {
         const FireStarterSettings& settings = state.Settings();
         unsigned int width = 0;
         unsigned int height = 0;
@@ -288,7 +288,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
 
 void FireStarterShow::FireSolution(FireStarterWindow& window)
 {
-    window.DispatchAsync([&window] {
+    window.DispatchSync([&window] {
         window.Erase();
         std::string statusString = "FireStarter:";
         unsigned int width = 0;
@@ -346,13 +346,12 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
         window.DisplayText(statusString);
         window.DisplayImage();
     });
-
 } // FireSolution
 
 void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double generationTime, double runTime, bool sync)
 {
     // Create the CUDA device text.
-    static std::string cudaText;
+    std::string cudaText;
     if (cudaText.empty()) {
         CUDAContext::CUDAText(cudaText);
         cudaText += "\r\n";
@@ -361,7 +360,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     // Create the settings text.
     // Note: Must get the settings from bestState because state can be in optimize mode.
     const FireStarterSettings& settings = state.Settings();
-    static std::string settingsText;
+    std::string settingsText;
     if (settingsText.empty()) {
         FireStarterState::SettingsText(settings, settingsText);
         settingsText += "\r\n";
@@ -386,7 +385,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             logFilePaths.resize(FIRESTARTER_START_TEST + settings.m_tests);
         if (logFilePaths[test].empty()) {
             logFilePaths[test] = Format("Logs\\%s_%s_%lld.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(), test);
-            Dispatch([test] {
+            Dispatch([cudaText, settingsText, test] {
                 FireStarterSource::AppendSource(cudaText, logFilePaths[test]);
                 FireStarterSource::AppendSource(settingsText, logFilePaths[test]);
             }, sync);
@@ -396,7 +395,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         static std::string logFilePath;
         if (logFilePath.empty()) {
             logFilePath = Format("Logs\\%s_%s_%d.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(), test);
-            Dispatch([] {
+            Dispatch([cudaText, settingsText] {
                 FireStarterSource::AppendSource(cudaText, logFilePath);
                 FireStarterSource::AppendSource(settingsText, logFilePath);
             }, sync);
@@ -482,6 +481,7 @@ FireStarterShow::FireStarterShow(FireStarterWindow& window) : SerialThread("Fire
 
 FireStarterShow::~FireStarterShow(void)
 {
+    // Deallocate the evaluation data.
     DispatchSync([this] {
         DeallocateEvaluateData();
     });
