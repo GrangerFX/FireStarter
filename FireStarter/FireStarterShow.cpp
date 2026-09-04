@@ -4,6 +4,7 @@
 #include "FireStarterUtil.h"
 #include "FireMoneyMaker.h"
 #include <algorithm>
+#include <filesystem>
 
 void FireStarterShow::DeallocateEvaluateData(void)
 {
@@ -378,30 +379,12 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
 
     // Create the log file.
     unsigned long long test = state.m_test;
-    std::string logPath;
-    if (settings.m_tests > 0) {
-        static std::vector<std::string> logFilePaths;
-        if (logFilePaths.empty())
-            logFilePaths.resize(FIRESTARTER_START_TEST + settings.m_tests);
-        if (logFilePaths[test].empty()) {
-            logFilePaths[test] = Format("Logs\\%s_%s_%lld.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(), test);
-            Dispatch([cudaText, settingsText, test] {
-                FireStarterSource::AppendSource(cudaText, logFilePaths[test]);
-                FireStarterSource::AppendSource(settingsText, logFilePaths[test]);
-            }, sync);
-        }
-        logPath = logFilePaths[test];
-    } else {
-        static std::string logFilePath;
-        if (logFilePath.empty()) {
-            logFilePath = Format("Logs\\%s_%s_%d.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(), test);
-            Dispatch([cudaText, settingsText] {
-                FireStarterSource::AppendSource(cudaText, logFilePath);
-                FireStarterSource::AppendSource(settingsText, logFilePath);
-            }, sync);
-        }
-        logPath = logFilePath;
-    }
+    std::string logPath = Format("Logs\\%s_%s_%lld.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(), test);
+    if (!std::filesystem::exists(logPath))
+        Dispatch([logPath, cudaText, settingsText] {
+            FireStarterSource::AppendSource(cudaText, logPath);
+            FireStarterSource::AppendSource(settingsText, logPath);
+        }, sync);
 
     // Update the log file and window status text.
     std::string statusString;
@@ -469,7 +452,9 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     }
 
     // Update the log file.
-    Dispatch([logPath, statusString] { FireStarterSource::AppendSource(statusString + "\r\n", logPath); }, sync);
+    Dispatch([logPath, statusString] {
+        FireStarterSource::AppendSource(statusString + "\r\n", logPath);
+    }, sync);
 
     // Update the window status.
     m_window.DisplayText(statusString, sync);

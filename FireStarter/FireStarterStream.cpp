@@ -734,12 +734,15 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             unsigned long long test = FIRESTARTER_START_TEST + t;
-            FireStarterStates evolveStates(numEvolve);
-            FireStarterStates optimizeStates(numOptimize);
+            unsigned int testStock = (startStock + test) % numStocks;
 
             // Initialize the states for the current test.
-            evolveSettings.m_stock = startStock;
+            FireStarterStates evolveStates(numEvolve);
+            FireStarterStates optimizeStates(numOptimize);
+            evolveSettings.m_stock = testStock;
+            optimizeSettings.m_stock = testStock;
             evolveStates.InitStates(evolveSettings, 0, evolveID, test);
+            optimizeStates.InitStates(optimizeSettings, 0, optimizeID, test);
 
             // Initialize the evolve state's best codes
             bestCodes.InitBestCodes(evolveSettings);
@@ -762,7 +765,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
             float evolveReturns = MoneyMakerReturns(1.0f - evolveResult); // Remove inversion.
 #endif
             if (evolveSettings.m_stocks == 1) {
-                const MoneyMakerStock& stock = stocks->Stock(evolveSettings.m_stock % numStocks);
+                const MoneyMakerStock& stock = stocks->Stock(testStock);
                 char* symbol = (char*)&stock.symbol;
                 evolveText += Format("%c%c%c%c:  ", symbol[3], symbol[2], symbol[1], symbol[0]);
             }
@@ -775,7 +778,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
             if (numOptimize > 1)
                 evolveText += "\n";
 
-            optimizeStates.InitStates(optimizeSettings, 0, optimizeID, test);
+
             std::vector<float> bestEvolveResults(numOptimize, 0.0f); // Used for debugging only.
             for (size_t i = 0; i < numOptimize; i++) {
                 FireStarterCodeVector bestCode;
@@ -797,7 +800,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
             for (size_t optimize = 0; optimize < numOptimize; optimize++) {
                 // Output the results.
                 if (evolveSettings.m_stocks == 1) {
-                    char* symbol = (char*)&stocks->Stock(optimizeStates[optimize].Settings().m_stock).symbol;
+                    char* symbol = (char*)&stocks->Stock(testStock).symbol;
                     optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
                 }
 
