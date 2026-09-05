@@ -57,8 +57,7 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
     // The first generation is initalized with random numbers.
     float memberResult = FIRESTARTER_START_RESULT;
     for (unsigned int i = 0; i < 10; i++) {
-        code.InitCode(memberSeed);
-        registers = code.Optimize();
+        registers = code.InitOptimizedCode(memberSeed);
         data.InitData(memberSeed, registers);
         if (EvolveEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
@@ -81,8 +80,7 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
         float evolutionScale;
         if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
             evolutionScale = FIRESTARTER_START_SCALE;
-            code.InitCode(memberSeed);
-            registers = code.Optimize();
+            registers = code.InitOptimizedCode(memberSeed);
             data.InitData(memberSeed, registers);
             oldResult = FIRESTARTER_START_RESULT;
             memberResult = FIRESTARTER_START_RESULT;

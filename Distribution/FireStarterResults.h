@@ -219,6 +219,11 @@ typedef struct FireStarterCodeInstruction {
         reg = RANDOMMOD(seed, registers);
     } // RandomInstruction
 
+    inline void RandomOperation(unsigned long long& seed, unsigned int opcodes = FIRESTARTER_OPCODES)
+    {
+        op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
+    } // RandomOperation
+
     inline float Evaluate(float& data, float &n) const
     {
 #if FIRESTARTER_FIRSTLIGHT
