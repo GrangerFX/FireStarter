@@ -457,7 +457,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
 
     // Create the registers string.
     std::string registersString;
-    if (bestState.Complete() && ((state.PassMode() == FIRESTARTER_EVOLVE_CPU) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW))) {
+    if (isBestState && bestState.Complete() && ((state.PassMode() == FIRESTARTER_EVOLVE_CPU) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW))) {
         registersString = Format("const unsigned int registers[%u] = { %u", bestState.m_settings.m_instructions, bestState.m_code[0].reg);
         for (unsigned int i = 1; i < bestState.m_settings.m_instructions; i++)
             registersString += Format(", %u", bestState.m_code[i].reg);
