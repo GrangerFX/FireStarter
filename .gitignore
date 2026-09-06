@@ -264,11 +264,3 @@ __pycache__/
 /Distribution/FireStarter.exe
 *.exe
 /enc_temp_folder/*
-/Build/FireStarter_x64/Evolve_GPU_Debug/FireStarter.tlog/CL.command.1.tlog
-/Build/FireStarter_x64/Evolve_GPU_Debug/FireStarter.tlog/CL.read.1.tlog
-/Build/FireStarter_x64/Evolve_GPU_Debug/FireStarter.tlog/CL.write.1.tlog
-/Build/FireStarter_x64/Evolve_GPU_Debug/FireStarter.tlog/link.read.1.tlog
-/Build/FireStarter_x64/Evolve_MoneyMaker_Debug/FireStarter.tlog/CL.command.1.tlog
-/Build/FireStarter_x64/Evolve_MoneyMaker_Debug/FireStarter.tlog/CL.read.1.tlog
-/Build/FireStarter_x64/Evolve_MoneyMaker_Debug/FireStarter.tlog/CL.write.1.tlog
-/Build/FireStarter_x64/Evolve_MoneyMaker_Debug/FireStarter.tlog/link.read.1.tlog
