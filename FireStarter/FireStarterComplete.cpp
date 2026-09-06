@@ -96,7 +96,10 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
         bool update = (state.m_optimizeValid && ((state.MaxResults() < bestState.MaxResults())) || !bestState.m_optimizeValid);
         if (update) {
             // Update the best state.
+            float oldBestResult = bestState.m_bestResult;
             bestState = state;
+            bestState.m_bestResult = state.MaxResults();
+            bestState.m_oldResult = oldBestResult;
 
             // Test the precision of the results.
             if ((bestState.PassMode() != FIRESTARTER_MONEYMAKER) && (bestState.PassMode() != FIRESTARTER_MONEYOPTIMIZE))

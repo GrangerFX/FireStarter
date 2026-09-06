@@ -393,14 +393,14 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     float bestError = bestState.m_precision;
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
-        statusString = Format("%s: Seed=%10llu  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10llu  Time=%.4f Seconds  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_id, maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_id, generationTime, runTime);
+        statusString = Format("%s: Seed=%10llu  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10llu  Time=%6.1f Seconds  Time=%6.1f Seconds  Run Time=%6.12f Seconds", state.Mode(), settings.m_evolveSeed + state.m_id, maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_id, generationTime, runTime);
     } else if ((state.PassMode() == FIRESTARTER_MONEYMAKER) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
 #if MONEYMAKER_WINS
         float returns = 100.0f / bestResult;  // Remove inversion.
 #else
         float returns = MoneyMakerReturns(1.0f - bestResult); // Remove inversion.
 #endif
-        statusString = Format("%s: Generation=%3u  Best=%.8f%%  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), generation, returns, generationTime, runTime);
+        statusString = Format("%s: Generation=%3u  Best=%.8f%%  Time=%6.1f Seconds  Run Time=%6.1f Seconds", state.Mode(), generation, returns, generationTime, runTime);
     } else {
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
         if ((settings.m_tests > 0) || test)
@@ -419,15 +419,17 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
                 resultString = "*New Result";
             else
                 resultString = ">New Result";
-            statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), maxResult);
-            if ((state.PassMode() == FIRESTARTER_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM)) {
-                statusString += Format("  MinIndex=%u", state.m_minIndex);
-                if (settings.m_variations == 1)
-                    statusString += Format("  EvolveAge=%u", state.m_minIndex, (unsigned int)state.EvolveAge1(0));
-            }
+            statusString += Format("  Old Result=%11.8f %s=%.8f", state.m_oldResult, resultString.c_str(), maxResult);
+
+            // Only used for debugging.
+//          if ((state.PassMode() == FIRESTARTER_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM)) {
+//              statusString += Format("  MinIndex=%6u", state.m_minIndex);
+//              if (settings.m_variations == 1)
+//                  statusString += Format("  EvolveAge=%3u", (unsigned int)state.EvolveAge1(0));
+//          }
         } else if ((state.PassMode() == FIRESTARTER_RANDOM) || (state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
             statusString += Format("  Generation=%3u", generation);
-            if ((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {
+            if ((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
                 if (settings.m_optimize > 1)
                     statusString += Format("  Optimize=%u", state.m_optimize_pass);
             } else {
@@ -444,11 +446,13 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         statusString += Format("  Best=%.8f ", bestResult);
         if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
             statusString += Format("BestError=%.8f", bestError);
-        if (!((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEED_TEST)))
-            statusString += Format("  BestAge=%u", bestState.m_age);
+
+        // Only used for debugging.
+//      if (!((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEED_TEST)))
+//          statusString += Format("  BestAge=%3u", bestState.m_age);
 
         // Comment out this line when doing diffs to compare the results.
-        statusString += Format("  Time=%.3f  Run Time=%.1f", generationTime, runTime);
+        statusString += Format("  Time=%6.1f  Run Time=%6.1f", generationTime, runTime);
     }
 
     // Create the registers string.
