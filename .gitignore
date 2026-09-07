@@ -7,6 +7,7 @@
 *.userosscache
 *.sln.docstates
 *.tlog
+*.iobj
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -264,4 +265,3 @@ __pycache__/
 /Distribution/FireStarter.exe
 *.exe
 /enc_temp_folder/*
-/Build/FireStarter_x64/Evolve_MoneyMaker_Release/Evolve_MoneyMaker_Release.iobj

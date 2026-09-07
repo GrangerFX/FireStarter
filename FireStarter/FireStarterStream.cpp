@@ -698,7 +698,6 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         // Note: These are used by the units so they must be declared first so they are destroyed last.
         FireStarterSettings evolveSettings(FIRESTARTER_MONEYMAKER);
         FireStarterSettings optimizeSettings(FIRESTARTER_MONEYOPTIMIZE);
-        FireStarterBestCodes bestCodes;
         std::string streamResultsPath = Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str());
         unsigned long long evolveID = 0;
         unsigned long long optimizeID = 0;
@@ -741,6 +740,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
             optimizeSettings.m_stock = testStock;
             FireStarterStates evolveStates(numEvolve, evolveSettings, 0, evolveID, test);
             FireStarterStates optimizeStates(numOptimize, optimizeSettings, 0, optimizeID, test);
+            FireStarterBestCodes bestCodes;
 
             // Initialize the evolve state's best codes
             bestCodes.InitBestCodes(evolveSettings);
