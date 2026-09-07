@@ -8,6 +8,9 @@
 *.sln.docstates
 *.tlog
 *.iobj
+*.exe
+*.lastbuildstate
+*.recipe
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -17,6 +20,7 @@
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+[Bb]uild/
 x64/
 x86/
 bld/
@@ -261,7 +265,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-/Distribution/FireMaker.exe
-/Distribution/FireStarter.exe
-*.exe
 /enc_temp_folder/*
