@@ -717,13 +717,6 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amd.us.txt",  'AMD ', evolveSettings.m_offset);
         MoneyMakerStocks* stocks = stockManager.Stocks();
         unsigned int numStocks = stocks->size();
- 
-        // Create the execution unit used to evolve and optimize the best states.
-        FireStarterUnits evolveUnits(numDevices, "MoneyEvolve");
-        FireStarterUnits optimizeUnits(numDevices, "MoneyOptimize");
-        evolveUnits.ExecuteSetStocks(stocks);
-        optimizeUnits.ExecuteSetStocks(stocks);
-        evolveUnits.ExecuteGenerateEvolve(evolveSettings.m_mode); // Generate and compile the evolve code.
 
         size_t numEvolve = (MONEYMAKER_EVOLVE_COUNT + (numDevices - 1)) / numDevices;
         size_t numOptimize = (MONEYMAKER_OPTIMIZE_COUNT + (numDevices - 1)) / numDevices;
@@ -735,15 +728,22 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
             unsigned long long test = FIRESTARTER_START_TEST + t;
             unsigned int testStock = (startStock + test) % numStocks;
 
+            // Create the execution unit used to evolve and optimize the best states.
+            FireStarterUnits evolveUnits(numDevices, "MoneyEvolve");
+            FireStarterUnits optimizeUnits(numDevices, "MoneyOptimize");
+            evolveUnits.ExecuteSetStocks(stocks);
+            optimizeUnits.ExecuteSetStocks(stocks);
+            evolveUnits.ExecuteGenerateEvolve(evolveSettings.m_mode); // Generate and compile the evolve code.
+
             // Initialize the states for the current test.
             evolveSettings.m_stock = testStock;
             optimizeSettings.m_stock = testStock;
+            optimizeSettings.m_tests = evolveTests;
             FireStarterStates evolveStates(numEvolve, evolveSettings, 0, evolveID, test);
             FireStarterStates optimizeStates(numOptimize, optimizeSettings, 0, optimizeID, test);
-            FireStarterBestCodes bestCodes;
 
-            // Initialize the evolve state's best codes
-            bestCodes.InitBestCodes(evolveSettings);
+            // Initialize the test's best codes
+            FireStarterBestCodes bestCodes(evolveSettings);
 
             // Exit after a set number of generations.
             if (WillTerminate())

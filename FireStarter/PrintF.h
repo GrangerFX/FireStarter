@@ -13,6 +13,22 @@ inline int printf2(const char *format, ...)
     va_list vaArgs;
     va_start(vaArgs, format);
 
+#if 1
+    // Fixed stack buffer to avoid heap allocation and reentrancy issues.
+    char buffer[16384];
+    int ret = vsnprintf(buffer, sizeof(buffer), format, vaArgs);
+    va_end(vaArgs);
+
+    if (ret < 0) {
+        buffer[0] = '\0';
+        ret = 0;
+    } else if (ret >= (int)sizeof(buffer)) {
+        // truncated; ensure null termination
+        buffer[sizeof(buffer) - 1] = '\0';
+    }
+
+    OutputDebugStringA(buffer);
+#else
     // reliably acquire the size from a copy of
     // the variable argument array
     // and a functionally reliable call
@@ -31,7 +47,7 @@ inline int printf2(const char *format, ...)
     va_end(vaArgs);
 
     OutputDebugStringA(zc.data());
-    std::cerr << zc.data();
+#endif
     return ret;
 } // printf2
 

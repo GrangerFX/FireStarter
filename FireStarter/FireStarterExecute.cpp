@@ -70,8 +70,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     if ((settings.m_mode == FIRESTARTER_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
         resultsSize = settings.m_population * sizeof(float);
         codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
-        if (settings.m_mode != FIRESTARTER_MONEYMAKER)
-            populationSize = FireStarterPopulation::PopulationSize(settings);
+        populationSize = FireStarterPopulation::PopulationSize(settings);
         if (settings.m_mode == FIRESTARTER_SELECT)
             parentCodeSize = FireStarterCode::CodeSize(settings);
         if ((settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE)) {

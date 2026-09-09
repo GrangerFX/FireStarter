@@ -593,6 +593,7 @@
     <ClInclude Include="Distribution\FireMoneyMaker.h" />
     <ClInclude Include="Distribution\FireSinSim.h" />
     <ClInclude Include="Distribution\FireStarterCodeGenerate.h" />
+    <ClInclude Include="Distribution\FireStarterModes.h" />
     <ClInclude Include="Distribution\FireStarterResults.h" />
     <ClInclude Include="Distribution\FireStarterSettings.h" />
     <ClInclude Include="Distribution\FireStarterTarget.h" />

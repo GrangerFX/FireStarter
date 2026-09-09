@@ -1,4 +1,10 @@
 #pragma once
+
+#include "FireStarterModes.h"
+#ifndef FIRESTARTER_MODE
+#define FIRESTARTER_MODE FIRESTARTER_EVOLVE_NEW
+#endif
+#include "FireStarterSettings.h"
 #include "FireStarterResults.h"
 #include "MoneyMakerStocks.h"
 

@@ -1,5 +1,10 @@
 #pragma once
 
+#include "FireStarterModes.h"
+#ifndef FIRESTARTER_MODE
+#define FIRESTARTER_MODE FIRESTARTER_OPTIMIZE
+#endif
+#include "FireStarterSettings.h"
 #include "FireStarterResults.h"
 
 inline float OptimizeCompiledEvaluate(const FireStarterData& testData, float n)

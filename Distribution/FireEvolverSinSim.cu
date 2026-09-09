@@ -1,4 +1,10 @@
 #pragma once
+
+#include "FireStarterModes.h"
+#ifndef FIRESTARTER_MODE
+#define FIRESTARTER_MODE FIRESTARTER_EVOLVE_SINSIM
+#endif
+#include "FireStarterSettings.h"
 #include "FireStarterResults.h"
 #include "FireSinSim.h"
 #include "CUDADefines.h"

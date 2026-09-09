@@ -19,11 +19,13 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings)
             dim3 cudaBlockSize(WARP_THREADS, 1, 1);
             dim3 cudaGridSize(1, 1, 1);
 
+            unsigned int mode = FIRESTARTER_MODE;
+
             CUdeviceptr deviceFireSettings = 0;
             checkCUDAErrors(cuMemAllocAsync(&deviceFireSettings, sizeof(FireStarterSettings), stream));
             checkCUDAErrors(cuMemsetD8Async(deviceFireSettings, 0, sizeof(FireStarterSettings), stream));
 
-            void* arr[] = { reinterpret_cast<void*>(&deviceFireSettings) };
+            void* arr[] = { reinterpret_cast<void*>(&deviceFireSettings, &mode) };
 
             checkCUDAErrors(cuLaunchKernel(m_fireSettingsFunction,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
