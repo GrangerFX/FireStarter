@@ -65,6 +65,14 @@
       <Configuration>Select_Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="SinSim_Debug|x64">
+      <Configuration>SinSim_Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="SinSim_Release|x64">
+      <Configuration>SinSim_Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Solution_Debug|x64">
       <Configuration>Solution_Debug</Configuration>
       <Platform>x64</Platform>
@@ -99,6 +107,9 @@
   <PropertyGroup Condition="'$(Configuration)'=='Evolve_SinSim_Debug'">
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='SinSim_Debug'">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Evolve_New_Debug'">
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
@@ -124,6 +135,9 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Evolve_SinSim_Release'">
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='SinSim_Release'">
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Evolve_New_Release'">
@@ -172,6 +186,10 @@
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
     <TargetName>$(Configuration)</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
+    <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
+    <TargetName>$(Configuration)</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
     <TargetName>$(Configuration)</TargetName>
@@ -205,6 +223,10 @@
     <TargetName>$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
+    <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
+    <TargetName>$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
     <TargetName>$(Configuration)</TargetName>
   </PropertyGroup>
@@ -278,6 +300,17 @@
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_WINDOWS;NOMINMAX;_DEBUG;FIRESTARTER_MODE=FIRESTARTER_EVOLVE_SINSIM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='SinSim_Debug'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>_WINDOWS;NOMINMAX;_DEBUG;FIRESTARTER_MODE=FIRESTARTER_SINSIM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -383,6 +416,17 @@
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='SinSim_Release'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>_WINDOWS;NOMINMAX;NDEBUG;FIRESTARTER_MODE=FIRESTARTER_SINSIM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Evolve_New_Release'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
@@ -449,6 +493,8 @@
       </IgnoreAllDefaultLibraries>
       <IgnoreAllDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
       </IgnoreAllDefaultLibraries>
+      <IgnoreAllDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
+      </IgnoreAllDefaultLibraries>
       <IgnoreAllDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
       </IgnoreAllDefaultLibraries>
       <IgnoreAllDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
@@ -463,6 +509,7 @@
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
@@ -475,6 +522,8 @@
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
+      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
       </IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
       </IgnoreSpecificDefaultLibraries>
@@ -492,6 +541,7 @@
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">stdcpp20</LanguageStandard>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Release|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Release|x64'">stdcpp20</LanguageStandard>
@@ -501,6 +551,7 @@
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">true</UseStandardPreprocessor>
+      <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Release|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Release|x64'">true</UseStandardPreprocessor>
@@ -512,6 +563,7 @@
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">stdcpp20</LanguageStandard>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">stdcpp20</LanguageStandard>
@@ -521,6 +573,7 @@
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">true</UseStandardPreprocessor>
+      <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">true</UseStandardPreprocessor>
@@ -532,6 +585,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
@@ -543,6 +597,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
@@ -554,6 +609,7 @@
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
@@ -565,6 +621,7 @@
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
@@ -642,6 +699,8 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
+      </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
@@ -659,6 +718,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
       </ExcludedFromBuild>
@@ -680,6 +741,8 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
+      </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
@@ -697,6 +760,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
       </ExcludedFromBuild>
@@ -718,6 +783,8 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
+      </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
@@ -735,6 +802,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
       </ExcludedFromBuild>
@@ -758,6 +827,8 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
+      </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
@@ -775,6 +846,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
       </ExcludedFromBuild>
@@ -797,6 +870,8 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
+      </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
@@ -814,6 +889,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
       </ExcludedFromBuild>
@@ -835,6 +912,8 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
+      </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
@@ -852,6 +931,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
       </ExcludedFromBuild>
@@ -873,6 +954,8 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
+      </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
@@ -890,6 +973,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
       </ExcludedFromBuild>
@@ -911,6 +996,8 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
       </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
+      </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
@@ -928,6 +1015,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
       </ExcludedFromBuild>
@@ -947,6 +1036,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">true</ExcludedFromBuild>
@@ -956,6 +1046,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Release|x64'">true</ExcludedFromBuild>
@@ -967,6 +1058,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">true</ExcludedFromBuild>
@@ -976,6 +1068,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Release|x64'">true</ExcludedFromBuild>

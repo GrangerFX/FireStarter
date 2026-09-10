@@ -23,6 +23,8 @@ Global
 		Random_Release|x64 = Random_Release|x64
 		Select_Debug|x64 = Select_Debug|x64
 		Select_Release|x64 = Select_Release|x64
+		SinSim_Debug|x64 = SinSim_Debug|x64
+		SinSim_Release|x64 = SinSim_Release|x64
 		Solution_Debug|x64 = Solution_Debug|x64
 		Solution_Release|x64 = Solution_Release|x64
 	EndGlobalSection
@@ -59,6 +61,10 @@ Global
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Select_Debug|x64.Build.0 = Select_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Select_Release|x64.ActiveCfg = Select_Release|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Select_Release|x64.Build.0 = Select_Release|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.SinSim_Debug|x64.ActiveCfg = SinSim_Debug|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.SinSim_Debug|x64.Build.0 = SinSim_Debug|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.SinSim_Release|x64.ActiveCfg = SinSim_Release|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.SinSim_Release|x64.Build.0 = SinSim_Release|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Solution_Debug|x64.ActiveCfg = Solution_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Solution_Debug|x64.Build.0 = Solution_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Solution_Release|x64.ActiveCfg = Solution_Release|x64

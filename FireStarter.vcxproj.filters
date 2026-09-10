@@ -171,6 +171,9 @@
     <ClInclude Include="FireStarter\CUDAModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Distribution\FireStarterModes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Distribution\FireEvolverNew.cu">

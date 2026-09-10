@@ -45,8 +45,8 @@ void FireStarterShow::EvaluateEvolveSinSim(const FireStarterState& state, unsign
     const FireStarterSettings& settings = state.Settings();
     FireStarterDataVector dataVector;
     const FireStarterCode* code = state.Code();
+    state.DataVector(dataVector);
     for (unsigned int i = 0; i < evaluateWidth; i++) {
-        state.DataVector(dataVector);
         float input = SinSimNetwork::SinSimInputSample(i);
         m_targetData[i] = SinSimNetwork::SinSimTargetSample(i);
         m_evaluateData[i] = code->Evaluate(dataVector.Data(), input, settings.m_instructions);
@@ -83,6 +83,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
         // Note: Erase() would be called asynchronously following the drawing below and leavign the buffer black.
         m_window.EraseBuffers();
 
+        float center = height * 0.5f;
         if ((state.PassMode() == FIRESTARTER_MONEYMAKER) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
             const MoneyMakerStock& stock = stocks->Stock(settings.m_stock);
             const MoneyMakerStock& results = tradingResults->Stock(settings.m_stock);
@@ -163,7 +164,6 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
                 EvaluateSinSim(state, width);
                 for (unsigned int x = 0; x < width; x++) {
                     float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
-                    float center = height * 0.66f;
                     float target = m_targetData[x];
                     float result = m_evaluateData[x];
 
@@ -213,7 +213,6 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
                 // Evaluate the SinSim FireShow data.
                 EvaluateEvolveSinSim(state, width);
                 for (unsigned int x = 0; x < width; x++) {
-                    float center = height * 0.66f;
                     float target = m_targetData[x];
                     float result = m_evaluateData[x];
 
@@ -260,7 +259,6 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
                     EvaluateEvolve(state, width, thetaStart, thetaEnd, v);
                     for (unsigned int x = 0; x < width; x++) {
                         float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
-                        float center = height * 0.66f;
                         float target = m_targetData[x];
                         float result = m_evaluateData[x];
 
@@ -297,6 +295,7 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
         uchar4* pixels = (uchar4*)window.GetHostPixels(width, height);
         if (!pixels)
             return;
+        float center = height * 0.5f;
         float maxError = 0.0f;
         for (unsigned int v = 0; v < SOLUTION_VARIATIONS; v++) {
             int xScale = height / 8;
@@ -319,7 +318,6 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
             }
             for (unsigned int x = 0; x < width; x++) {
                 float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
-                float center = height * 0.66f;
                 float target = SolutionTarget(theta, v + SOLUTION_VARIATION);
     #if SOLUTION_VARIATIONS == 1
                 float solution = Solution(theta);
