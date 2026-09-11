@@ -6,7 +6,6 @@
 #endif
 #include "FireStarterSettings.h"
 #include "FireStarterResults.h"
-#include "MoneyMakerStocks.h"
 
 inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
