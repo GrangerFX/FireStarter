@@ -471,8 +471,10 @@ void FireStarterState::InitCode(const FireStarterSettings& settings, const FireS
 void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index, unsigned int variation)
 {
     // Load the state's data from the population data.
-    const FireStarterResult* result = FireStarterPopulation::PopulationResult(population, settings, index, variation);
-    Result(variation)->Copy(result, settings.m_registers);
+    if (population) {
+        const FireStarterResult* result = FireStarterPopulation::PopulationResult(population, settings, index, variation);
+        Result(variation)->Copy(result, settings.m_registers);
+    }
 } // InitResult
 
 void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int index, unsigned int variation)

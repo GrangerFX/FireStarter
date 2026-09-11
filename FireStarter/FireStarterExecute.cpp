@@ -258,14 +258,11 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state, FireStart
     for (unsigned int i = 1; i < populationCount; i++) {
         float curResult = m_CUDAResults.HostPtr()[i];
         if (curResult < minResult) {
-            if (!curResult) {
-                int foo = 1;
-            }
             minResult = curResult;
             minIndex = i;
         }
         if (curResult < bestCodes.WorstResult())
-            bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);
+            bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);   // Note: Async so the best code may not match the state's code.
     }
 
     // Update the state's best code.

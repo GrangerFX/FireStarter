@@ -2,11 +2,10 @@
 
 #include "FireStarterModes.h"
 #ifndef FIRESTARTER_MODE
-#define FIRESTARTER_MODE FIRESTARTER_SPEEDTEST
+#define FIRESTARTER_MODE FIRESTARTER_SPEED_TEST
 #endif
 #include "FireStarterSettings.h"
 #include "FireStarterResults.h"
-#include "CUDADefines.h"
 
 inline bool SpeedTestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
@@ -25,7 +24,7 @@ inline bool SpeedTestEvaluate(FireStarterSharedData& sharedData, const FireStart
 } // SpeedTestEvaluate
 
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireStarterCode* codes, unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount)
+GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount)
 {
     // Check if the user is trying to abort and quit the application.
     if (SetSharedKillSwitch())
@@ -47,9 +46,10 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     float theta[FIRESTARTER_EVOLVE_GPU_SAMPLES];
     float target[FIRESTARTER_EVOLVE_GPU_SAMPLES];
     float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_EVOLVE_GPU_SAMPLES - 1);
+    unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
     for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
-        target[i] = Target(t, variation);
+        target[i] = Target(t, targetVariation);
     }
 
     // Evolve the program registers for each variation.
@@ -61,18 +61,18 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     // The first generation is initalized with random numbers.
     float memberResult = FIRESTARTER_START_RESULT;
     for (unsigned int i = 0; i < 10; i++) {
-        code.InitCode(memberSeed);
-        registers = code.Optimize();
+        registers = code.InitOptimizedCode(memberSeed);
         data.InitData(memberSeed, registers);
         if (SpeedTestEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
     }
+
     FireStarterCode bestCode = code;
     FireStarterCode oldCode = code;
     FireStarterData bestData = data;
     FireStarterData oldData = data;
     float bestResult = memberResult;
-    float result = memberResult;
+    float oldResult = memberResult;
 
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
@@ -83,15 +83,15 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
         // Evolve the code and data.
         float evolutionScale;
         if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
-            evolveAge = 0;
             evolutionScale = FIRESTARTER_START_SCALE;
-            code.InitCode(memberSeed);
-            registers = code.Optimize();
+            registers = code.InitOptimizedCode(memberSeed);
             data.InitData(memberSeed, registers);
-            result = FIRESTARTER_START_RESULT;
+            oldResult = FIRESTARTER_START_RESULT;
             memberResult = FIRESTARTER_START_RESULT;
+            evolveAge = 0;
         } else {
-            evolutionScale = FIRESTARTER_SCALE * memberResult;
+            // Randomize a register each generation.
+            evolutionScale = memberResult * FIRESTARTER_SCALE;
             if (evolveAge > 0)
                 data.RandomData(memberSeed, evolutionScale, registers);
         }
@@ -101,43 +101,44 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
-            float curResult = result * 0.99f;
+            float curResult = memberResult * 0.99f;
             if (SpeedTestEvaluate(sharedData, data, code, target, theta, curResult))
-                result = curResult;
+                memberResult = curResult;
             else
                 data[d] = old;
         }
 
         // Did the results improve?
-        if (!pass || (result < memberResult)) {
+        if (!pass || (memberResult < oldResult)) {
             // If the result was better, save the results.
-            if (result < bestResult) {
-                bestCode = code;
-                bestData = data;
-                bestResult = result;
-                bestAge = evolveAge;
-            }
             oldCode = code;
             oldData = data;
-            memberResult = result;
+            oldResult = memberResult;
             evolveAge = 0;
+
+            // Update the best result.
+            if (!pass || (memberResult < bestResult)) {
+                bestCode = code;
+                bestData = data;
+                bestResult = memberResult;
+                bestAge = evolveAge;
+            }
         } else {
             // Revert to the original code and data.
             code = oldCode;
             data = oldData;
+            memberResult = oldResult;
             evolveAge++;
         }
     }
 
     // Return the optimized best code.
-    if (codes)
-        codes[member].Copy(bestCode);
+    codes[member].Copy(bestCode);
 
     // Return the best result.
-    if (results)
-        results[member] = bestResult;
+    results[member] = bestResult;
 
     // Return the population data for debugging.
     if (population)
-        FireStarterPopulation::PopulationResult(population, member, variation)->InitResult(data, bestResult);
+        FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
 } // SpeedTest
