@@ -10,7 +10,7 @@
 #define FIRESTARTER_SINSIM          7           // SinSim mini neural net algorithm for comparison.
 #define FIRESTARTER_MONEYMAKER      8           // GPU MoneyMaker evolved share price prediction.
 #define FIRESTARTER_MONEYOPTIMIZE   9           // Optimize a previously MoneyMaker evolved state.
-#define FIRESTARTER_SPEED_TEST      10          // Speed testing for variations of GPU evolution.
-#define FIRESTARTER_OPTIMIZE        11          // Optimize a previously evolved state.
+#define FIRESTARTER_OPTIMIZE        10          // Optimize a previously evolved state.
+#define FIRESTARTER_SPEED_TEST      11         // Speed testing for variations of GPU evolution.
 #define FIRESTARTER_SOLUTION        12          // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODES           13          // Number of modes

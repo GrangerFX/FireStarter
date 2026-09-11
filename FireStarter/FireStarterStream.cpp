@@ -909,9 +909,6 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, speedTestSettings, manager);
 
-        // Initialize the evolve state's best codes.
-        FireStarterBestCodes bestCodes(speedTestSettings);
-
         if (execute->ExecuteGenerateEvolve(speedTestSettings.m_mode)) {
             // Loop until the the evolve completion condition or the host program is quit.
             unsigned long long evolveTests = MAX(speedTestSettings.m_tests, 1);
@@ -928,7 +925,7 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
                 // Loop for the number of generations, the completion condition or the host program is quit.
                 do {
                     // Test the current generation.
-                    execute->ExecuteEvolveGPU(testState, bestCodes);
+                    execute->ExecuteSpeedTest(testState);
 
                     // Update the results in the UI and check for completion.
                     complete->CompleteState(bestState, testState);

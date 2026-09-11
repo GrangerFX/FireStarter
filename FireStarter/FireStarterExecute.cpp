@@ -886,6 +886,71 @@ void FireStarterExecute::ExecuteMoneyTestPass(FireStarterState& state, unsigned 
     }
 } // ExecuteMoneyTestPass
 
+void FireStarterExecute::ExecuteSpeedTestPass(FireStarterState& state)
+{
+    // Launch the calculation kernel
+    FireStarterSettings settings = state.Settings();
+    unsigned int populationCount = settings.m_population;
+    unsigned long long seed = state.EvolutionSeed();
+    unsigned int passes = settings.m_passes;
+    unsigned int variation = FIRESTARTER_VARIATION;
+
+    if (m_simulateGPU) {
+        unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+        unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
+        dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+        dim3 cudaGridSize(blocksPerGrid, 1, 1);
+        blockDim = cudaBlockSize;
+        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                EvolverGPU(m_CUDAResults.HostPtr(), m_CUDAPopulation0.HostPtr(), m_CUDACodes.HostPtr(), variation, seed, passes, populationCount);
+    } else {
+        unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+        unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
+        CUDAParameters parameters(m_CUDAResults.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDACodes.DevicePtr(), variation, seed, passes, populationCount);
+
+        dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+        dim3 cudaGridSize(blocksPerGrid, 1, 1);
+
+        checkCUDAErrors(cuLaunchKernel(Module().m_executeFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            Stream(),                                           // stream
+            parameters.Parameters(),                            // arguments
+            0));
+
+        m_CUDAResults.DeviceToHost();
+        m_CUDACodes.DeviceToHost();
+        m_CUDAPopulation0.DeviceToHost();
+        SynchronizeContext();
+    }
+
+    bool validResult = false;
+    float minResult = m_CUDAResults.HostPtr()[0];
+    unsigned int minIndex = 0;
+    for (unsigned int i = 1; i < populationCount; i++) {
+        float curResult = m_CUDAResults.HostPtr()[i];
+        if (curResult < minResult) {
+            minResult = curResult;
+            minIndex = i;
+        }
+    }
+
+    // Update the state's best code.
+    state.InitCode(settings, m_CUDACodes.HostPtr(), minResult, minIndex);
+    if (m_CUDAPopulation0.HostPtr())
+        state.InitResult(settings, m_CUDAPopulation0.HostPtr(), minIndex, variation);
+    state.MaxResult(variation) = minResult;
+    state.m_oldResult = state.m_bestResult;
+    state.m_bestResult = minResult;
+    state.m_minIndex = minIndex;
+} // ExecuteSpeedTestPass
+
 bool FireStarterExecute::Compile(FireStarterJob*& job)
 {
     // Release the current job.
@@ -1392,6 +1457,20 @@ MoneyMakerStocks* FireStarterExecute::ExecuteMoneyTest(FireStarterState& testSta
     });
     return m_CUDATradingResults.HostPtr();
 } // ExecuteMoneyTest
+
+void FireStarterExecute::ExecuteSpeedTest(FireStarterState& evolveState)
+{
+    // Note: EvolveGPU has been converted to use multiple GPUs.
+    DispatchSync([this, &evolveState] {
+        if (GenerateEvolve(evolveState.Settings().m_mode)) {
+            evolveState.m_timer.Start();
+            if (InitPopulation(evolveState.Settings())) {
+                ExecuteSpeedTestPass(evolveState);
+                evolveState.m_generation++;
+            }
+        }
+    });
+} // ExecuteSpeedTest
 
 void FireStarterExecute::ExecuteOptimize(FireStarterState& optimizeState)
 {

@@ -178,6 +178,7 @@ private:
     void ExecuteSmartOptimizePasses(FireStarterState& state);
     void ExecuteMoneyOptimizePass(FireStarterState& state);
     void ExecuteMoneyTestPass(FireStarterState& state, unsigned int startDay, unsigned int tradingDays, unsigned int validationDays);
+    void ExecuteSpeedTestPass(FireStarterState& state);
     bool GenerateEvolve(unsigned int mode);
     bool GenerateOptimize(const FireStarterSettings& settings, const FireStarterCodeGenerate* code, std::string& evaluateCode, unsigned int mode);
     bool Compile(FireStarterJob* &job);
@@ -203,6 +204,7 @@ public:
     void ExecuteOptimize(FireStarterState& optimizeState);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     MoneyMakerStocks* ExecuteMoneyTest(FireStarterState& testState, unsigned int startDay = MONEYMAKER_VARIATION, unsigned int tradingDays = MONEYMAKER_TRADING, unsigned int validationDays = MONEYMAKER_VALIDATION);
+    void ExecuteSpeedTest(FireStarterState& evolveState);
     void ExecuteRandom(void);
     void ExecuteFinish(void);
     void SimulateGPU(bool simulateGPU);
