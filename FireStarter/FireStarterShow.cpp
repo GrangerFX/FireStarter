@@ -288,8 +288,8 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
 void FireStarterShow::FireSolution(FireStarterWindow& window)
 {
     window.DispatchSync([&window] {
-        window.Erase();
         std::string statusString = "FireStarter:";
+        window.EraseBuffers();
         unsigned int width = 0;
         unsigned int height = 0;
         uchar4* pixels = (uchar4*)window.GetHostPixels(width, height);
@@ -342,8 +342,8 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
             }
             statusString += Format(" Solution %d = %.8f", v, maxError);
         }
+        window.Display();
         window.DisplayText(statusString);
-        window.DisplayImage();
     });
 } // FireSolution
 

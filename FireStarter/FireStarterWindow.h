@@ -92,36 +92,41 @@ public:
         });
     } // Resize
 
+    inline void Display(void)
+    {
+        if (m_size && m_CUDABuffer)
+            checkCUDAErrors(cuMemcpyDtoH(m_hostBase, m_deviceBase, m_size));
+        const unsigned char* pixels = (const unsigned char*)m_hostBase;
+        if (pixels)
+            SerialThread::DispatchMainSync([this, pixels] {
+                if (m_window && m_width && m_height) {
+                    unsigned char buffer[4096];
+                    BITMAPINFO* bm = (BITMAPINFO*)buffer;
+                    bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                    bm->bmiHeader.biHeight = -(int)m_height;
+                    bm->bmiHeader.biPlanes = 1;
+                    bm->bmiHeader.biCompression = BI_RGB;
+                    bm->bmiHeader.biSizeImage = 0;
+                    bm->bmiHeader.biXPelsPerMeter = 0;
+                    bm->bmiHeader.biYPelsPerMeter = 0;
+                    bm->bmiHeader.biClrUsed = 0;
+                    bm->bmiHeader.biClrImportant = 0;
+                    bm->bmiHeader.biWidth = m_width;
+                    bm->bmiHeader.biBitCount = 32;
+
+                    HDC hdc = GetDC((HWND)m_window);
+                    if (hdc) {
+                        SetDIBitsToDevice(hdc, 0, 0, m_width, m_height, 0, 0, 0, m_height, pixels, bm, DIB_RGB_COLORS);
+                        GdiFlush();
+                    }
+                }
+            });
+    } // Display
+
     inline void DisplayImage(void)
     {
         DispatchAsync([this] {
-            if (m_size && m_CUDABuffer)
-                checkCUDAErrors(cuMemcpyDtoH(m_hostBase, m_deviceBase, m_size));
-            const unsigned char* pixels = (const unsigned char*)m_hostBase;
-            if (pixels)
-                SerialThread::DispatchMainSync([this, pixels] {
-                    if (m_window && m_width && m_height) {
-                        unsigned char buffer[4096];
-                        BITMAPINFO* bm = (BITMAPINFO*)buffer;
-                        bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-                        bm->bmiHeader.biHeight = -(int)m_height;
-                        bm->bmiHeader.biPlanes = 1;
-                        bm->bmiHeader.biCompression = BI_RGB;
-                        bm->bmiHeader.biSizeImage = 0;
-                        bm->bmiHeader.biXPelsPerMeter = 0;
-                        bm->bmiHeader.biYPelsPerMeter = 0;
-                        bm->bmiHeader.biClrUsed = 0;
-                        bm->bmiHeader.biClrImportant = 0;
-                        bm->bmiHeader.biWidth = m_width;
-                        bm->bmiHeader.biBitCount = 32;
-
-                        HDC hdc = GetDC((HWND)m_window);
-                        if (hdc) {
-                            SetDIBitsToDevice(hdc, 0, 0, m_width, m_height, 0, 0, 0, m_height, pixels, bm, DIB_RGB_COLORS);
-                            GdiFlush();
-                        }
-                    }
-                });
+            Display();
         });
     } // DisplayImage
 
