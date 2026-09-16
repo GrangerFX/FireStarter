@@ -50,6 +50,11 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)Distribution</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)Distribution</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
@@ -96,6 +101,11 @@
     <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Random_Release|x64'">
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)Distribution</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)Distribution</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>

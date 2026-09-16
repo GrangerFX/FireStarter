@@ -26,7 +26,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
         FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, randomSettings, manager, false);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, randomSettings, manager);
 
         // Loop until the the completion condition or the host program is quit.
         unsigned int tests = MAX(randomSettings.m_tests, 1);

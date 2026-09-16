@@ -19,6 +19,8 @@ Global
 		Evolve_SinSim_Release|x64 = Evolve_SinSim_Release|x64
 		Evolve_Speed_Test_Debug|x64 = Evolve_Speed_Test_Debug|x64
 		Evolve_Speed_Test_Release|x64 = Evolve_Speed_Test_Release|x64
+		Optimize_Debug|x64 = Optimize_Debug|x64
+		Optimize_Release|x64 = Optimize_Release|x64
 		Random_Debug|x64 = Random_Debug|x64
 		Random_Release|x64 = Random_Release|x64
 		Select_Debug|x64 = Select_Debug|x64
@@ -53,6 +55,10 @@ Global
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_Speed_Test_Debug|x64.Build.0 = Evolve_Speed_Test_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_Speed_Test_Release|x64.ActiveCfg = Evolve_Speed_Test_Release|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_Speed_Test_Release|x64.Build.0 = Evolve_Speed_Test_Release|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Optimize_Debug|x64.ActiveCfg = Optimize_Debug|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Optimize_Debug|x64.Build.0 = Optimize_Debug|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Optimize_Release|x64.ActiveCfg = Optimize_Release|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Optimize_Release|x64.Build.0 = Optimize_Release|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Random_Debug|x64.ActiveCfg = Random_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Random_Debug|x64.Build.0 = Random_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Random_Release|x64.ActiveCfg = Random_Release|x64
