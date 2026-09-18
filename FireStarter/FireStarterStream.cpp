@@ -131,7 +131,7 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
 
                 // Execute each state using one of the evolution execution units.
                 // Note: ExecuteEvolveCPU must be async because the compiles come back out of order.
-                std::atomic<unsigned int> evolveCount = numStates;
+                std::atomic<int> evolveCount = numStates;
                 for (FireStarterExecute* evolutionUnit : evolutionUnits)
                     evolutionUnit->ExecuteOptimizeCount(evolveCount);
 
@@ -211,6 +211,120 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
     }, sync);
 } // EvolveSelectStream
 
+#if 1
+void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
+{
+    Dispatch([this, &testCount] {
+        // Evolve a number of states equal to the evolveSettings.m_seeds.
+        FireStarterSettings evolveSettings(m_streamSettings);
+        unsigned int numStates = evolveSettings.m_states;
+        std::string streamDate = m_streamDate;
+
+        // Create the evolution code generator.
+        FireStarterExecute* executeEvolve = new FireStarterExecute("EvolveCPU");
+
+        // Create the evolution execution units.
+        FireStarterUnits evolutionUnits(evolveSettings.m_units, "EvolveCPUUnit");
+
+        // Create the optimization execution unit.
+        FireStarterExecute* executeOptimize = new FireStarterExecute("OptimizeCPU");
+
+        // Create the completion unit.
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings);
+
+        // Loop until the the evolve completion condition or the host program is quit.
+        unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
+        for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
+            // Initialize the states.
+            FireStarterStates states(numStates);
+            FireStarterStates allStates;
+            unsigned long long test = FIRESTARTER_START_TEST + t;
+            FireStarterState bestEvolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
+
+            // Keep track of the tested instructions so they don't get generated again.
+            TestedCodes testedCodes;
+
+            // Evolve the current test.
+            unsigned long long generation = 0;
+            while (!WillTerminate() && !bestEvolveState.Complete()) {
+                // Evolve a new generation.
+                executeEvolve->EvolveStates(test, evolveSettings, states, allStates, testedCodes, generation);
+
+                // Execute each state using one of the evolution execution units.
+                // Note: ExecuteEvolveCPU must be async because the compiles come back out of order.
+                evolutionUnits.ExecuteEvolveOptimize(states, bestEvolveState, complete);
+
+                // Store the valid results from the current set of states in the list of all states.
+                for (unsigned int i = 0; i < numStates; i++) {
+                    FireStarterState& newState = states[i];
+                    if (newState.m_optimizeValid) {
+                        // Replace the old state with the new state if it improved.
+                        FireStarterState& oldState = allStates[newState.m_id];
+                        if (newState.MaxResults() < oldState.MaxResults()) {
+                            newState.m_generation = oldState.m_generation + 1;
+                            newState.m_age = 1;
+                            oldState = newState;
+                        }
+                    }
+                }
+
+                // Increment the generation.
+                generation++;
+                if (generation == evolveSettings.m_generations)
+                    break;
+            }
+
+            // Optimize the best state.
+            if (!WillTerminate() && !allStates.empty()) {
+                // Output the evolve results.
+                std::string resultText = Format("Duration: %10.1f  Average: %10.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", bestEvolveState.Duration(), SimpleTimer::RunDuration() / testCount, bestEvolveState.Settings().m_evolveSeed, test, generation, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResults());
+
+                // Optimize the evolved state.
+                if (evolveSettings.m_optimize) {
+                    FireStarterState optimizeState(bestEvolveState);
+                    FireStarterState optimizeBestState(optimizeState);
+
+                    // Generate the optimize code.
+                    if (executeOptimize->ExecuteGenerateOptimize(optimizeState)) {
+                        // Loop until the the optimize completion condition or the host program is quit.
+                        while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize) && !optimizeBestState.Complete()) {
+                            // Optimize the current generation.
+                            executeOptimize->ExecuteOptimize(optimizeState);
+
+                            // Update the results in the UI and check for completion.
+                            complete->CompleteState(optimizeBestState, optimizeState);
+
+                            // Increment the generation.
+                            optimizeState.m_optimize_pass++;
+                        }
+
+                        // Output the optimize results.
+                        if (!WillTerminate()) {
+                            resultText += Format("  Optimize Result=%.8f", optimizeState.MaxResults());
+                            if ((bestEvolveState.MaxResults() > evolveSettings.m_target) && (optimizeState.MaxResults() <= evolveSettings.m_target))
+                                resultText += " *";
+                        }
+                    }
+                }
+
+                if (bestEvolveState.MaxResults() <= evolveSettings.m_target)
+                    resultText += " *******";
+                resultText += "\n";
+                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
+            }
+        }
+
+        // Delete the completion unit.
+        delete complete;
+
+        // Delete the optimizate execution unit.
+        delete executeOptimize;
+
+        // Delete the evolution code generator.
+        delete executeEvolve;
+    }, sync);
+} // EvolveCPUStream
+#else
 void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {
     Dispatch([this, server, &testCount] {
@@ -265,7 +379,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
 
                 // Execute each state using one of the evolution execution units.
                 // Note: ExecuteEvolveCPU must be async because the compiles come back out of order.
-                std::atomic<unsigned int> evolveCount = numStates;
+                std::atomic<int> evolveCount = numStates;
                 for (FireStarterExecute* evolutionUnit : evolutionUnits)
                     evolutionUnit->ExecuteOptimizeCount(evolveCount);
 
@@ -343,6 +457,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
         delete manager;
     }, sync);
 } // EvolveCPUStream
+#endif
 
 void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {

@@ -28,7 +28,7 @@ public:
 	void CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation = 0);
     bool CompleteState(FireStarterState& bestState, const FireStarterState& state, const MoneyMakerStocks* stocks = nullptr, const MoneyMakerStocks* tradingResults = nullptr);
 	bool CompleteRandom(FireStarterState& bestState, FireStarterState& oldState);
-	bool CompleteStates(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
+    bool CompleteStates(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
     bool CompleteSelect(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
     void CompleteSaveResults(const FireStarterState& bestState);
     void InitComplete(void);

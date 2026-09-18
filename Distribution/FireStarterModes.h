@@ -5,8 +5,8 @@
 #define FIRESTARTER_SELECT          2           // Evolve on the CPU. Select best variation on the GPU.
 #define FIRESTARTER_EVOLVE_CPU      3           // CPU evolution used to generate actual results.
 #define FIRESTARTER_EVOLVE_GPU      4           // GPU evolution used to find faster algorithms.
-#define FIRESTARTER_EVOLVE_NEW      5           // GPU new evolution.
-#define FIRESTARTER_EVOLVE_SINSIM   6           // SinSim evolution.
+#define FIRESTARTER_EVOLVE_NEW      5           // GPU evolution experiment using fixed registers.
+#define FIRESTARTER_EVOLVE_SINSIM   6           // SinSim code instruction evolution.
 #define FIRESTARTER_SINSIM          7           // SinSim mini neural net algorithm for comparison.
 #define FIRESTARTER_MONEYMAKER      8           // GPU MoneyMaker evolved share price prediction.
 #define FIRESTARTER_MONEYOPTIMIZE   9           // Optimize a previously MoneyMaker evolved state.

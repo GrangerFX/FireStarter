@@ -1,11 +1,61 @@
 Project FireStarter
 
-Motivation:
-An AI with general intelligence has been proven difficult to create with large language models. I propose an alternate way to create a general AI using evolution as a basis rather than pre-coded neural networks. The concept is to keep the actual algorithms used for general AI a mystery by allowing them to form organically as part of the evolutionary process. To even start on this project, it is first necessary to understand some basic concepts of evolution and how it can be applied to the generation of algorithms.
+Goal: Find methods to evolve code that can solve a specific problem. These methods must be optimized to run on a GPU using CUDA.
 
-Test Bed:
-Project FireStarter was created to experimentally develop and test various evolutionary algorithms that generate code. It uses GPU code written in CUDA to have sufficiently large population sizes that evolution can occur as quickly and efficiently as possible.
-The project started in 2018 after several other AI experiments going back to the early 1980s. The target function has always been a sin() function between -PI and PI. Over time both the accuracy and speed of finding a solution has increased dramatically.
+Code Evolution
+
+The code has three components:
+1. The instructions that perform simple operations such as adding or multiplying a register.
+2. The register indices that the operations are applied to.
+3. The inital data values for each register.
+
+Each of these components can be evolved separately or together.
+
+Example:
+
+float function(float n) {
+    float r0 = 1.23456f;
+    float r1 = -0.09876f;
+    n = r0 += n;
+    n = r1 *= n;
+    return n;
+}
+
+Here there are two instructions, two registers and two initial data values.
+
+The opcodes are:
+    n = r[x] += n
+    n = r[x] *= n
+The register indices are 0 and 1.
+The initial data values are 1.23456 and -0.09876.
+
+When evolving the components together, the opcodes, register indices and data values will all initially be assigned random values. At each evolution iteration, one of these would be randomized, the code function would tested against the fitness function and reverted to the pevious state if the result does not improve.
+Alternately, only one component, for example the initial data value, would be modified, tested and, if needed, reverted during each evolution iteration. This would test the initial random instructions and register indices to find out if any set of initial data values allow them to improve on the current best results. This operation is simple enough to be performed in parallel on a GPU.
+
+
+Initial Data Optimization
+
+The best code candidates are compiled into CUDA PTX and executed directly on the GPU. This fully compiled code is highly performant and massively parallel. Only the initial data values are evolved as described above in a series of iterations. If the results improved during the generation, they are saved. If not, a number of random candidates are selected from the previous generation. If any of these produced better results than the current member, it is copied with its age incremeted.
+At each generation, newly successful members retain their previous inital data values. Older members (copied or original), have one of their values randomized prior to evolution iterations.
+This algorithm does a good job of avoiding stuck evolutions. It is the most tested, optimized and reliable code evolution algorithms.
+
+
+Problem: Indexing registers is much less performant than accessing fixed registers directly. In code, the difference is n = r[0] += n and n = r0 += n. The former requires looking up the register in shared memory while the latter accesses it directly.
+
+Solution 1: Perform only a small amount of iterations for randomized code to determine the best candidates. Compile the best candidates into CUDA PTX code with fixed register indices. Fully evolve only the data registers.
+This works very well for relatively simple problems but cannot solve more complex problems.
+
+Solution 2: Randomly generate and the evolve a large set of code candidates using the CPU. Each candidate is assigned a weight based on its fitness multiplied by the number of times it has been evolved without an improvement. The candidate with the lowest weight is selected for further evolution, compilation to CUDA PTX and initial data value evolution.
+
+Solution 3 (In research): Maintain a pool of successful register indices. Evolve the opcodes directly on the GPU by emulating them using the fixed registers. This removes the slow register indexing problem while allowing both the opcodes and initial data values to be evolved in parallel.
+As of this writing, the technique of using a constant array of register indices while emulating the opcodes has been successfully demonstrated but full code evolution has not yet been implemented or tested.
+
+Solution 4 (Proposed): It should be possible to implement very limited on GPU code compilation as an expansion of CUDA. A small set of instructions could be generated, compiled and executed directly on the GPU. This could be done between generations rather than on the fly to avoid self-modifying code which likely is not possible in current GPU hardware architectures. With a fairly limited set of instructions it should be possible to avoid GPU security issues.
+
+
+Programming Evolutionary Code
+
+
 
 
 The Breakthroughs:

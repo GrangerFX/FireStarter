@@ -152,10 +152,12 @@ private:
     std::string m_executeFunctionName;
     std::string m_executeTestName;
     std::string m_executeCode;
+    std::vector<std::string> m_executeOptions;
     std::string m_optimizeProgramName;
     std::string m_optimizeFunctionName;
     std::string m_optimizeTestName;
     std::string m_optimizeCode;
+    std::vector<std::string> m_optimizeOptions;
     size_t m_settingsSize = 0;
     size_t m_resultsSize = 0;
     size_t m_populationSize = 0;
@@ -186,6 +188,7 @@ private:
     bool GenerateEvolve(unsigned int mode);
     bool GenerateOptimize(const FireStarterSettings& settings, const FireStarterCodeGenerate* code, std::string& evaluateCode, unsigned int mode);
     bool Compile(FireStarterJob* &job);
+    void GenerateCode(FireStarterState& state);
     void GenerateCode(FireStarterJob* job);
     bool ExecuteJob(void);
 
@@ -193,6 +196,7 @@ public:
     inline size_t ExecuteIndex(void) const { return m_executeIndex; }
     bool ExecuteRandomState(const FireStarterState& state, bool sync = true);
     bool ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
+    bool EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
     bool EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
     void ExecuteSetStocks(const MoneyMakerStocks *stocks, bool sync = true);
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
@@ -206,7 +210,7 @@ public:
     void ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync = true);
     void ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync = true);
     void ExecuteOptimize(FireStarterState& optimizeState);
-    void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
+    void ExecuteOptimizeCount(std::atomic<int>& evolveCount); // Must be async because the compiles come back out of order.
     MoneyMakerStocks* ExecuteMoneyTest(FireStarterState& testState, unsigned int startDay = MONEYMAKER_VARIATION, unsigned int tradingDays = MONEYMAKER_TRADING, unsigned int validationDays = MONEYMAKER_VALIDATION);
     void ExecuteSpeedTest(FireStarterState& evolveState);
     void ExecuteRandom(void);
@@ -225,7 +229,7 @@ public:
     {
         for (FireStarterExecute* unit : *this)
             unit->Synchronize();
-    } // Synchronize
+    } // ExecuteSynchronize
 
     inline void ExecuteSetStocks(const MoneyMakerStocks* stocks)
     {
@@ -279,7 +283,7 @@ public:
         size_t numUnits = this->size();
         for (size_t index = 0; index < numStates; index++) {
             FireStarterExecute* unit = (*this)[index % numUnits];
-            unit->ExecuteEvolveOptimize(optimizeStates[index], bestState, complete, false);
+            unit->ExecuteEvolveOptimize(optimizeStates[index], bestState, complete, true);
         }
         ExecuteSynchronize();
     } // ExecuteEvolveOptimize

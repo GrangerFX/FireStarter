@@ -31,6 +31,14 @@ public:
         return result;
     } // Packetize
 
+    inline void operator=(const FireStarterCodeVector& code)
+    {
+        m_codeVector = code.m_codeVector;
+#if FIRESTARTER_STATE_DEBUG
+        m_codeDebug = CodePtr();
+#endif
+    } // operator=
+
     inline void operator=(const FireStarterCodeVector* code)
     {
         m_codeVector = code->m_codeVector;
@@ -156,6 +164,14 @@ public:
 #endif
         return result;
     } // Packetize
+
+    inline void operator=(const FireStarterDataVector& other)
+    {
+        m_dataVector = other.m_dataVector;
+#if FIRESTARTER_STATE_DEBUG
+        m_dataDebug = DataPtr();
+#endif
+    } // operator=
 
     inline void operator=(const FireStarterDataVector* other)
     {
@@ -289,24 +305,24 @@ public:
         return result;
     } // Packetize
 
-    inline void operator=(const FireStarterResultVector* result)
-    {
-        m_resultData = result->m_resultData;
-        m_resultSize = result->m_resultSize;;
-        m_variations = result->m_variations;
-        m_registers = result->m_registers;
-#if FIRESTARTER_STATE_DEBUG
-        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
-            m_resultDebug[v] = Result(v);
-#endif
-    } // operator=
-
     inline void operator=(const FireStarterResultVector& result)
     {
         m_resultData = result.m_resultData;
         m_resultSize = result.m_resultSize;;
         m_variations = result.m_variations;
         m_registers = result.m_registers;
+#if FIRESTARTER_STATE_DEBUG
+        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
+            m_resultDebug[v] = Result(v);
+#endif
+    } // operator=
+
+    inline void operator=(const FireStarterResultVector* result)
+    {
+        m_resultData = result->m_resultData;
+        m_resultSize = result->m_resultSize;;
+        m_variations = result->m_variations;
+        m_registers = result->m_registers;
 #if FIRESTARTER_STATE_DEBUG
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
             m_resultDebug[v] = Result(v);
@@ -906,7 +922,7 @@ public:
         InitState(settings, generation, index, id, test);
     } // FireStarterState
 
-    inline FireStarterState(const FireStarterState& other) : m_code(other.m_code), m_results(other.m_results)
+    inline FireStarterState(const FireStarterState& other)
     {
         m_timer = other.m_timer;
         swap(other);

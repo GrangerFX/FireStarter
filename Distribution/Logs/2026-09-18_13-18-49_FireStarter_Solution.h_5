@@ -1,13 +1,13 @@
 #pragma once
 #include <math.h>
 
-// Run date: 09/18/26 13:22:38 Pacific Daylight Time
-// Run duration = 5.612025 seconds
-// Run test = 0
-// Run generation = 0
-// Run evolution = 0
-// Run precision  = 0.00003608
-// Run max result = 0.00001229
+// Run date: 09/18/26 13:18:49 Pacific Daylight Time
+// Run duration = 83.190333 seconds
+// Run test = 5
+// Run generation = 3
+// Run evolution = 1
+// Run precision  = 0.00000095
+// Run max result = 0.00000042
 
 // Run variations = 1
 // Run instructions = 32
@@ -66,39 +66,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6, r7;
+    float r0, r1, r2, r3, r4, r5;
 
-    r0 = n += -1.57079613f;
-    r1 = n *= 0.12898797f;
+    n += -1.57079625f;
+    r0 = n *= -0.09910617f;
+    n = r0 *= n;
+    r1 = n *= -0.59146225f;
+    n *= -0.73631901f;
+    n *= 1.50110626f;
+    n += -0.13330925f;
+    r2 = n *= -1.56910968f;
+    n += r0;
+    n *= -2.47203374f;
+    r0 = n *= -0.85320514f;
+    r3 = n *= -0.57638150f;
+    n *= -2.77708220f;
+    n += r2;
+    r2 = n *= 0.74664754f;
+    n *= 3.06771064f;
+    r4 = n *= 3.10325956f;
     n = r1 *= n;
-    r2 = n += -0.36947319f;
-    r3 = n *= -4.61810637f;
-    n *= -0.82252812f;
-    r4 = n += -2.49893236f;
-    n *= r2;
-    r2 = n += -1.23040795f;
-    r5 = n *= 0.86137342f;
-    n *= 0.03212853f;
-    r6 = n *= -6.02673531f;
-    n *= r0;
-    n *= r1;
-    n += -13.18432617f;
-    n *= 0.28994173f;
-    r1 = n *= -0.20371395f;
-    n += r6;
-    n += 0.06253758f;
-    r6 = n += -1.84639943f;
-    r0 = n *= 0.72355127f;
-    n *= -0.13044861f;
-    r7 = n *= -0.21182601f;
-    n *= r7;
-    n *= r0;
-    n += -0.32974073f;
-    n *= r2;
-    n += r4;
-    n *= r3;
+    n += 0.18258175f;
+    r5 = n += 0.52545333f;
+    n *= -0.83746499f;
+    n *= -23.22624207f;
+    n *= -0.13381048f;
+    n += -1.03813708f;
+    n = r2 += n;
+    n += -8.54893875f;
     n *= r5;
-    n *= r6;
     n *= r1;
+    n *= r4;
+    n += r2;
+    n *= r3;
+    n += r0;
     return n;
 } // Solution
