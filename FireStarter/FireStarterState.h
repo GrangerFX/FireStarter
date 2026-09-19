@@ -691,7 +691,7 @@ public:
         return m_code.size() == CodeSize() ? m_code.CodePtr() : nullptr;
     } // Code
 
-    const std::vector<unsigned char>& CodeVector(void) const
+    inline const std::vector<unsigned char>& CodeVector(void) const
     {
         return m_code.Vector();
     } // CodeVector
@@ -752,29 +752,35 @@ public:
         return SEED1(m_settings.m_evolveSeed) + SEED2(m_generation) + SEED3(m_index) + SEED4(m_test);
     } // GenerationSeed
 
-    unsigned long long InitGenerationSeed(void)
+    inline unsigned long long InitEvolutionSeed(void)
+    {
+        m_seed = EvolutionSeed();
+        return m_seed;
+    } // InitGenerationSeed
+
+    inline unsigned long long InitGenerationSeed(void)
     {
         m_seed = GenerationSeed();
         return m_seed;
     } // InitGenerationSeed
 
-    unsigned long long RootSeed(unsigned int seed)
+    inline unsigned long long RootSeed(unsigned int seed)
     {
         m_settings.m_evolveSeed = seed;
         return InitGenerationSeed();
     } // RootSeed
 
-    unsigned long long& Seed(void)
+    inline unsigned long long& Seed(void)
     {
         return m_seed;
     } // Seed
 
-    unsigned long long RandomSeed(void)
+    inline unsigned long long RandomSeed(void)
     {
         return RANDOMSEED(m_seed);
     } // RandomSeed
 
-    unsigned int RandomMod(unsigned int m)
+    inline unsigned int RandomMod(unsigned int m)
     {
         return RANDOMMOD(m_seed, m);
     } // RandomMod

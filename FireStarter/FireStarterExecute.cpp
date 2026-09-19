@@ -1257,24 +1257,25 @@ bool FireStarterExecute::EvolveStates(unsigned long long test, const FireStarter
                 // Add the state to the list of active states.
                 allStates.push_back(curState);
             } else {
-                // Find the best state to evolve based on a weighting algorithm.
-                float evolveWeight = 0.0f;
-                size_t evolveIndex = 0;
-                for (size_t curIndex = 0; curIndex < totalStates; curIndex++) {
-                    float curWeight = allStates[curIndex].EvolveWeight();
-                    if (!curIndex || (curWeight < evolveWeight)) {
-                        evolveWeight = curWeight;
-                        evolveIndex = curIndex;
-                    }
-                }
-
                 // Loop until a unique new state is found.
                 for (;;) {
+                    // Find the best state to evolve based on a weighting algorithm.
+                    float evolveWeight = 0.0f;
+                    size_t evolveIndex = 0;
+                    for (size_t curIndex = 0; curIndex < totalStates; curIndex++) {
+                        float curWeight = allStates[curIndex].EvolveWeight();
+                        if (!curIndex || (curWeight < evolveWeight)) {
+                            evolveWeight = curWeight;
+                            evolveIndex = curIndex;
+                        }
+                    }
+
                     // Copy and setup the new candidate state.
                     FireStarterState& oldState = allStates[evolveIndex];
                     curState = oldState;
 
                     // Note: The age and generation will increment even if the current instructions are not unique by design.
+                    // This will increase the weight of the old state so that it is less likely to be selected for evolution.
                     curState.m_age = ++oldState.m_age;
                     curState.m_generation = ++oldState.m_generation;
                     curState.m_evolution++;
@@ -1304,6 +1305,8 @@ bool FireStarterExecute::EvolveStates(unsigned long long test, const FireStarter
                         break;
                     }
                 }
+
+                // Force the state to re-generate the evaluate code.
                 curState.m_evaluateCode.clear();
             }
         }
