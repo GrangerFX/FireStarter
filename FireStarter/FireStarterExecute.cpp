@@ -1304,6 +1304,7 @@ bool FireStarterExecute::EvolveStates(unsigned long long test, const FireStarter
                         break;
                     }
                 }
+                curState.m_evaluateCode.clear();
             }
         }
     });

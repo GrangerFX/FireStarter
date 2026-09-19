@@ -448,6 +448,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_bestResult = m_settings.m_startResult;
     m_oldResult = m_settings.m_startResult;
     m_optimizeValid = false;
+    m_evaluateCode.clear();
 
     InitGenerationSeed();
     InitResults();

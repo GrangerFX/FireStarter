@@ -252,6 +252,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
 
                 // Execute each state using one of the evolution execution units.
                 // Note: ExecuteEvolveCPU must be async because the compiles come back out of order.
+                bestEvolveState.m_age++;
                 evolutionUnits.ExecuteEvolveOptimize(states, bestEvolveState, complete);
 
                 // Store the valid results from the current set of states in the list of all states.
