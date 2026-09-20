@@ -281,7 +281,7 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 
 #define FIRESTARTER_OPCODES (sizeof(fireStarterOpcodes) / sizeof(FireStarterOpcode))
 
-class FireStarterSetting {
+class FireStarterSettings {
 public:
     unsigned int m_instructions =   FIRESTARTER_INSTRUCTIONS;
     unsigned int m_registers =      FIRESTARTER_REGISTERS;
@@ -385,7 +385,7 @@ public:
 
     inline const char* EvolveProgramName(void) const
     {
-        return FireStarterSetting::EvolveProgramName(m_mode);
+        return FireStarterSettings::EvolveProgramName(m_mode);
     } // EvolveProgramName
 
     static inline const char* OptimizeProgramName(unsigned int mode)
@@ -403,7 +403,7 @@ public:
 
     inline const char* OptimizeProgramName(void) const
     {
-        return FireStarterSetting::OptimizeProgramName(m_mode);
+        return FireStarterSettings::OptimizeProgramName(m_mode);
     } // OptimizeProgramName
 
     static inline const char* EvolveFunctionName(unsigned int mode)
@@ -478,7 +478,7 @@ public:
         return OptimizeTestName(m_mode);
     } // OptimizeTestName
 
-    inline void CopyCodeSettings(FireStarterSetting& source)
+    inline void CopyCodeSettings(FireStarterSettings& source)
     {
         m_variations = source.m_variations;
         m_instructions = source.m_instructions;
@@ -488,7 +488,7 @@ public:
         m_targetMax = source.m_targetMax;
     } // CopyCodeSettings
 
-    inline void CopyModeSettings(const FireStarterSetting& source)
+    inline void CopyModeSettings(const FireStarterSettings& source)
     {
         m_evolveSeed = source.m_evolveSeed;
         m_optimizeSeed = source.m_optimizeSeed;
@@ -511,12 +511,9 @@ public:
         m_startResult = source.m_startResult;
     } // CopyModeSettings
 
-    inline FireStarterSetting(unsigned int mode = FIRESTARTER_AUTO) 
-    {
-        if (mode == FIRESTARTER_AUTO)
-            m_mode = FIRESTARTER_MODE;
-        else
-            m_mode = mode;
+    void SetMode(unsigned int mode)
+    {   
+        m_mode = (mode == FIRESTARTER_AUTO) ? FIRESTARTER_MODE : mode;
         switch (m_mode) {
             case FIRESTARTER_RANDOM:
                 m_streams =     FIRESTARTER_RANDOM_STREAMS;
@@ -686,43 +683,10 @@ public:
                 m_target =      0.0f;
                 break;
         }
-    } // FireStarterSetting
-}; // class FireStarterSetting
-
-class FireStarterSettings : public FireStarterSetting {
-public:
-    FireStarterSetting m_settings[FIRESTARTER_MODES] = {
-        FireStarterSetting(FIRESTARTER_AUTO),
-        FireStarterSetting(FIRESTARTER_RANDOM),
-        FireStarterSetting(FIRESTARTER_SELECT),
-        FireStarterSetting(FIRESTARTER_EVOLVE_CPU),
-        FireStarterSetting(FIRESTARTER_EVOLVE_GPU),
-        FireStarterSetting(FIRESTARTER_EVOLVE_NEW),
-        FireStarterSetting(FIRESTARTER_EVOLVE_SINSIM),
-        FireStarterSetting(FIRESTARTER_SINSIM),
-        FireStarterSetting(FIRESTARTER_MONEYMAKER),
-        FireStarterSetting(FIRESTARTER_MONEYOPTIMIZE),
-        FireStarterSetting(FIRESTARTER_SPEED_TEST),
-        FireStarterSetting(FIRESTARTER_OPTIMIZE),
-        FireStarterSetting(FIRESTARTER_SOLUTION)
-    };
-
-    inline const FireStarterSetting& GetSettings(unsigned int mode = FIRESTARTER_AUTO) const
-    {
-        if (mode == FIRESTARTER_AUTO)
-            mode = m_mode;
-        else if (mode >= FIRESTARTER_MODES)
-            mode = FIRESTARTER_SOLUTION;
-        return m_settings[mode];
-    } // GetSettings
-
-    inline void SetMode(unsigned int mode = FIRESTARTER_AUTO)
-    {
-        FireStarterSetting& setting = static_cast<FireStarterSetting&>(*this);
-        setting = GetSettings(mode);
     } // SetMode
 
-    inline FireStarterSettings(unsigned int mode = FIRESTARTER_AUTO) : FireStarterSetting(mode)
+    inline FireStarterSettings(unsigned int mode = FIRESTARTER_AUTO) 
     {
+        SetMode(mode);
     } // FireStarterSettings
 }; // class FireStarterSettings
