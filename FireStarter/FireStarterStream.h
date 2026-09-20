@@ -4,13 +4,12 @@
 
 class FireStarterStream : public SerialThread {
 private:
-    FireStarterServer* m_server = nullptr;
     FireStarterWindow& m_streamWindow;
 	std::string m_streamDate;
 
 public:
-	void RandomStream(FireStarterServer* servere);
-    void EvolveSelectStream(FireStarterServer* server);
+	void RandomStream(void);
+    void EvolveSelectStream(void);
     void EvolveCPUStream(void);
 	void EvolveGPUStream(void);
     void EvolveNewStream(void);

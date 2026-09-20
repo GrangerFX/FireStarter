@@ -9,7 +9,7 @@
 
 #define FIRESTARTER_STREAM_EVOLUTIONS 100
 
-void FireStarterStream::RandomStream(FireStarterServer* server)
+void FireStarterStream::RandomStream(void)
 {
     FireStarterSettings randomSettings(FIRESTARTER_RANDOM);
         
@@ -17,7 +17,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server)
     FireStarterManager* manager = new FireStarterManager();
 
     // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager, server);
+    FireStarterCompile* compile = new FireStarterCompile(manager);
     compile->AddCompiler();
 
     // Create the execution unit.
@@ -74,7 +74,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server)
     delete manager;
 } // RandomStream
 
-void FireStarterStream::EvolveSelectStream(FireStarterServer* server)
+void FireStarterStream::EvolveSelectStream(void)
 {
     // Evolve a number of states equal to the evolveSettings.m_seeds.
     FireStarterSettings selectSettings(FIRESTARTER_SELECT);
@@ -89,7 +89,7 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server)
     FireStarterManager* manager = new FireStarterManager(numStates);
 
     // Create a multi-process compiler for each unit.
-    FireStarterCompile* compile = new FireStarterCompile(manager, server);
+    FireStarterCompile* compile = new FireStarterCompile(manager);
     for (unsigned int i = 0; i < selectSettings.m_units; i++)
         compile->AddCompiler();
 
@@ -959,12 +959,10 @@ FireStarterStream::FireStarterStream(FireStarterWindow& window) : SerialThread("
     DispatchSync([this] {
         switch (FIRESTARTER_MODE) {
         case FIRESTARTER_RANDOM:
-            m_server = FIRESTARTER_MULTIPROCESS ? new FireStarterServer() : nullptr;
-            RandomStream(m_server);
+            RandomStream();
             break;
         case FIRESTARTER_SELECT:
-            m_server = FIRESTARTER_MULTIPROCESS ? new FireStarterServer() : nullptr;
-            EvolveSelectStream(m_server);
+            EvolveSelectStream();
             break;
         case FIRESTARTER_EVOLVE_CPU:
             EvolveCPUStream();
