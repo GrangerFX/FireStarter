@@ -197,7 +197,6 @@ public:
     bool ExecuteRandomState(const FireStarterState& state, bool sync = true);
     bool ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
     bool EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
-    bool EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
     void ExecuteSetStocks(const MoneyMakerStocks *stocks, bool sync = true);
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
