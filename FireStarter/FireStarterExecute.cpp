@@ -12,7 +12,6 @@
 #include "FireMoneyOptimizer.cu"
 #include "FireOptimizer.cu"
 #include "FireSelect.cu"
-#include "FireSettings.cu"
 #include "FireSinSim.cu"
 #include "FireSpeedTest.cu"
 

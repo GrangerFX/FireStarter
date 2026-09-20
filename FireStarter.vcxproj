@@ -689,7 +689,6 @@
   <ItemGroup>
     <ClCompile Include="FireStarter\CUDACompile.cpp" />
     <ClCompile Include="FireStarter\FireStarter.cpp" />
-    <ClCompile Include="FireStarter\FireStarterBuildSettings.cpp" />
     <ClCompile Include="FireStarter\FireStarterSource.cpp" />
     <ClCompile Include="FireStarter\FireStarterCompile.cpp" />
     <ClCompile Include="FireStarter\FireStarterComplete.cpp" />
@@ -723,7 +722,6 @@
     <ClInclude Include="FireStarter\CUDAModule.h" />
     <ClInclude Include="FireStarter\CUDAThread.h" />
     <ClInclude Include="FireStarter\FireStarter.h" />
-    <ClInclude Include="FireStarter\FireStarterBuildSettings.h" />
     <ClInclude Include="FireStarter\FireStarterPacket.h" />
     <ClInclude Include="FireStarter\FireStarterSource.h" />
     <ClInclude Include="FireStarter\FireStarterCompile.h" />
@@ -839,52 +837,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">
       </ExcludedFromBuild>
     </None>
-    <None Include="Distribution\FireGenerate.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Select_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Random_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Select_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Random_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">
-      </ExcludedFromBuild>
-    </None>
     <None Include="Distribution\FireMoneyMaker.cu" />
     <None Include="Distribution\FireMoneyOptimizer.cu" />
     <None Include="Distribution\FireSelect.cu">
@@ -933,52 +885,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">
       </ExcludedFromBuild>
       <FileType>Document</FileType>
-    </None>
-    <None Include="Distribution\FireSettings.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Select_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Random_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Select_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Random_Release|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">
-      </ExcludedFromBuild>
     </None>
     <None Include="Distribution\FireOptimizer.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">

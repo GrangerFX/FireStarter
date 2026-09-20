@@ -7,9 +7,6 @@
     <ClCompile Include="FireStarter\FireStarter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FireStarter\FireStarterBuildSettings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FireStarter\FireStarterCompile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -76,9 +73,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Distribution\FireStarter_Solution.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FireStarter\FireStarterBuildSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Distribution\FireStarterCodeGenerate.h">
@@ -182,13 +176,7 @@
     <None Include="Distribution\FireEvolverSinSim.cu">
       <Filter>CUDA Files</Filter>
     </None>
-    <None Include="Distribution\FireGenerate.cu">
-      <Filter>CUDA Files</Filter>
-    </None>
     <None Include="Distribution\FireOptimizer.cu">
-      <Filter>CUDA Files</Filter>
-    </None>
-    <None Include="Distribution\FireSettings.cu">
       <Filter>CUDA Files</Filter>
     </None>
     <None Include="Distribution\FireSinSim.cu">
