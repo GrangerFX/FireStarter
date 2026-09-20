@@ -94,7 +94,20 @@ public:
 
     inline static void KillThreads(void)
     {
+#if FIRESTARTER_MULTI_GPU
+        // CUDA currently leaves GPUs in a zombie state when a remote computer is controlled by Windows Desktop. WDM does not allow the GPU to be reset.
+        // This is a known issue with CUDA and Windows. The only way to recover is use this command in a Powershell administrator sesson:
+        /*
+Disable - PnpDevice - InstanceId(Get - PnpDevice - FriendlyName "*5090*")[1].InstanceId - Confirm:$false
+Start - Sleep - Seconds 3
+Enable - PnpDevice - InstanceId(Get - PnpDevice - FriendlyName "*5090*")[1].InstanceId - Confirm : $false
+nvidia-smi dmon
+        */
         s_CUDAThreads.KillCUDAThreads();
+#else
+        // Force the process to exit immediately. CUDA will also be terminated.
+        ExitProcess(0);
+#endif
     } // KillThreads
 
     inline const CUDAContext& Context(void) const
