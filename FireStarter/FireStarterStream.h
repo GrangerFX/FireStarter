@@ -1,5 +1,4 @@
 #pragma once
-#include "FireStarterManager.h"
 #include "FireStarterWindow.h"
 
 class FireStarterStream : public SerialThread {
