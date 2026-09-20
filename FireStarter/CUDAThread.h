@@ -100,7 +100,7 @@ public:
         /*
 Disable - PnpDevice - InstanceId(Get - PnpDevice - FriendlyName "*5090*")[1].InstanceId - Confirm:$false
 Start - Sleep - Seconds 3
-Enable - PnpDevice - InstanceId(Get - PnpDevice - FriendlyName "*5090*")[1].InstanceId - Confirm : $false
+Enable - PnpDevice - InstanceId(Get - PnpDevice - FriendlyName "*5090*")[1].InstanceId - Confirm:$false
 nvidia-smi dmon
         */
         s_CUDAThreads.KillCUDAThreads();
