@@ -309,6 +309,11 @@ FireStarterComplete::FireStarterComplete(FireStarterWindow& window, const FireSt
     InitComplete();
 } // FireStarterComplete
 
+FireStarterComplete::FireStarterComplete(FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : SerialThread("FireStarterComplete"), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
+{
+    InitComplete();
+} // FireStarterComplete
+
 FireStarterComplete::~FireStarterComplete(void)
 {
 } // ~FireStarterComplete

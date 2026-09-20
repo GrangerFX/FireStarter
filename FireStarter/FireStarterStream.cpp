@@ -528,14 +528,11 @@ void FireStarterStream::EvolveSinSimStream(FireStarterServer* server, std::atomi
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
 
-        // Create the compiler manager
-        FireStarterManager* manager = new FireStarterManager();
-
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings, manager);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings);
 
         // Create the execution unit used to evolve the best states.
-        FireStarterExecute* executeEvolve = new FireStarterExecute(manager);
+        FireStarterExecute* executeEvolve = new FireStarterExecute();
 
         // Generate and compile the evolve code.
         executeEvolve->ExecuteGenerateEvolve(evolveSettings.m_mode);
@@ -580,19 +577,13 @@ void FireStarterStream::EvolveSinSimStream(FireStarterServer* server, std::atomi
             }
         }
 
-        // Cancel any waiting jobs
-        manager->Cancel();
-
         // Delete the completion unit.
         complete->Synchronize();
         delete complete;
 
         // Finish processing and terminate the evolution execution units.
         delete executeEvolve;
-
-        // Delete the compilier manager and cancel any waiting jobs.
-        delete manager;
-        }, sync);
+    }, sync);
 } // EvolveSinSimStream
 
 void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
@@ -603,14 +594,11 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
 
-        // Create the compiler manager
-        FireStarterManager* manager = new FireStarterManager();
-
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, sinSimSettings, manager, false);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, sinSimSettings, false);
 
         // Create the execution unit used to evolve the best states.
-        FireStarterExecute* executeSinSim = new FireStarterExecute(manager);
+        FireStarterExecute* executeSinSim = new FireStarterExecute();
 
         // Generate and compile the evolve code.
         executeSinSim->ExecuteGenerateEvolve(sinSimSettings.m_mode);
@@ -651,18 +639,12 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
 #endif
         }
 
-        // Cancel any waiting jobs
-        manager->Cancel();
-
         // Delete the completion unit.
         complete->Synchronize();
         delete complete;
 
         // Finish processing and terminate the evolution execution units.
         delete executeSinSim;
-
-        // Delete the compilier manager and cancel any waiting jobs.
-        delete manager;
     }, sync);
 } // SinSimStream
 
@@ -883,14 +865,11 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
         FireStarterState evolveState;
         LoadState(evolveState);
 
-        // Create the compiler manager
-        FireStarterManager* manager = new FireStarterManager();
-
         // Create the optimization execution unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager);
+        FireStarterExecute* execute = new FireStarterExecute();
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, optimizeSettings, manager);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, optimizeSettings);
 
         // Generate the optimize code.
         if (execute->ExecuteGenerateOptimize(evolveState)) {
@@ -930,17 +909,11 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
             }
         }
 
-        // Cancel any waiting jobs
-        manager->Cancel();
-
         // Delete the completion unit.
         delete complete;
 
         // Delete the optimizate execution unit.
         delete execute;
-
-        // Delete the compilier manager and cancel any waiting jobs.
-        delete manager;
     }, sync);
 } // OptimizeStream
 
@@ -951,14 +924,11 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
         FireStarterSettings speedTestSettings(m_streamSettings);
         std::string streamDate = m_streamDate;
 
-        // Create the compiler manager
-        FireStarterManager* manager = new FireStarterManager();
-
         // Create the optimization execution unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager);
+        FireStarterExecute* execute = new FireStarterExecute();
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, speedTestSettings, manager);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, speedTestSettings);
 
         if (execute->ExecuteGenerateEvolve(speedTestSettings.m_mode)) {
             // Loop until the the evolve completion condition or the host program is quit.
@@ -997,17 +967,11 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
             }
         }
 
-        // Cancel any waiting jobs
-        manager->Cancel();
-
         // Delete the completion unit.
         delete complete;
 
         // Delete the optimizate execution unit.
         delete execute;
-
-        // Delete the compilier manager and cancel any waiting jobs.
-        delete manager;
     }, sync);
 } // SpeedTestStream
 

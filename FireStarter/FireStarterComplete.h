@@ -32,6 +32,7 @@ public:
     bool CompleteSelect(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
     void CompleteSaveResults(const FireStarterState& bestState);
     void InitComplete(void);
-    FireStarterComplete(FireStarterWindow& window, const FireStarterSettings& settings, FireStarterManager* manager = nullptr, bool saveBestState = FIRESTARTER_SAVE_BESTSTATE);
+    FireStarterComplete(FireStarterWindow& window, const FireStarterSettings& settings, FireStarterManager* manager, bool saveBestState = FIRESTARTER_SAVE_BESTSTATE);
+    FireStarterComplete(FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState = FIRESTARTER_SAVE_BESTSTATE);
     ~FireStarterComplete(void);
 }; // class FireStarterEvolve
