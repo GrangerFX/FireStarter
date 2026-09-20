@@ -30,7 +30,6 @@
 #define FIRESTARTER_MULTI_GPU       0           // Use all NVIDIA GPUs to speed processing of each generation.
 #define FIRESTARTER_SIMULATE_GPU    0           // Simulate the GPU on the CPU for testing and debugging.
 #define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
-#define FIRESTARTER_GENERATE_GPU    0           // Generate the settings and code using the GPU.
 #define FIRESTARTER_SAVE_BESTSTATE  1           // Save the best state.
 #define FIRESTARTER_SAVE_BESTCODE   0           // Save Optimizer.cu with the best evolved code.
 #define FIRESTARTER_AUTO_QUIT       1           // Automatically exit the app after completing the work.

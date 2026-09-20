@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FireStarterWindow.h"
-#include "FireStarterGenerate.h"
+#include "FireStarterState.h"
 #include "MoneyMakerStocks.h"
 #include "SerialThread.h"
 
