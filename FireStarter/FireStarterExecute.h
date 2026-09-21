@@ -195,12 +195,12 @@ private:
 public:
     inline size_t ExecuteIndex(void) const { return m_executeIndex; }
     bool ExecuteRandomState(const FireStarterState& state, bool sync = true);
-    bool ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
+    bool ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, const FireStarterSettings& optimizeSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
+    bool ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, const FireStarterSettings& optimizeSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
     bool EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
     void ExecuteSetStocks(const MoneyMakerStocks *stocks, bool sync = true);
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
-    void ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings);
     void ExecuteEvolveGPU(FireStarterState& evolveState, FireStarterBestCodes& bestCodes, bool sync = true);
     void ExecuteEvolveNew(FireStarterState& evolveState, FireStarterBestCodes& bestCodes, bool sync = true);
     void ExecuteEvolveSinSim(FireStarterState& evolveState);

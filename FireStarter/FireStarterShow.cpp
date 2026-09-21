@@ -403,7 +403,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
         if ((settings.m_tests > 0) || test)
             statusString += Format("  Test=%2u", test);
-        if ((state.PassMode() == FIRESTARTER_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_CPU) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM)) {
+        if ((state.PassMode() == FIRESTARTER_EVOLVE_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_CPU) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM)) {
             if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
                 statusString += Format("  Index=%4llu  Id=%4llu", state.m_index, state.m_id);
             statusString += Format("  Generation=%3u", generation);
@@ -420,7 +420,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("  Old Result=%11.8f %s=%.8f", state.m_oldResult, resultString.c_str(), maxResult);
 
             // Only used for debugging.
-//          if ((state.PassMode() == FIRESTARTER_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM)) {
+//          if ((state.PassMode() == FIRESTARTER_EVOLVE_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM)) {
 //              statusString += Format("  MinIndex=%6u", state.m_minIndex);
 //              if (settings.m_variations == 1)
 //                  statusString += Format("  EvolveAge=%3u", (unsigned int)state.EvolveAge1(0));

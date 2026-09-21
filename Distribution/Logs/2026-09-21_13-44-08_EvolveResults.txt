@@ -1,0 +1,4 @@
+Duration:    6.6  Average:    6.6  Seed=0  Test=0  Generation=  1  Best Generations=  0  Evolutions=  0  Evolve Result=0.00000020 *******
+Duration:    5.0  Average:    5.8  Seed=0  Test=1  Generation=  1  Best Generations=  0  Evolutions=  0  Evolve Result=0.00000022 *******
+Duration:    5.0  Average:    5.5  Seed=0  Test=2  Generation=  1  Best Generations=  0  Evolutions=  0  Evolve Result=0.00000012 *******
+Duration:    9.8  Average:    6.6  Seed=0  Test=3  Generation=  2  Best Generations=  3  Evolutions=  1  Evolve Result=0.00000070 *******

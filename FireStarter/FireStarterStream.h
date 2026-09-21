@@ -8,7 +8,7 @@ private:
 
 public:
 	void RandomStream(void);
-    void EvolveSelectStream(void);
+    void SelectStream(void);
     void EvolveCPUStream(void);
 	void EvolveGPUStream(void);
     void EvolveNewStream(void);

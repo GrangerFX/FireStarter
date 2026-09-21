@@ -2,7 +2,7 @@
 
 #define FIRESTARTER_AUTO            0           // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_RANDOM          1           // First result of states random instructions and data.
-#define FIRESTARTER_SELECT          2           // Evolve on the CPU. Select best variation on the GPU.
+#define FIRESTARTER_EVOLVE_SELECT   2           // Evolve on the CPU. Select best variation on the GPU.
 #define FIRESTARTER_EVOLVE_CPU      3           // CPU evolution used to generate actual results.
 #define FIRESTARTER_EVOLVE_GPU      4           // GPU evolution used to find faster algorithms.
 #define FIRESTARTER_EVOLVE_NEW      5           // GPU evolution experiment using fixed registers.
