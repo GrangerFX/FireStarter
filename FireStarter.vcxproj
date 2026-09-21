@@ -690,12 +690,10 @@
     <ClCompile Include="FireStarter\CUDACompile.cpp" />
     <ClCompile Include="FireStarter\FireStarter.cpp" />
     <ClCompile Include="FireStarter\FireStarterSource.cpp" />
-    <ClCompile Include="FireStarter\FireStarterCompile.cpp" />
     <ClCompile Include="FireStarter\FireStarterComplete.cpp" />
     <ClCompile Include="FireStarter\FireStarterExecute.cpp" />
     <ClCompile Include="FireStarter\FireStarterGenerate.cpp" />
     <ClCompile Include="FireStarter\FireStarterMain.cpp" />
-    <ClCompile Include="FireStarter\FireStarterManager.cpp" />
     <ClCompile Include="FireStarter\FireStarterProcess.cpp" />
     <ClCompile Include="FireStarter\FireStarterShow.cpp" />
     <ClCompile Include="FireStarter\FireStarterState.cpp" />
@@ -724,11 +722,9 @@
     <ClInclude Include="FireStarter\FireStarter.h" />
     <ClInclude Include="FireStarter\FireStarterPacket.h" />
     <ClInclude Include="FireStarter\FireStarterSource.h" />
-    <ClInclude Include="FireStarter\FireStarterCompile.h" />
     <ClInclude Include="FireStarter\FireStarterComplete.h" />
     <ClInclude Include="FireStarter\FireStarterExecute.h" />
     <ClInclude Include="FireStarter\FireStarterGenerate.h" />
-    <ClInclude Include="FireStarter\FireStarterManager.h" />
     <ClInclude Include="FireStarter\FireStarterProcess.h" />
     <ClInclude Include="FireStarter\FireStarterShow.h" />
     <ClInclude Include="FireStarter\FireStarterState.h" />

@@ -179,94 +179,6 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, const FireS
     return bestState.Complete();
 } // CompleteState
 
-bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, FireStarterState& state)
-{
-    DispatchSync([this, &bestState, &state] {
-        // Get the next job in the order they are completed.
-        FireStarterJob* job = m_manager->GetComplete();
-        if (job) {
-            FireStarterState newState = job->m_state;
-            m_manager->AddFree(job);
-
-            // Keep the valid results.
-            if (newState.m_optimizeValid) {
-                state = newState;
-
-                // Update the best state and display the results.
-                if (UpdateBestState(bestState, newState))
-                    DisplayResults(bestState);
-                else
-                    bestState.m_age++;
-            }
-
-            // Update the render status after every pass.
-            CompleteStatus(bestState, newState);
-            state.m_timer.Start();
-        }
-    });
-    return bestState.Complete();
-} // CompleteRandom
-
-// Replace old states with new ones when better and resort the list.
-bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation)
-{
-    DispatchSync([this, &bestState, &allStates, numStates, generation] {
-        // Sort the states as they are received.
-        FireStarterStates newStates(numStates);
-        bool abortJob = false;
-
-        for (size_t i = 0; i < numStates; i++) {
-            // Get the next job in the order they are completed.
-            FireStarterJob* job = m_manager->GetComplete();
-            if (!job) {
-                abortJob = true;
-                break;
-            }
-
-            // Sort the completed jobs by index.
-            size_t index = job->m_state.m_index;
-            if (!newStates[index].Initialized())
-                newStates[index] = job->m_state;
-            else {
-                printf("Error: Completed state index already received: %llu\n", index);
-                std::terminate();
-            }
-            m_manager->AddFree(job);
-        }
-
-        if (!abortJob) {
-            bestState.m_age++;
-            for (size_t i = 0; i < numStates; i++) {
-                FireStarterState& newState = newStates[i];
-
-                // Keep the valid results.
-                if (newState.m_optimizeValid) {
-                    // Update the current best state.
-                    bool isBestState = UpdateBestState(bestState, newState);
-
-                    // Update the render status after every pass.
-                    CompleteStatus(bestState, newState, generation);
-
-                    // Update the best state and display the results.
-                    if (isBestState)
-                        DisplayResults(bestState);
-
-                    // Replace the old state with the new state if it improved.
-                    FireStarterState& oldState = allStates[newState.m_id];
-                    if (newState.MaxResults() < oldState.MaxResults()) {
-                        newState.m_generation = oldState.m_generation + 1;
-                        newState.m_age = 1;
-                        oldState = newState;
-                    }
-                } else
-                    // Update the render status after every pass.
-                    CompleteStatus(bestState, newState, generation);
-            }
-        }
-    });
-    return bestState.Complete();
-} // CompleteStates
-
 // Replace old states with new ones when better and resort the list.
 bool FireStarterComplete::CompleteSelect(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation)
 {
@@ -304,11 +216,6 @@ void FireStarterComplete::CompleteSaveResults(const FireStarterState& bestState)
 void FireStarterComplete::InitComplete(void)
 {
 } // InitComplete
-
-FireStarterComplete::FireStarterComplete(FireStarterWindow& window, const FireStarterSettings& settings, FireStarterManager* manager, bool saveBestState) : SerialThread("FireStarterComplete"), m_window(window), m_settings(settings), m_manager(manager), m_saveBestState(saveBestState), m_fireShow(window)
-{
-    InitComplete();
-} // FireStarterComplete
 
 FireStarterComplete::FireStarterComplete(FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : SerialThread("FireStarterComplete"), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
 {

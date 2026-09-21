@@ -5,10 +5,6 @@ class FireStarter : public SerialThread {
 private:
     FireStarterWindow& m_window;
 
-    void ControlSolution(void);
-    void ControlStreams(void);
-    void ControlThread(void);
-
 public:
     bool ShouldQuit(void);
     FireStarter(FireStarterWindow& window);

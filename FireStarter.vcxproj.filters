@@ -7,9 +7,6 @@
     <ClCompile Include="FireStarter\FireStarter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FireStarter\FireStarterCompile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FireStarter\FireStarterComplete.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -20,9 +17,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FireStarter\FireStarterMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FireStarter\FireStarterManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FireStarter\FireStarterProcess.cpp">
@@ -78,9 +72,6 @@
     <ClInclude Include="Distribution\FireStarterCodeGenerate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FireStarter\FireStarterCompile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FireStarter\FireStarterComplete.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -88,9 +79,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FireStarter\FireStarterGenerate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FireStarter\FireStarterManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FireStarter\FireStarterProcess.h">

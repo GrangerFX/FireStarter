@@ -1,7 +1,6 @@
 #pragma once
 #include "FireStarterGenerate.h"
 #include "FireStarterComplete.h"
-#include "FireStarterManager.h"
 #include "FireSinSim.h"
 #include "CUDAThread.h"
 #include "MoneyMakerStocks.h"
@@ -146,8 +145,6 @@ private:
     CUDAMemory<MoneyMakerStocks> m_CUDAStocks;
     CUDAMemory<MoneyMakerStocks> m_CUDATradingResults;
     FireStarterGenerate m_executeGenerate;
-    FireStarterManager* m_executeManager = nullptr;
-    FireStarterJob* m_executeJob = nullptr;
     std::string m_executeProgramName;
     std::string m_executeFunctionName;
     std::string m_executeTestName;
@@ -187,16 +184,11 @@ private:
     void ExecuteSpeedTestPass(FireStarterState& state);
     bool GenerateEvolve(unsigned int mode);
     bool GenerateOptimize(const FireStarterSettings& settings, const FireStarterCodeGenerate* code, std::string& evaluateCode, unsigned int mode);
-    bool Compile(FireStarterJob* &job);
     void GenerateCode(FireStarterState& state);
-    void GenerateCode(FireStarterJob* job);
-    bool ExecuteJob(void);
-
+    
 public:
     inline size_t ExecuteIndex(void) const { return m_executeIndex; }
-    bool ExecuteRandomState(const FireStarterState& state, bool sync = true);
     bool ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, const FireStarterSettings& optimizeSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
-    bool ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, const FireStarterSettings& optimizeSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
     bool EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
     void ExecuteSetStocks(const MoneyMakerStocks *stocks, bool sync = true);
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
@@ -209,14 +201,11 @@ public:
     void ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync = true);
     void ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync = true);
     void ExecuteOptimize(FireStarterState& optimizeState);
-    void ExecuteOptimizeCount(std::atomic<int>& evolveCount); // Must be async because the compiles come back out of order.
     MoneyMakerStocks* ExecuteMoneyTest(FireStarterState& testState, unsigned int startDay = MONEYMAKER_VARIATION, unsigned int tradingDays = MONEYMAKER_TRADING, unsigned int validationDays = MONEYMAKER_VALIDATION);
     void ExecuteSpeedTest(FireStarterState& evolveState);
-    void ExecuteRandom(void);
     void ExecuteFinish(void);
     void SimulateGPU(bool simulateGPU);
     const MoneyMakerStocks* GetTradingResults(void) const;
-    FireStarterExecute(FireStarterManager* manager, const std::string& unitName = "FireStarterExecute", size_t index = 0);
     FireStarterExecute(const std::string& unitName = "FireStarterExecute", size_t index = 0);
     ~FireStarterExecute(void);
 }; // class FireStarterExecute
@@ -309,13 +298,6 @@ public:
         }
         ExecuteSynchronize();
     } // ExecuteMoneyOptimize
-
-    inline FireStarterUnits(FireStarterManager* manager, size_t numUnits = 1, const std::string& unitName = "FireStarterUnit")
-    {
-        reserve(numUnits);
-        for (size_t i = 0; i < numUnits; i++)
-            push_back(new FireStarterExecute(manager, unitName, i));
-    } // FireStarterUnits
 
     inline FireStarterUnits(size_t numUnits = 1, const std::string& unitName = "FireStarterUnit")
     {

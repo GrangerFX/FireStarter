@@ -1,5 +1,4 @@
 #pragma once
-#include "FireStarterManager.h"
 #include "FireStarterShow.h"
 
 class FireStarterComplete : public SerialThread {
@@ -7,7 +6,6 @@ private:
 	FireStarterWindow& m_window;
 	FireStarterShow m_fireShow;
     FireStarterSettings m_settings;
-	FireStarterManager* m_manager = nullptr;
 	std::string m_solutionTargetCode;
 	size_t m_resultsCount = 0;
 	double m_resultsTime = 0.0;
@@ -26,12 +24,10 @@ public:
     void SaveResults(const FireStarterState& bestState);
 	void CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation = 0);
     bool CompleteState(FireStarterState& bestState, const FireStarterState& state, const MoneyMakerStocks* stocks = nullptr, const MoneyMakerStocks* tradingResults = nullptr);
-	bool CompleteRandom(FireStarterState& bestState, FireStarterState& oldState);
     bool CompleteStates(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
     bool CompleteSelect(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
     void CompleteSaveResults(const FireStarterState& bestState);
     void InitComplete(void);
-    FireStarterComplete(FireStarterWindow& window, const FireStarterSettings& settings, FireStarterManager* manager, bool saveBestState = FIRESTARTER_SAVE_BESTSTATE);
     FireStarterComplete(FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState = FIRESTARTER_SAVE_BESTSTATE);
     ~FireStarterComplete(void);
 }; // class FireStarterEvolve
