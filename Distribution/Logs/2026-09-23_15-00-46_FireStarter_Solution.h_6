@@ -1,13 +1,13 @@
 #pragma once
 #include <math.h>
 
-// Run date: 09/23/26 16:22:58 Pacific Daylight Time
-// Run duration = 42.365775 seconds
-// Run test = 13
-// Run generation = 1
+// Run date: 09/23/26 15:00:46 Pacific Daylight Time
+// Run duration = 15.535753 seconds
+// Run test = 6
+// Run generation = 2
 // Run evolution = 0
-// Run precision  = 0.00000066
-// Run max result = 0.00000009
+// Run precision  = 0.00001561
+// Run max result = 0.00000012
 
 // Run variations = 1
 // Run instructions = 32
@@ -65,39 +65,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3, r4, r5;
+    float r0, r1, r2, r3, r4, r5, r6;
 
     r0 = n += -3.14159274f;
-    r1 = n *= -0.67972630f;
-    n *= r1;
-    n += -0.93004119f;
-    r1 = n *= -1.15573561f;
-    n += r1;
-    r1 = n *= -0.25177082f;
-    r2 = n *= -2.85443759f;
-    r3 = n *= -0.59098363f;
-    n += -1.68791497f;
-    r4 = n += 0.15645802f;
-    n *= 10.59412479f;
-    n *= -0.00045996f;
-    r5 = n += 0.25740999f;
-    n = r5 *= n;
-    n *= -0.08302470f;
+    r1 = n *= -0.24508457f;
+    r2 = n *= 0.51551449f;
+    r3 = n *= 0.12078523f;
+    n *= r0;
+    n *= -2.14769077f;
+    r0 = n *= 2.77112365f;
+    n += -0.13268724f;
+    n *= 1.66853821f;
+    r4 = n += -1.22172093f;
+    r5 = n *= -0.70355535f;
+    r6 = n *= 2.29916978f;
+    n = r0 *= n;
+    n += -6.93353128f;
     n = r2 *= n;
-    n += -4.30216265f;
-    n *= r2;
+    n = r2 *= n;
+    n = r0 *= n;
+    n = r2 += n;
+    n += r2;
+    n *= -0.74467903f;
+    n += r0;
+    n *= 0.00085546f;
+    r0 = n += 0.11563504f;
+    n *= r4;
+    n *= 1.04883182f;
+    n += -1.21683049f;
+    n *= r5;
+    n = r0 += n;
+    n *= r0;
+    n += r6;
     n *= r1;
     n += r3;
-    n *= 2.93002701f;
-    n *= -0.24214117f;
-    n *= 0.62980795f;
-    n = r5 *= n;
-    r3 = n += 0.20679894f;
-    n += r5;
-    n += r4;
-    n += -2.05904937f;
-    n *= r0;
-    n *= r3;
-    n *= 0.99564564f;
     return n;
 } // Solution
