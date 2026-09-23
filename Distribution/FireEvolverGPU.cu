@@ -54,8 +54,8 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
 
     // Evolve the program registers for each variation.
     unsigned long long memberSeed = seed + SEED0(member);   // Unique seed for the member
-    unsigned short evolveAge = 0;
-    unsigned short bestAge = 0;
+    unsigned int evolveAge = 0;
+    unsigned int bestAge = 0;
     unsigned int registers = 0;
 
     // The first generation is initalized with random numbers.

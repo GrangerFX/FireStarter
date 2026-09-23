@@ -174,8 +174,8 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
     FireStarterData memberData = data;
     float bestResult = result;
     float memberResult = result;
-    unsigned short bestAge = 0;
-    unsigned short memberAge = 0;
+    unsigned int bestAge = 0;
+    unsigned int memberAge = 0;
 
     // Evolve the code and data for each pass.
     for (unsigned int pass = 0; pass < settings->m_passes; pass++) {

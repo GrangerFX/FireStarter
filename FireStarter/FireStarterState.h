@@ -652,29 +652,17 @@ public:
             return m_results.MaxVariation();
     } // MaxVariation
 
-    inline unsigned short EvolveAge1(unsigned int variation) const
+    inline unsigned int EvolveAge(unsigned int variation) const
     {
         const FireStarterResult* result = Result(variation);
-        return result->EvolveAge1();
+        return result->EvolveAge();
     } // EvolveAge1
 
-    inline unsigned short* EvolveAge1(unsigned int variation)
+    inline unsigned int* EvolveAge(unsigned int variation)
     {
         FireStarterResult* result = Result(variation);
-        return result->EvolveAge1();
+        return result->EvolveAge();
     } // EvolveAge1
-
-    inline unsigned short EvolveAge2(unsigned int variation) const
-    {
-        const FireStarterResult* result = Result(variation);
-        return result->EvolveAge2();
-    } // EvolveAge2
-
-    inline unsigned short* EvolveAge2(unsigned int variation)
-    {
-        FireStarterResult* result = Result(variation);
-        return result->EvolveAge2();
-    } // EvolveAge2
 
     inline size_t CodeSize(void) const
     {

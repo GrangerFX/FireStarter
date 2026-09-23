@@ -65,7 +65,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
 
     // The initial register values are stored in the FireStarterData array. These are randomly initialized and then evolved for each member.
     FireStarterData data;
-    unsigned short evolveAge, initAge;
+    unsigned int evolveAge;
     float result, memberResult;
     float evolutionScale;
 
@@ -74,7 +74,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
 
     // The first pass initalizes the data with random numbers.
     if (!optimizePass) {
-        for (initAge = 1; initAge <= 10; initAge++) {
+        for (int i = 1; i <= 10; i++) {
             data.InitData(memberSeed, registers);
             result = FIRESTARTER_START_RESULT;
             if (OptimizeEvaluate(data, target, theta, result))
@@ -87,8 +87,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         // Later passes randomize a single register if they were copied.
         const FireStarterResult& oldResult = *FireStarterPopulation::PopulationResult(oldPopulation, member, variation);
         data.Copy(oldResult.Data());
-        evolveAge = oldResult.EvolveAge1();
-        initAge = oldResult.EvolveAge2();
+        evolveAge = oldResult.EvolveAge();
 
         // The evolution age of the register data determines how it is initialized.
         if (evolveAge > 1) {
@@ -145,7 +144,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, populationCount);
             const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate, variation);
-            unsigned short candidateAge = candidateResult->EvolveAge1();
+            unsigned int candidateAge = candidateResult->EvolveAge();
             if (candidateAge <= 1) {
                 float candidateMaxResult = candidateResult->MaxResult();
                 if (candidateMaxResult <= result) {
@@ -160,11 +159,10 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
             const FireStarterResult* bestCandidateResult = FireStarterPopulation::PopulationResult(oldPopulation, bestCandidate, variation);
             data = bestCandidateResult->Data();
             evolveAge = evolveAge ? evolveAge + 1 : 2; // The evolveAge will be 2 or more for copied members.
-            initAge = bestCandidateResult->EvolveAge2(); // The inital age is logged for debugging purposes.
         } else
             evolveAge = 1;
     }
 
     // Return the best data, result and age.
-    FireStarterPopulation::PopulationResult(newPopulation, member, variation)->InitResult(data, result, evolveAge, initAge);
+    FireStarterPopulation::PopulationResult(newPopulation, member, variation)->InitResult(data, result, evolveAge);
 } // Optimizer

@@ -534,14 +534,6 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
             }
         }
 
-        float goodPercent = 100.0f * (float)goodResults / (float)settings.m_population;
-        if (m_CUDAPopulation0.Allocated()) {
-            const FireStarterCode& minCode = m_CUDACodes.HostPtr()->Member(settings, bestIndex);
-            const FireStarterResult& minResult = m_CUDAPopulation0.HostPtr()->Member(settings, bestIndex);
-            unsigned int minAge = minResult.m_evolveAge1;
-            int foo = 1;
-        }
-
         // Update the state's best code.
         state.InitCode(settings, m_CUDACodes.HostPtr(), bestResult, bestIndex);
         state.MaxResult() = bestResult;

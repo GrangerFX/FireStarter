@@ -256,8 +256,7 @@ void FireStarterState::SaveVariation(unsigned int variation, std::string& text) 
     text += Format("inline void LoadVariation%u(FireStarterResult* result)\r\n", variation);
     text += "{\r\n";
     text += Format("    *(result->MaxResult()) = %.8ff;\r\n", MaxResult(variation));
-    text += Format("    *(result->EvolveAge1()) = %u;\r\n", EvolveAge1(variation));
-    text += Format("    *(result->EvolveAge2()) = %u;\r\n", EvolveAge2(variation));
+    text += Format("    *(result->EvolveAge()) = %u;\r\n", EvolveAge(variation));
     text += "    FireStarterData *data = result->Data();\r\n";
     for (unsigned int i = 0; i < m_settings.m_registers; i++) {
         float data = Result(variation)->Data()->d[i];

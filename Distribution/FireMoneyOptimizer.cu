@@ -160,7 +160,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
     FireStarterData data;
 
     // Optimize the data for each generation.
-    unsigned short evolveAge;
+    unsigned int evolveAge;
     float result, memberResult;
     float evolutionScale;
 
@@ -179,7 +179,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
         // Later generations randomize a single register if they were copied.
         const FireStarterResult& oldResult = *FireStarterPopulation::PopulationResult(oldPopulation, member);
         data.Copy(oldResult.Data());
-        evolveAge = oldResult.EvolveAge1();
+        evolveAge = oldResult.EvolveAge();
         memberResult = result = oldResult.MaxResult();
         if (evolveAge > 1) {
             // Randomize a single register.
@@ -226,7 +226,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, settings->m_population);
             const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate);
-            unsigned short candidateAge = candidateResult->EvolveAge1();
+            unsigned int candidateAge = candidateResult->EvolveAge();
             if (candidateAge <= 1) {
                 float candidateMaxResult = candidateResult->MaxResult();
                 if (candidateMaxResult <= result)
