@@ -19,7 +19,7 @@ inline float OptimizeCompiledEvaluate(const FireStarterData& testData, float n)
     return n;
 } // OptimizeCompiledEvaluate
 
-// The compiled CUDA code will be evaluated for each of a number of input theta samples.
+// Evaluate the compiled CUDA for each of a number of input theta samples.
 // The result of the code evaluation will subtracted from the target value for each sample.
 // Each sample is checked for infinite numbers.
 // The maximum absolute value of the difference for all the samples is returned if it was less than the previous result.
