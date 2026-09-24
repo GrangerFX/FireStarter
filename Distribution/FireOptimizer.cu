@@ -117,7 +117,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         }
     }
 
-    // Iterate to evolve the registers.
+    // Iterate to evolve the register data.
     for (unsigned int i = 0; i < FIRESTARTER_OPTIMIZE_ITERATIONS; i++) {
         unsigned int d = RANDOMMOD(memberSeed, registers);
         float oldData = data[d];
@@ -130,10 +130,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
     }
 
     // Save the results if they improved or switch to another member's old results.
-    if (!optimizePass || (result < memberResult))
-        // If the result was better, save the results.
-        evolveAge = 0;
-    else {
+    if (optimizePass && (result >= memberResult)) {
         // This is the natural selection portion of the register data evolution algorithm.
         // Members that did not evolve have a chance to be replaced by copies (offspring) of members with a better result in the previous pass.
         // One register of the copied data will be randomized prior to evolution iteration during the next pass.
@@ -158,10 +155,11 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         if (bestCandidate != member) {
             const FireStarterResult* bestCandidateResult = FireStarterPopulation::PopulationResult(oldPopulation, bestCandidate, variation);
             data = bestCandidateResult->Data();
-            evolveAge = 1; // The evolveAge will be 1 for copied members.
+            evolveAge = 1;  // The register data was copied from the best candidate.
         } else
             evolveAge = 0;  // The result did not improve but none of the candidates was better.
-    }
+    } else
+        evolveAge = 0;      // The result improved.
 
     // Return the best register data, fitness result and evolve age.
     FireStarterPopulation::PopulationResult(newPopulation, member, variation)->InitResult(data, result, evolveAge);
