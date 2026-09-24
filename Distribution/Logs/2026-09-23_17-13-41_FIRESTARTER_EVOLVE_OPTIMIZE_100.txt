@@ -1,0 +1,52 @@
+CUDA devices = 2
+Device 0: NVIDIA GeForce RTX 5090
+Device 1: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+units = 1
+states = 1
+population = 65536
+generations = 0
+passes = 384
+samples = 15
+iterations = 64
+candidates = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00075233   Time=   0.1  Run Time=   1.0
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00021785   Time=   0.1  Run Time=   1.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00021785   Time=   0.1  Run Time=   2.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00004506   Time=   0.2  Run Time=   3.0
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00004506   Time=   0.1  Run Time=   3.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00003346   Time=   0.1  Run Time=   4.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000943   Time=   0.1  Run Time=   5.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000943   Time=   0.1  Run Time=   6.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000943   Time=   0.1  Run Time=   6.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000943   Time=   0.1  Run Time=   7.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000339   Time=   0.1  Run Time=   8.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000263   Time=   0.1  Run Time=   9.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000263   Time=   0.1  Run Time=  10.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000263   Time=   0.1  Run Time=  11.0
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000263   Time=   0.1  Run Time=  11.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000263   Time=   0.1  Run Time=  12.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000263   Time=   0.1  Run Time=  13.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000263   Time=   0.1  Run Time=  14.3
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000263   Time=   0.1  Run Time=  15.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=100  Best=0.00000089   Time=   0.1  Run Time=  15.9
