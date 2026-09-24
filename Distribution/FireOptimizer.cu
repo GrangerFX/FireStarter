@@ -90,8 +90,8 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         evolveAge = oldResult.EvolveAge();
 
         // The evolution age of the register data determines how it is initialized.
-        if (evolveAge == 2) {
-            // When the evolveAge is 2, a single register is set to a random value prior to evolution iteration.
+        if (evolveAge == 1) {
+            // When the evolveAge is 1, a single register is set to a random value prior to evolution iteration.
             // This makes it less likely for the evolution to get stuck.
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
@@ -110,7 +110,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
             memberResult = result;
             evolutionScale = (2.0f * FIRESTARTER_SCALE) * memberResult;
         } else {
-            // When the evolveAge is 0 or 1, this member was the source of an improved result.
+            // When the evolveAge is 0, this member was the source of an improved result.
             // Keep keep attempting to evolve the original register data.
             memberResult = result = oldResult.MaxResult();
             evolutionScale = FIRESTARTER_SCALE * memberResult;
@@ -145,7 +145,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
             unsigned int candidate = RANDOMMOD(memberSeed, populationCount);
             const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate, variation);
             unsigned int candidateAge = candidateResult->EvolveAge();
-            if (candidateAge <= 1) {
+            if (candidateAge == 0) {
                 float candidateMaxResult = candidateResult->MaxResult();
                 if (candidateMaxResult <= result) {
                     bestCandidate = candidate;
@@ -158,9 +158,9 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         if (bestCandidate != member) {
             const FireStarterResult* bestCandidateResult = FireStarterPopulation::PopulationResult(oldPopulation, bestCandidate, variation);
             data = bestCandidateResult->Data();
-            evolveAge = 2; // The evolveAge will be 2 for copied members.
+            evolveAge = 1; // The evolveAge will be 1 for copied members.
         } else
-            evolveAge = 1;  // The result did not improve but none of the candidates was better.
+            evolveAge = 0;  // The result did not improve but none of the candidates was better.
     }
 
     // Return the best register data, fitness result and evolve age.
