@@ -176,20 +176,19 @@ private:
     void ExecuteEvolveSinSimPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteMoneyEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes);
+    void ExecuteMoneyOptimizePass(FireStarterState& state);
+    void ExecuteMoneyTestPass(FireStarterState& state, unsigned int startDay, unsigned int tradingDays, unsigned int validationDays);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
-    void ExecuteMoneyOptimizePass(FireStarterState& state);
-    void ExecuteMoneyTestPass(FireStarterState& state, unsigned int startDay, unsigned int tradingDays, unsigned int validationDays);
     void ExecuteSpeedTestPass(FireStarterState& state);
     bool GenerateEvolve(unsigned int mode);
     bool GenerateOptimize(const FireStarterSettings& settings, const FireStarterCodeGenerate* code, std::string& evaluateCode, unsigned int mode);
-    void GenerateCode(FireStarterState& state);
     
 public:
     inline size_t ExecuteIndex(void) const { return m_executeIndex; }
-    bool ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, const FireStarterSettings& optimizeSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
-    bool EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
+    void ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, const FireStarterSettings& optimizeSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
+    void EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
     void ExecuteSetStocks(const MoneyMakerStocks *stocks, bool sync = true);
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);

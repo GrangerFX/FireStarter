@@ -19,15 +19,6 @@ uint3 threadIdx = { 0, 0, 0 };
 uint3 blockIdx = { 0, 0, 0 };
 dim3 blockDim = { 1, 1, 1 };
 
-// Not used currently.
-inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
-{
-    float curFloat = minFloat;
-    while ((newFloat < curFloat) && !minFloat.compare_exchange_weak(curFloat, newFloat))
-        curFloat = minFloat;
-    return curFloat;
-} // AtomicMin
-
 void FireStarterExecute::FinishPopulation(void)
 {
     m_CUDASettings.Clear();
@@ -544,6 +535,167 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
     }
 } // ExecuteMoneyEvolvePass
 
+void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
+{
+    // Launch the calculation kernel
+    FireStarterSettings settings = state.Settings();
+    unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
+    unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned long long evolutionSeed = state.EvolutionSeed();
+    unsigned long long passes = settings.m_passes;
+
+    for (unsigned int pass = 0; pass < passes; pass++) {
+        unsigned int registers = state.m_uniqueRegisters;
+        unsigned long long optimizePass = state.m_optimize_pass * passes + pass;
+        unsigned long long optimizeSeed = state.OptimizationSeed(optimizePass);
+
+        m_CUDASettings.Copy(&settings, m_settingsSize);
+        if (m_simulateGPU) {
+            FireStarterResult* newPopulation = (pass & 1) ? m_CUDAPopulation0.HostPtr() : m_CUDAPopulation1.HostPtr();
+            FireStarterResult* oldPopulation = (pass & 1) ? m_CUDAPopulation1.HostPtr() : m_CUDAPopulation0.HostPtr();
+
+            blockDim = cudaBlockSize;
+            for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+                for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                    for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                        for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                            for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                                for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                    MoneyOptimizer(m_CUDASettings.HostPtr(), newPopulation, oldPopulation, m_CUDAStocks.HostPtr(), registers, optimizeSeed, optimizePass);
+
+            unsigned int hash = 0;
+            for (unsigned int i = 0; i < settings.m_population; i++) {
+                const FireStarterResult* member = FireStarterPopulation::PopulationResult(newPopulation, settings, i);
+                float curResult = member->MaxResult();
+                hash ^= *(unsigned int*)&curResult;
+            }
+        }
+        else {
+            CUdeviceptr newPopulation = (pass & 1) ? m_CUDAPopulation0.DevicePtr() : m_CUDAPopulation1.DevicePtr();
+            CUdeviceptr oldPopulation = (pass & 1) ? m_CUDAPopulation1.DevicePtr() : m_CUDAPopulation0.DevicePtr();
+
+            void* arr[] = { reinterpret_cast<void*>(&m_CUDASettings.DevicePtr()),
+                            reinterpret_cast<void*>(&newPopulation),
+                            reinterpret_cast<void*>(&oldPopulation),
+                            reinterpret_cast<void*>(&m_CUDAStocks.DevicePtr()),
+                            reinterpret_cast<void*>(&registers),
+                            reinterpret_cast<void*>(&optimizeSeed),
+                            reinterpret_cast<void*>(&optimizePass)
+            };
+
+            checkCUDAErrors(cuLaunchKernel(Module().m_executeFunction,
+                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+                0,                                                  // shared mem
+                Stream(),                                           // stream
+                &arr[0],                                            // arguments
+                0));
+
+            // Synchronize all GPU threads and results.
+            SynchronizeContext();
+        }
+
+        // Check if the user quit the app.
+        if (WillTerminate())
+            break;  // Capture as much data as possible even if terminated.
+    }
+
+    if (m_simulateGPU) {
+        if (passes & 1)
+            memcpy(m_CUDAPopulation0.HostPtr(), m_CUDAPopulation1.HostPtr(), m_populationSize);
+    }
+    else {
+        // If the number off passes is odd, copy the new population to the old population for the next pass.
+        if (passes & 1) {
+            CUdeviceptr cudaPopulation0 = m_CUDAPopulation0.DevicePtr();
+            CUdeviceptr cudaPopulation1 = m_CUDAPopulation1.DevicePtr();
+            checkCUDAErrors(cuMemcpyDtoDAsync(cudaPopulation0, cudaPopulation1, m_populationSize, Stream()));
+        }
+        m_CUDAPopulation0.DeviceToHost();
+        SynchronizeContext();
+    }
+
+    // Gather the best results.
+    // Note: The best result may get worse generation to generation before it improves.
+    // This allows for better diversity among members when they struggle to evolve and yields better results.
+    FireStarterResult* hostPopulation = m_CUDAPopulation0.HostPtr();
+    float minResult = FireStarterPopulation::PopulationMaxResult(hostPopulation, settings, 0);
+    unsigned int minIndex = 0;
+    for (unsigned int i = 1; i < settings.m_population; i++) {
+        float curResult = FireStarterPopulation::PopulationMaxResult(hostPopulation, settings, i);
+        if (curResult < minResult) {
+            minResult = curResult;
+            minIndex = i;
+        }
+    }
+
+    // A zero result indicates that the program was terminated during the first pass.
+    if (minResult > 0.0f) {
+        // Store the state's best result.
+        state.InitResult(settings, hostPopulation, minIndex);
+
+        // Calculate the state's max result.
+        state.m_minIndex = minIndex;
+        state.m_oldResult = state.m_bestResult;
+        state.m_bestResult = minResult;
+        state.m_optimizeValid = true;
+    }
+} // ExecuteMoneyOptimizePass
+
+void FireStarterExecute::ExecuteMoneyTestPass(FireStarterState& state, unsigned int startDay, unsigned int tradingDays, unsigned int validationDays)
+{
+    // Launch the calculation kernel
+    if (m_CUDATradingData.Allocated()) {
+        FireStarterSettings settings = state.Settings();
+        unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
+        unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
+        dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+        dim3 cudaGridSize(blocksPerGrid, 1, 1);
+        const FireStarterResult& bestResult = state.Result();
+        m_CUDATradingData.Copy(&bestResult.m_data, m_tradingDataSize);
+        m_CUDASettings.Copy(&settings, m_settingsSize);
+
+        if (m_simulateGPU) {
+            blockDim = { settings.m_stocks, 1, 1 };
+            blockIdx = { 0, 0, 0 };
+            threadIdx = { 0, 0, 0 };
+            for (threadIdx.x = 0; threadIdx.x < blockDim.x; threadIdx.x++)
+                MoneyTester(m_CUDASettings.HostPtr(), m_CUDAStocks.HostPtr(), m_CUDATradingResults.HostPtr(), m_CUDATradingData.HostPtr(), startDay, tradingDays, validationDays);
+        }
+        else {
+            cudaGridSize = { 1, 1, 1 };
+            cudaBlockSize = { settings.m_stocks, 1, 1 };
+
+            m_CUDASettings.HostToDevice();
+            m_CUDATradingResults.HostToDevice();
+            m_CUDATradingData.HostToDevice();
+
+            FireStarterCode* nullCode = nullptr;
+            void* arr[] = { reinterpret_cast<void*>(&m_CUDASettings.DevicePtr()),
+                            reinterpret_cast<void*>(&m_CUDAStocks.DevicePtr()),
+                            reinterpret_cast<void*>(&m_CUDATradingResults.DevicePtr()),
+                            reinterpret_cast<void*>(&m_CUDATradingData.DevicePtr()),
+                            reinterpret_cast<void*>(&startDay),
+                            reinterpret_cast<void*>(&tradingDays),
+                            reinterpret_cast<void*>(&validationDays)
+            };
+
+            checkCUDAErrors(cuLaunchKernel(Module().m_executeTest,
+                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+                0,                                                  // shared mem
+                Stream(),                                           // stream
+                &arr[0],                                            // arguments
+                0));
+
+            m_CUDATradingResults.DeviceToHost();
+            SynchronizeContext();
+        }
+    }
+} // ExecuteMoneyTestPass
+
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
@@ -719,164 +871,6 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
         ExecuteOptimizePasses(state);
 } // ExecuteSmartOptimizePasses
 
-void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
-{
-    // Launch the calculation kernel
-    FireStarterSettings settings = state.Settings();
-    unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
-    unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    unsigned long long evolutionSeed = state.EvolutionSeed();
-    unsigned long long passes = settings.m_passes;
-
-    for (unsigned int pass = 0; pass < passes; pass++) {
-        unsigned int registers = state.m_uniqueRegisters;
-        unsigned long long optimizePass = state.m_optimize_pass * passes + pass;
-        unsigned long long optimizeSeed = state.OptimizationSeed(optimizePass);
-
-        m_CUDASettings.Copy(&settings, m_settingsSize);
-        if (m_simulateGPU) {
-            FireStarterResult* newPopulation = (pass & 1) ? m_CUDAPopulation0.HostPtr() : m_CUDAPopulation1.HostPtr();
-            FireStarterResult* oldPopulation = (pass & 1) ? m_CUDAPopulation1.HostPtr() : m_CUDAPopulation0.HostPtr();
-
-            blockDim = cudaBlockSize;
-            for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
-                for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
-                    for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
-                        for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
-                            for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
-                                for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                    MoneyOptimizer(m_CUDASettings.HostPtr(), newPopulation, oldPopulation, m_CUDAStocks.HostPtr(), registers, optimizeSeed, optimizePass);
-
-            unsigned int hash = 0;
-            for (unsigned int i = 0; i < settings.m_population; i++) {
-                const FireStarterResult* member = FireStarterPopulation::PopulationResult(newPopulation, settings, i);
-                float curResult = member->MaxResult();
-                hash ^= *(unsigned int*)&curResult;
-            }
-        } else {
-            CUdeviceptr newPopulation = (pass & 1) ? m_CUDAPopulation0.DevicePtr() : m_CUDAPopulation1.DevicePtr();
-            CUdeviceptr oldPopulation = (pass & 1) ? m_CUDAPopulation1.DevicePtr() : m_CUDAPopulation0.DevicePtr();
-
-            void* arr[] = { reinterpret_cast<void*>(&m_CUDASettings.DevicePtr()),
-                            reinterpret_cast<void*>(&newPopulation),
-                            reinterpret_cast<void*>(&oldPopulation),
-                            reinterpret_cast<void*>(&m_CUDAStocks.DevicePtr()),
-                            reinterpret_cast<void*>(&registers),
-                            reinterpret_cast<void*>(&optimizeSeed),
-                            reinterpret_cast<void*>(&optimizePass)
-            };
-
-            checkCUDAErrors(cuLaunchKernel(Module().m_executeFunction,
-                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-                0,                                                  // shared mem
-                Stream(),                                           // stream
-                &arr[0],                                            // arguments
-                0));
-
-            // Synchronize all GPU threads and results.
-            SynchronizeContext();
-        }
-
-        // Check if the user quit the app.
-        if (WillTerminate())
-            break;  // Capture as much data as possible even if terminated.
-    }
-
-    if (m_simulateGPU) {
-        if (passes & 1)
-            memcpy(m_CUDAPopulation0.HostPtr(), m_CUDAPopulation1.HostPtr(), m_populationSize);
-    } else {
-        // If the number off passes is odd, copy the new population to the old population for the next pass.
-        if (passes & 1) {
-            CUdeviceptr cudaPopulation0 = m_CUDAPopulation0.DevicePtr();
-            CUdeviceptr cudaPopulation1 = m_CUDAPopulation1.DevicePtr();
-            checkCUDAErrors(cuMemcpyDtoDAsync(cudaPopulation0, cudaPopulation1, m_populationSize, Stream()));
-        }
-        m_CUDAPopulation0.DeviceToHost();
-        SynchronizeContext();
-    }
-
-    // Gather the best results.
-    // Note: The best result may get worse generation to generation before it improves.
-    // This allows for better diversity among members when they struggle to evolve and yields better results.
-    FireStarterResult* hostPopulation = m_CUDAPopulation0.HostPtr();
-    float minResult = FireStarterPopulation::PopulationMaxResult(hostPopulation, settings, 0);
-    unsigned int minIndex = 0;
-    for (unsigned int i = 1; i < settings.m_population; i++) {
-        float curResult = FireStarterPopulation::PopulationMaxResult(hostPopulation, settings, i);
-        if (curResult < minResult) {
-            minResult = curResult;
-            minIndex = i;
-        }
-    }
-
-    // A zero result indicates that the program was terminated during the first pass.
-    if (minResult > 0.0f) {
-        // Store the state's best result.
-        state.InitResult(settings, hostPopulation, minIndex);
-
-        // Calculate the state's max result.
-        state.m_minIndex = minIndex;
-        state.m_oldResult = state.m_bestResult;
-        state.m_bestResult = minResult;
-        state.m_optimizeValid = true;
-    }
-} // ExecuteMoneyOptimizePass
-
-void FireStarterExecute::ExecuteMoneyTestPass(FireStarterState& state, unsigned int startDay, unsigned int tradingDays, unsigned int validationDays)
-{
-    // Launch the calculation kernel
-    if (m_CUDATradingData.Allocated()) {
-        FireStarterSettings settings = state.Settings();
-        unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
-        unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
-        dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-        dim3 cudaGridSize(blocksPerGrid, 1, 1);
-        const FireStarterResult& bestResult = state.Result();
-        m_CUDATradingData.Copy(&bestResult.m_data, m_tradingDataSize);
-        m_CUDASettings.Copy(&settings, m_settingsSize);
-
-        if (m_simulateGPU) {
-            blockDim = { settings.m_stocks, 1, 1 };
-            blockIdx = { 0, 0, 0 };
-            threadIdx = { 0, 0, 0 };
-            for (threadIdx.x = 0; threadIdx.x < blockDim.x; threadIdx.x++)
-                MoneyTester(m_CUDASettings.HostPtr(), m_CUDAStocks.HostPtr(), m_CUDATradingResults.HostPtr(), m_CUDATradingData.HostPtr(), startDay, tradingDays, validationDays);
-        } else {
-            cudaGridSize = { 1, 1, 1 };
-            cudaBlockSize = { settings.m_stocks, 1, 1 };
-
-            m_CUDASettings.HostToDevice();
-            m_CUDATradingResults.HostToDevice();
-            m_CUDATradingData.HostToDevice();
-
-            FireStarterCode* nullCode = nullptr;
-            void* arr[] = { reinterpret_cast<void*>(&m_CUDASettings.DevicePtr()),
-                            reinterpret_cast<void*>(&m_CUDAStocks.DevicePtr()),
-                            reinterpret_cast<void*>(&m_CUDATradingResults.DevicePtr()),
-                            reinterpret_cast<void*>(&m_CUDATradingData.DevicePtr()),
-                            reinterpret_cast<void*>(&startDay),
-                            reinterpret_cast<void*>(&tradingDays),
-                            reinterpret_cast<void*>(&validationDays)
-            };
-
-            checkCUDAErrors(cuLaunchKernel(Module().m_executeTest,
-                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-                0,                                                  // shared mem
-                Stream(),                                           // stream
-                &arr[0],                                            // arguments
-                0));
-
-            m_CUDATradingResults.DeviceToHost();
-            SynchronizeContext();
-        }
-    }
-} // ExecuteMoneyTestPass
-
 void FireStarterExecute::ExecuteSpeedTestPass(FireStarterState& state)
 {
     // Launch the calculation kernel
@@ -942,29 +936,6 @@ void FireStarterExecute::ExecuteSpeedTestPass(FireStarterState& state)
     state.m_minIndex = minIndex;
 } // ExecuteSpeedTestPass
 
-void FireStarterExecute::GenerateCode(FireStarterState& state)
-{
-    // Generate the optimize code
-    if (m_optimizeCode.empty()) {
-        unsigned int mode = state.Settings().m_mode;
-        m_optimizeProgramName = FireStarterSettings::OptimizeProgramName(mode);
-        m_optimizeFunctionName = FireStarterSettings::OptimizeFunctionName(mode);
-        m_optimizeTestName = FireStarterSettings::OptimizeTestName(mode);
-        if (!FireStarterSource::LoadSource(m_optimizeCode, m_optimizeProgramName)) {
-            printf("%s could not be loaded!\n", m_optimizeProgramName.c_str());
-            std::terminate();
-        }
-        CUDACompile::CompileOptions(m_optimizeOptions);
-    }
-
-    // Generate the evaluate code
-    state.m_evaluateCode.clear();
-    m_executeGenerate.GenerateEvaluate(state.Settings(), state.Code(), state.m_evaluateCode);
-
-    // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
-    FireStarterSource::UpdateProgram(m_optimizeCode, state.m_evaluateCode, EVALUATE_CODE);
-} // GenearateCode
-
 bool FireStarterExecute::GenerateEvolve(unsigned int mode)
 {
     // Evolve only needs to be generated once.
@@ -1009,7 +980,7 @@ bool FireStarterExecute::GenerateOptimize(const FireStarterSettings& settings, c
     return Module().CompileProgram(m_optimizeCode, m_optimizeProgramName, m_optimizeFunctionName, m_optimizeTestName);
 } // GenerateOptimize
 
-bool FireStarterExecute::ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, const FireStarterSettings& optimizeSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation)
+void FireStarterExecute::ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, const FireStarterSettings& optimizeSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation)
 {
     DispatchSync([this, test, &selectSettings, &optimizeSettings, &states, &allStates, &testedCodes, generation] {
         if (GenerateEvolve(selectSettings.m_mode) && InitPopulation(selectSettings)) {
@@ -1097,20 +1068,24 @@ bool FireStarterExecute::ExecuteSelectStates(unsigned long long test, const Fire
             }
         }
     });
-    return true;
 } // ExecuteSelectStates
 
-bool FireStarterExecute::EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation)
+void FireStarterExecute::EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& states, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation)
 {
+    // EvolveStates is the code evolution used by EvolveGPU. A batch of states is evolved. In the first generation, all the states have their code randomized.
+    // In later generations, only the first state is randomized. The rest are selected by finding the state in all previously generated states (allStates) with the lowest weight.
+    // The weight is determined by mutiplying the maximum error among all target variations by the state's generation. 
     DispatchSync([this, test, &evolveSettings, &states, &allStates, &testedCodes, generation] {
         unsigned long long numStates = states.size();
         unsigned long long randomStates = generation == 0 ? numStates : FIRESTARTER_EVOLVE_RANDOM;
         unsigned long long totalStates = allStates.size();
 
+        // Process each state in the current bach of states.
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterState& curState = states[index];
 
-            // Evolved states are generated first so they cannot used the random states created in this generation.
+            // A number of states are generated with random code each time the batch of states are evolved.
+            // The first time EvolveStates is called, all the states are randomized.
             if (index < randomStates) {
                 // Randomize the instructions.
                 curState.InitState(evolveSettings, 0, index, allStates.size(), test);
@@ -1122,6 +1097,8 @@ bool FireStarterExecute::EvolveStates(unsigned long long test, const FireStarter
 
                     // Optimize the program registers.
                     curState.OptimizeCode();
+
+                    // Check that the current state's code is not in the list of tested codes.
                 } while (testedCodes.count(curState.CodeVector()));
 
                 // Add the instructions to the set of unique instructions.
@@ -1131,7 +1108,7 @@ bool FireStarterExecute::EvolveStates(unsigned long long test, const FireStarter
                 allStates.push_back(curState);
             } else {
                 // Loop until a unique new state is found.
-                for (;;) {
+                do {
                     // Find the best state to evolve based on a weighting algorithm.
                     float evolveWeight = 0.0f;
                     size_t evolveIndex = 0;
@@ -1171,20 +1148,17 @@ bool FireStarterExecute::EvolveStates(unsigned long long test, const FireStarter
                     // Optimize the program registers.
                     curState.OptimizeCode();
 
-                    // Check if the optimized instructions are unique.
-                    if (!testedCodes.count(curState.CodeVector())) {
-                        // Add the instructions to the set of unique instructions.
-                        testedCodes.insert(curState.CodeVector());
-                        break;
-                    }
-                }
+                    // Check that the current state's code is not in the list of tested codes.
+                } while (testedCodes.count(curState.CodeVector()));
+
+                // Add the instructions to the set of unique instructions.
+                testedCodes.insert(curState.CodeVector());
 
                 // Force the state to re-generate the evaluate code.
                 curState.m_evaluateCode.clear();
             }
         }
     });
-    return true;
 } // EvolveStates
 
 void FireStarterExecute::ExecuteSetStocks(const MoneyMakerStocks *stocks, bool sync)

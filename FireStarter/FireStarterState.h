@@ -714,7 +714,7 @@ public:
     inline float SelectWeight(void) const
     {
         return MaxResults() * m_age;
-    } // EvolveWeight
+    } // SelectWeight
 
     inline float EvolveWeight(void) const
     {
