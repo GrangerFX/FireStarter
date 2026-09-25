@@ -8,7 +8,7 @@
 #include "FireStarterResults.h"
 #include "MoneyMakerStocks.h"
 
-// FireEvolverNew is a modified version of FireEvolverGPU. It tests the idea of using fixed sets of register indices for code emulation.
+// FireEvolverNew is an experimental version of FireEvolverGPU. It tests the idea of using fixed sets of register indices for code emulation.
 // This avoids needing to index registers via shared memory and offers a very substantial performance increase.
 // It should be possible to build a library of register indices that are successfully able to solve a range of problems.
 // These could be pre-compiled into the evolution code and accessed via a switch statement or as entirely separate evolution functions.
@@ -50,8 +50,6 @@ inline bool EvolveNewEvaluate(const FireStarterData& data, const FireStarterCode
     return true;
 } // EvolveNewEvaluate
 
-// EvolverNew evolves code opcodes and register data searching for maximum evolvability.
-// 
 // Each member in the popluation has its code opcodes and register data randomly initialized.
 // The code opcodes and register data is evolved over a number of passes.
 // If the result did not improve compared to the previous pass, one register data is randomized.

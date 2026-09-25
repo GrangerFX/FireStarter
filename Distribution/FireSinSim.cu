@@ -8,13 +8,17 @@
 #include "FireSinSim.h"
 #include "CUDADefines.h"
 
+// FireSinSim is an implementation of the original SinSim minimal neural network experiment.
+// The original version runs on a single CPU core with only a single member and produced only a three digits of accuracy.
+// This version uses a CUDA kernal running on the GPU with a population size of 65536 and converges to 6 digits of accuracy.
+
 GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, const unsigned long long generation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Check if the user is trying to abort and quit the application.
     if (SetSharedKillSwitch())
         return;
 
-    // Determine the member to be optimized.
+    // Determine the member to be evolved.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
     if (member >= populationSize)
         return;

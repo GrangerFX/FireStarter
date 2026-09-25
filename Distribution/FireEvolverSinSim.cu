@@ -13,6 +13,7 @@
 // Rather than re-initializing the register data, as in FireStarterGPU or FireStarterOptimizer, an initial set of register data is set once and then allowed to be continuously modified for all the samples.
 // The evolution algorithm is not optimized as this is just an experiment. Example: The input and target values could be precalculated.
 // This type of continual register modfication is closer to the ideal of a dynamic and self modifying neural network architecture than a fixed function evolution.
+
 GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount)
 {
     // Check if the user is trying to abort and quit the application.

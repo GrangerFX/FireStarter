@@ -7,6 +7,8 @@
 #include "FireStarterSettings.h"
 #include "FireStarterResults.h"
 
+// FireEvolverGPU evolves code and register data searching for maximum evolvability.
+
 // Evaluate the emulated code for each of a number of input theta samples.
 // The result of the code evaluation will subtracted from the target value for each sample.
 // Each sample is checked for infinite numbers.
@@ -27,8 +29,6 @@ inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterD
     return true;
 } // EvolveEvaluate
 
-// EvolverGPU evolves code and register data searching for maximum evolvability.
-// 
 // Each member in the popluation has its code and register data randomly initialized.
 // The code and register data is evolved over a number of passes.
 // If the result did not improve compared to the previous pass, one register data is randomized.
