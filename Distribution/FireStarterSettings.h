@@ -84,6 +84,7 @@
 #define FIRESTARTER_START_TEST      0           // The starting test index.
 #define FIRESTARTER_TESTS           256
 
+#define FIRESTARTER_RANDOM_VARIATIONS           FIRESTARTER_VARIATIONS
 #define FIRESTARTER_RANDOM_UNITS                1
 #define FIRESTARTER_RANDOM_STATES               1
 #define FIRESTARTER_RANDOM_GENERATIONS          0
@@ -95,6 +96,7 @@
 #define FIRESTARTER_RANDOM_TESTS                11000
 #define FIRESTARTER_RANDOM_TARGET               FIRESTARTER_TARGET
 
+#define FIRESTARTER_EVOLVE_SELECT_VARIATIONS    FIRESTARTER_VARIATIONS
 #define FIRESTARTER_EVOLVE_SELECT_UNITS         8
 #define FIRESTARTER_EVOLVE_SELECT_STATES        16
 #define FIRESTARTER_EVOLVE_SELECT_GENERATIONS   0
@@ -106,6 +108,7 @@
 #define FIRESTARTER_EVOLVE_SELECT_TESTS         4
 #define FIRESTARTER_EVOLVE_SELECT_TARGET        FIRESTARTER_TARGET
 
+#define FIRESTARTER_EVOLVE_CPU_VARIATIONS       3
 #define FIRESTARTER_EVOLVE_CPU_UNITS            8
 #define FIRESTARTER_EVOLVE_CPU_STATES           16
 #define FIRESTARTER_EVOLVE_CPU_GENERATIONS      0
@@ -118,6 +121,7 @@
 #define FIRESTARTER_EVOLVE_CPU_TARGET           FIRESTARTER_TARGET
 
 #if FIRESTARTER_VARIATIONS == 1
+#define FIRESTARTER_EVOLVE_GPU_VARIATIONS       FIRESTARTER_VARIATIONS
 #define FIRESTARTER_EVOLVE_GPU_UNITS            1
 #define FIRESTARTER_EVOLVE_GPU_STATES           1
 #define FIRESTARTER_EVOLVE_GPU_GENERATIONS      0
@@ -129,6 +133,7 @@
 #define FIRESTARTER_EVOLVE_GPU_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_EVOLVE_GPU_TARGET           FIRESTARTER_TARGET
 #else
+#define FIRESTARTER_EVOLVE_GPU_VARIATIONS       FIRESTARTER_VARIATIONS
 #define FIRESTARTER_EVOLVE_GPU_UNITS            1
 #define FIRESTARTER_EVOLVE_GPU_STATES           1
 #define FIRESTARTER_EVOLVE_GPU_GENERATIONS      0
@@ -141,6 +146,7 @@
 #define FIRESTARTER_EVOLVE_GPU_TARGET           FIRESTARTER_TARGET
 #endif
 
+#define FIRESTARTER_EVOLVE_NEW_VARIATIONS       FIRESTARTER_VARIATIONS
 #define FIRESTARTER_EVOLVE_NEW_UNITS            1
 #define FIRESTARTER_EVOLVE_NEW_STATES           1
 #define FIRESTARTER_EVOLVE_NEW_GENERATIONS      0
@@ -152,6 +158,7 @@
 #define FIRESTARTER_EVOLVE_NEW_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_EVOLVE_NEW_TARGET           FIRESTARTER_TARGET
 
+#define FIRESTARTER_EVOLVE_OPTIMIZE_VARIATIONS  FIRESTARTER_VARIATIONS
 #define FIRESTARTER_EVOLVE_OPTIMIZE_UNITS       1
 #define FIRESTARTER_EVOLVE_OPTIMIZE_STATES      1
 #define FIRESTARTER_EVOLVE_OPTIMIZE_GENERATIONS 0
@@ -163,6 +170,7 @@
 #define FIRESTARTER_EVOLVE_OPTIMIZE_TESTS       FIRESTARTER_TESTS
 #define FIRESTARTER_EVOLVE_OPTIMIZE_TARGET      FIRESTARTER_TARGET
 
+#define FIRESTARTER_EVOLVE_SINSIM_VARIATIONS    FIRESTARTER_VARIATIONS
 #define FIRESTARTER_EVOLVE_SINSIM_UNITS         1
 #define FIRESTARTER_EVOLVE_SINSIM_STATES        1
 #define FIRESTARTER_EVOLVE_SINSIM_GENERATIONS   10
@@ -174,6 +182,7 @@
 #define FIRESTARTER_EVOLVE_SINSIM_TESTS         1
 #define FIRESTARTER_EVOLVE_SINSIM_TARGET        FIRESTARTER_TARGET
 
+#define FIRESTARTER_SINSIM_VARIATIONS           FIRESTARTER_VARIATIONS
 #define FIRESTARTER_SINSIM_UNITS                1
 #define FIRESTARTER_SINSIM_STATES               1
 #define FIRESTARTER_SINSIM_GENERATIONS          1000
@@ -185,6 +194,7 @@
 #define FIRESTARTER_SINSIM_TESTS                FIRESTARTER_TESTS
 #define FIRESTARTER_SINSIM_TARGET               FIRESTARTER_TARGET
 
+#define FIRESTARTER_MONEYMAKER_VARIATIONS       FIRESTARTER_VARIATIONS
 #define FIRESTARTER_MONEYMAKER_UNITS            1
 #define FIRESTARTER_MONEYMAKER_STATES           1
 #define FIRESTARTER_MONEYMAKER_GENERATIONS      1
@@ -196,6 +206,7 @@
 #define FIRESTARTER_MONEYMAKER_TESTS            8
 #define FIRESTARTER_MONEYMAKER_TARGET           FIRESTARTER_TARGET
 
+#define FIRESTARTER_MONEYOPTIMIZE_VARIATIONS    FIRESTARTER_VARIATIONS
 #define FIRESTARTER_MONEYOPTIMIZE_UNITS         1
 #define FIRESTARTER_MONEYOPTIMIZE_STATES        1
 #define FIRESTARTER_MONEYOPTIMIZE_GENERATIONS   1
@@ -207,6 +218,7 @@
 #define FIRESTARTER_MONEYOPTIMIZE_TESTS         1
 #define FIRESTARTER_MONEYOPTIMIZE_TARGET        FIRESTARTER_TARGET
 
+#define FIRESTARTER_OPTIMIZE_VARIATIONS         FIRESTARTER_VARIATIONS
 #define FIRESTARTER_OPTIMIZE_UNITS              1
 #define FIRESTARTER_OPTIMIZE_STATES             1
 #define FIRESTARTER_OPTIMIZE_GENERATIONS        0
@@ -218,6 +230,7 @@
 #define FIRESTARTER_OPTIMIZE_TESTS              FIRESTARTER_TESTS
 #define FIRESTARTER_OPTIMIZE_TARGET             FIRESTARTER_TARGET
 
+#define FIRESTARTER_SPEED_TEST_VARIATIONS       FIRESTARTER_VARIATIONS
 #define FIRESTARTER_SPEED_TEST_UNITS            1
 #define FIRESTARTER_SPEED_TEST_STATES           1
 #define FIRESTARTER_SPEED_TEST_GENERATIONS      5
@@ -341,10 +354,10 @@ public:
                 return "FIRESTARTER_MONEYMAKER";
             case FIRESTARTER_MONEYOPTIMIZE:
                 return "FIRESTARTER_MONEYOPTIMIZE";
-            case FIRESTARTER_SPEED_TEST:
-                return "FIRESTARTER_SPEED_TEST";
             case FIRESTARTER_OPTIMIZE:
                 return "FIRESTARTER_OPTIMIZE";
+            case FIRESTARTER_SPEED_TEST:
+                return "FIRESTARTER_SPEED_TEST";
             case FIRESTARTER_SOLUTION:
                 return "FIRESTARTER_SOLUTION";
             default:
@@ -376,10 +389,10 @@ public:
                 return "FireMoneyMaker.cu";
             case FIRESTARTER_MONEYOPTIMIZE:
                 return "FireMoneyOptimizer.cu";
-            case FIRESTARTER_SPEED_TEST:
-                return "FireSpeedTest.cu";
             case FIRESTARTER_OPTIMIZE:
                 return "FireOptimizer.cu";
+            case FIRESTARTER_SPEED_TEST:
+                return "FireSpeedTest.cu";
         }
         return "";
     } // EvolveProgramName
@@ -416,6 +429,8 @@ public:
                 return "EvolverGPU";
             case FIRESTARTER_EVOLVE_NEW:
                 return "EvolverNew";
+            case FIRESTARTER_EVOLVE_OPTIMIZE:
+                return "Optimizer";
             case FIRESTARTER_EVOLVE_SINSIM:
                 return "EvolverSinSim";
             case FIRESTARTER_SINSIM:
@@ -424,10 +439,10 @@ public:
                 return "MoneyEvolve";
             case FIRESTARTER_MONEYOPTIMIZE:
                 return "MoneyOptimizer";
-            case FIRESTARTER_SPEED_TEST:
-                return "SpeedTest";
             case FIRESTARTER_OPTIMIZE:
                 return "Optimizer";
+            case FIRESTARTER_SPEED_TEST:
+                return "SpeedTest";
         }
         return "";
     } // EvolveFunctionName
@@ -516,6 +531,7 @@ public:
         m_mode = (mode == FIRESTARTER_AUTO) ? FIRESTARTER_MODE : mode;
         switch (m_mode) {
             case FIRESTARTER_RANDOM:
+                m_variations =  FIRESTARTER_RANDOM_VARIATIONS;
                 m_units =       FIRESTARTER_RANDOM_UNITS;
                 m_states =      FIRESTARTER_RANDOM_STATES;
                 m_generations = FIRESTARTER_RANDOM_GENERATIONS;
@@ -529,6 +545,7 @@ public:
                 break;
 
             case FIRESTARTER_EVOLVE_SELECT:
+                m_variations =  FIRESTARTER_EVOLVE_SELECT_VARIATIONS;
                 m_units =       FIRESTARTER_EVOLVE_SELECT_UNITS;
                 m_states =      FIRESTARTER_EVOLVE_SELECT_STATES;
                 m_generations = FIRESTARTER_EVOLVE_SELECT_GENERATIONS;
@@ -542,6 +559,7 @@ public:
                 break;
 
             case FIRESTARTER_EVOLVE_CPU:
+                m_variations =  FIRESTARTER_EVOLVE_CPU_VARIATIONS;
                 m_units =       FIRESTARTER_EVOLVE_CPU_UNITS;
                 m_states =      FIRESTARTER_EVOLVE_CPU_STATES;
                 m_generations = FIRESTARTER_EVOLVE_CPU_GENERATIONS;
@@ -555,6 +573,7 @@ public:
                 break;
 
             case FIRESTARTER_EVOLVE_GPU:
+                m_variations =  FIRESTARTER_EVOLVE_GPU_VARIATIONS;
                 m_units =       FIRESTARTER_EVOLVE_GPU_UNITS;
                 m_states =      FIRESTARTER_EVOLVE_GPU_STATES;
                 m_generations = FIRESTARTER_EVOLVE_GPU_GENERATIONS;
@@ -568,6 +587,7 @@ public:
                 break;
 
             case FIRESTARTER_EVOLVE_NEW:
+                m_variations =  FIRESTARTER_EVOLVE_NEW_VARIATIONS;
                 m_units =       FIRESTARTER_EVOLVE_NEW_UNITS;
                 m_states =      FIRESTARTER_EVOLVE_NEW_STATES;
                 m_generations = FIRESTARTER_EVOLVE_NEW_GENERATIONS;
@@ -579,21 +599,9 @@ public:
                 m_tests =       FIRESTARTER_EVOLVE_NEW_TESTS;
                 m_target =      FIRESTARTER_EVOLVE_NEW_TARGET;
                 break;
-
-            case FIRESTARTER_EVOLVE_SINSIM:
-                m_units =       FIRESTARTER_EVOLVE_SINSIM_UNITS;
-                m_states =      FIRESTARTER_EVOLVE_SINSIM_STATES;
-                m_generations = FIRESTARTER_EVOLVE_SINSIM_GENERATIONS;
-                m_population =  FIRESTARTER_EVOLVE_SINSIM_POPULATION;
-                m_passes =      FIRESTARTER_EVOLVE_SINSIM_PASSES;
-                m_iterations =  FIRESTARTER_EVOLVE_SINSIM_ITERATIONS;
-                m_samples =     FIRESTARTER_EVOLVE_SINSIM_SAMPLES;
-                m_optimize =    FIRESTARTER_EVOLVE_SINSIM_OPTIMIZE;
-                m_tests =       FIRESTARTER_EVOLVE_SINSIM_TESTS;
-                m_target =      FIRESTARTER_EVOLVE_SINSIM_TARGET;
-                break;
                 
             case FIRESTARTER_EVOLVE_OPTIMIZE:
+                m_variations =  FIRESTARTER_EVOLVE_OPTIMIZE_VARIATIONS;
                 m_units =       FIRESTARTER_EVOLVE_OPTIMIZE_UNITS;
                 m_states =      FIRESTARTER_EVOLVE_OPTIMIZE_STATES;
                 m_generations = FIRESTARTER_EVOLVE_OPTIMIZE_GENERATIONS;
@@ -606,7 +614,22 @@ public:
                 m_target =      FIRESTARTER_EVOLVE_OPTIMIZE_TARGET;
                 break;
 
+            case FIRESTARTER_EVOLVE_SINSIM:
+                m_variations =  FIRESTARTER_EVOLVE_SINSIM_VARIATIONS;
+                m_units =       FIRESTARTER_EVOLVE_SINSIM_UNITS;
+                m_states =      FIRESTARTER_EVOLVE_SINSIM_STATES;
+                m_generations = FIRESTARTER_EVOLVE_SINSIM_GENERATIONS;
+                m_population =  FIRESTARTER_EVOLVE_SINSIM_POPULATION;
+                m_passes =      FIRESTARTER_EVOLVE_SINSIM_PASSES;
+                m_iterations =  FIRESTARTER_EVOLVE_SINSIM_ITERATIONS;
+                m_samples =     FIRESTARTER_EVOLVE_SINSIM_SAMPLES;
+                m_optimize =    FIRESTARTER_EVOLVE_SINSIM_OPTIMIZE;
+                m_tests =       FIRESTARTER_EVOLVE_SINSIM_TESTS;
+                m_target =      FIRESTARTER_EVOLVE_SINSIM_TARGET;
+                break;
+
             case FIRESTARTER_SINSIM:
+                m_variations =  FIRESTARTER_SINSIM_VARIATIONS;
                 m_units =       FIRESTARTER_SINSIM_UNITS;
                 m_states =      FIRESTARTER_SINSIM_STATES;
                 m_generations = FIRESTARTER_SINSIM_GENERATIONS;
@@ -620,6 +643,7 @@ public:
                 break;
 
             case FIRESTARTER_MONEYMAKER:
+                m_variations =  FIRESTARTER_MONEYMAKER_VARIATIONS;
                 m_units =       FIRESTARTER_MONEYMAKER_UNITS;
                 m_states =      FIRESTARTER_MONEYMAKER_STATES;
                 m_generations = FIRESTARTER_MONEYMAKER_GENERATIONS;
@@ -633,6 +657,7 @@ public:
                 break;
 
             case FIRESTARTER_MONEYOPTIMIZE:
+                m_variations =  FIRESTARTER_MONEYOPTIMIZE_VARIATIONS;
                 m_units =       FIRESTARTER_MONEYOPTIMIZE_UNITS;
                 m_states =      FIRESTARTER_MONEYOPTIMIZE_STATES;
                 m_generations = FIRESTARTER_MONEYOPTIMIZE_GENERATIONS;
@@ -645,20 +670,8 @@ public:
                 m_target =      FIRESTARTER_MONEYOPTIMIZE_TARGET;
                 break;
 
-            case FIRESTARTER_SPEED_TEST:
-                m_units =       FIRESTARTER_SPEED_TEST_UNITS;
-                m_states =      FIRESTARTER_SPEED_TEST_STATES;
-                m_generations = FIRESTARTER_SPEED_TEST_GENERATIONS;
-                m_population =  FIRESTARTER_SPEED_TEST_POPULATION;
-                m_passes =      FIRESTARTER_SPEED_TEST_PASSES;
-                m_iterations =  FIRESTARTER_SPEED_TEST_ITERATIONS;
-                m_samples =     FIRESTARTER_SPEED_TEST_SAMPLES;
-                m_optimize =    FIRESTARTER_SPEED_TEST_OPTIMIZE;
-                m_tests =       FIRESTARTER_SPEED_TEST_TESTS;
-                m_target =      FIRESTARTER_SPEED_TEST_TARGET;
-                break;
-
             case FIRESTARTER_OPTIMIZE:
+                m_variations =  FIRESTARTER_OPTIMIZE_VARIATIONS;
                 m_units =       FIRESTARTER_OPTIMIZE_UNITS;
                 m_states =      FIRESTARTER_OPTIMIZE_STATES;
                 m_generations = FIRESTARTER_OPTIMIZE_GENERATIONS;
@@ -671,7 +684,22 @@ public:
                 m_target =      FIRESTARTER_OPTIMIZE_TARGET;
                 break;
 
+            case FIRESTARTER_SPEED_TEST:
+                m_variations =  FIRESTARTER_SPEED_TEST_VARIATIONS;
+                m_units =       FIRESTARTER_SPEED_TEST_UNITS;
+                m_states =      FIRESTARTER_SPEED_TEST_STATES;
+                m_generations = FIRESTARTER_SPEED_TEST_GENERATIONS;
+                m_population =  FIRESTARTER_SPEED_TEST_POPULATION;
+                m_passes =      FIRESTARTER_SPEED_TEST_PASSES;
+                m_iterations =  FIRESTARTER_SPEED_TEST_ITERATIONS;
+                m_samples =     FIRESTARTER_SPEED_TEST_SAMPLES;
+                m_optimize =    FIRESTARTER_SPEED_TEST_OPTIMIZE;
+                m_tests =       FIRESTARTER_SPEED_TEST_TESTS;
+                m_target =      FIRESTARTER_SPEED_TEST_TARGET;
+                break;
+
             default:
+                m_variations =  0;
                 m_units =       0;
                 m_states =      0;
                 m_generations = 0;
