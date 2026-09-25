@@ -892,11 +892,11 @@ void FireStarterStream::SpeedTestStream(void)
                 // Output the test results.
                 if (!WillTerminate()) {
                     // Output the evolve results.
-                    std::string resultText = Format("Test: %llu  Generation=%llu  Evolve Result=%.8f  Duration: %.1f", test, testState.m_generation, testState.MaxResults(), bestState.Duration());
+                    std::string resultText = Format("Test: %llu  Generation=%llu  Evolve Result=%.8f  Duration: %.1f", test, testState.m_generation, testState.MaxResults(), testState.Duration());
                     if (bestState.MaxResults() <= speedTestSettings.m_target)
                         resultText += " *******";
                     resultText += "\n";
-                    FireStarterSource::AppendSource(resultText, Format("Logs\\%s_OptimizeResults.txt", streamDate.c_str()));
+                    FireStarterSource::AppendSource(resultText, Format("Logs\\%s_SpeedTestResults.txt", streamDate.c_str()));
                 }
 
                 // Increment the generation.
