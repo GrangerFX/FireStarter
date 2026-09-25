@@ -100,6 +100,8 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
             evolutionScale = FIRESTARTER_START_SCALE;
             registers = code.InitOptimizedCode(memberSeed);
             data.InitData(memberSeed, registers);
+            oldData = data;
+            oldResult = FIRESTARTER_START_RESULT;
             memberResult = FIRESTARTER_START_RESULT;
             evolveAge = 0;
         } else {

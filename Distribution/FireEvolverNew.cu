@@ -103,7 +103,6 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
 
     // Initialize the best and old code, data and result.
     FireStarterCode bestCode = code;
-    FireStarterCode oldCode = code;
     FireStarterData bestData = data;
     FireStarterData oldData = data;
     float bestResult = memberResult;
@@ -125,6 +124,8 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
                 code[j].reg = codeReg[j];
             registers = code.Optimize();
             data.InitData(memberSeed, registers);
+            oldData = data;
+            oldResult = FIRESTARTER_START_RESULT;
             memberResult = FIRESTARTER_START_RESULT;
             evolveAge = 0;
         } else {
@@ -149,7 +150,6 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
         // Save the results if they improved or revert to the original code and register data.
         if (!pass || (memberResult < oldResult)) {
             // The result improved. Save the code, data and result.
-            oldCode = code;
             oldData = data;
             oldResult = memberResult;
             evolveAge = 0;
@@ -163,7 +163,6 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
             }
         } else {
             // Revert to the original code and data.
-            code = oldCode;
             data = oldData;
             memberResult = oldResult;
             evolveAge++;
