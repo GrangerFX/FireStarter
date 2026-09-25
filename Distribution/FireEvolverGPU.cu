@@ -33,7 +33,7 @@ inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterD
 // The code and register data is evolved over a number of passes.
 // If the result did not improve compared to the previous pass, one register data is randomized.
 // If no evolution occurs after six passes, the code and register data is re-randomized.
-// The register data is evolved by adding a random value to one register and testing the code.
+// The register data is evolved by iterating adding a random value to one register and testing the code.
 // After each pass, if the result did not improve the code and data is restored to the last pass when the result did improve.
 GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount)
 {
@@ -80,9 +80,8 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
             break;
     }
 
-    // Initialize the best and old code, data and result.
+    // Initialize the best code, best data, oldData, bestResult and oldResult.
     FireStarterCode bestCode = code;
-    FireStarterCode oldCode = code;
     FireStarterData bestData = data;
     FireStarterData oldData = data;
     float bestResult = memberResult;
@@ -101,7 +100,6 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
             evolutionScale = FIRESTARTER_START_SCALE;
             registers = code.InitOptimizedCode(memberSeed);
             data.InitData(memberSeed, registers);
-            oldResult = FIRESTARTER_START_RESULT;
             memberResult = FIRESTARTER_START_RESULT;
             evolveAge = 0;
         } else {
@@ -126,7 +124,7 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
         // Save the results if they improved or revert to the original code and register data.
         if (!pass || (memberResult < oldResult)) {
             // The result improved. Save the code, data and result.
-            oldCode = code;
+            // The code and registers do not need to be restored.
             oldData = data;
             oldResult = memberResult;
             evolveAge = 0;
@@ -140,7 +138,6 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
             }
         } else {
             // Revert to the original code and data.
-            code = oldCode;
             data = oldData;
             memberResult = oldResult;
             evolveAge++;

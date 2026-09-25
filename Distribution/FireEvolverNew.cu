@@ -54,7 +54,7 @@ inline bool EvolveNewEvaluate(const FireStarterData& data, const FireStarterCode
 // The code opcodes and register data is evolved over a number of passes.
 // If the result did not improve compared to the previous pass, one register data is randomized.
 // If no evolution occurs after six passes, the code and register data is re-randomized.
-// The register data is evolved by adding a random value to one register and testing the code.
+// The register data is evolved by iterating adding a random value to one register and testing the code.
 // After each pass, if the result did not improve the code and data is restored to the last pass when the result did improve.
 GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount)
 {
@@ -125,7 +125,6 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
                 code[j].reg = codeReg[j];
             registers = code.Optimize();
             data.InitData(memberSeed, registers);
-            oldResult = FIRESTARTER_START_RESULT;
             memberResult = FIRESTARTER_START_RESULT;
             evolveAge = 0;
         } else {

@@ -1,0 +1,108 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+units = 1
+states = 1
+population = 65536
+generations = 0
+passes = 384
+samples = 15
+iterations = 64
+candidates = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00021297   Time=   0.3  Run Time=   5.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00020665   Time=   0.4  Run Time=   5.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00005880   Time=   0.5  Run Time=   5.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00005880   Time=   0.5  Run Time=   5.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00005880   Time=   0.5  Run Time=   5.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00005880   Time=   0.5  Run Time=   5.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00005880   Time=   0.5  Run Time=   5.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00001550   Time=   0.7  Run Time=   5.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=   5.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=   6.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=   6.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=   6.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=   6.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=   6.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=   6.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.3  Run Time=   6.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.3  Run Time=  11.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.4  Run Time=  11.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  11.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  11.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  11.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  11.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  11.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  11.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  12.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  12.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  12.3
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  12.3
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  12.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.4  Run Time=  12.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  12.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  12.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.3  Run Time=  17.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.4  Run Time=  17.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  18.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  18.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  18.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  18.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  18.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  18.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  18.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.7  Run Time=  18.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  18.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  18.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  18.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  18.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  18.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  18.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.3  Run Time=  24.0
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.4  Run Time=  24.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  24.3
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  24.3
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  24.3
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  24.3
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  24.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  24.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.4  Run Time=  24.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  24.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  24.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  24.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  24.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  24.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  24.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.4  Run Time=  24.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.3  Run Time=  30.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.4  Run Time=  30.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  30.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  30.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  30.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  30.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  30.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  30.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.6  Run Time=  31.0
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  31.0
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.5  Run Time=  31.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000118   Time=   0.4  Run Time=  31.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test= 3  Best=0.00000007   Time=   0.5  Run Time=  31.2
