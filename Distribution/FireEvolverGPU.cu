@@ -71,7 +71,7 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
     // Each member of the population has its own unique random number seed.
     unsigned long long memberSeed = seed + SEED0(member);    // Unique seed for the generation/pass/member/variation
 
-    // The first pass initalizes the data with random numbers.
+    // The first pass randomly initalizes the code and register data.
     float memberResult = FIRESTARTER_START_RESULT;
     for (unsigned int i = 0; i < 10; i++) {
         registers = code.InitOptimizedCode(memberSeed);
@@ -97,7 +97,7 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
         // Evolve the code and data.
         float evolutionScale;
         if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
-            // If no evolution occurs after six passes, the code and register data is re-randomized.
+            // If no evolution occurs after six passes, the code and register data are re-randomized.
             evolutionScale = FIRESTARTER_START_SCALE;
             registers = code.InitOptimizedCode(memberSeed);
             data.InitData(memberSeed, registers);

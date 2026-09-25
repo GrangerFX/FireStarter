@@ -386,7 +386,6 @@ void FireStarterExecute::ExecuteEvolveSinSimPass(FireStarterState& state, unsign
     float minResult = FireStarterPopulation::PopulationMaxResult(m_CUDAPopulation0.HostPtr(), settings, 0, variation);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < populationCount; i++) {
-        const FireStarterCode* code = m_CUDACodes.HostPtr()->Member(settings, i);
         float curResult = FireStarterPopulation::PopulationMaxResult(m_CUDAPopulation0.HostPtr(), settings, i, variation);
         if (curResult < minResult) {
             minResult = curResult;

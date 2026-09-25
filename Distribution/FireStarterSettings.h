@@ -8,7 +8,7 @@
 
 #define FIRESTARTER_INSTRUCTIONS    32          // Code instructions
 #define FIRESTARTER_REGISTERS       30          // Data maximum registers
-#define FIRESTARTER_VARIATIONS      3           // Target function variations
+#define FIRESTARTER_VARIATIONS      1           // Target function variations
 #define FIRESTARTER_VARIATION       0           // Target function starting variaton
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 

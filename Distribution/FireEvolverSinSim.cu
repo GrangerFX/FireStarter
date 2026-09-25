@@ -9,43 +9,46 @@
 #include "FireSinSim.h"
 #include "CUDADefines.h"
 
-// SinSim based evolution.
+// FireEvolverSinSim is an experment in self-refining code. It uses the same input and target values as the original SinSim but uses code evolution instead of a fixed neural network.
+// Rather than re-initializing the register data, as in FireStarterGPU or FireStarterOptimizer, an initial set of register data is set once and then allowed to be continuously modified for all the samples.
+// The evolution algorithm is not optimized as this is just an experiment. Example: The input and target values could be precalculated.
+// This type of continual register modfication is closer to the ideal of a dynamic and self modifying neural network architecture than a fixed function evolution.
 GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount)
 {
     // Check if the user is trying to abort and quit the application.
     if (SetSharedKillSwitch())
         return;
 
-    // Determine the member to be optimized.
+    // Determine the member to be evolved.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
     if (member >= populationCount)
         return;
 
-    // The shared data for the threads in the warp.
+    // The shared memory for the register data to speed up register indexing while emulating the code.
     GPU_SHARED FireStarterSharedData sharedData;
+
+    // The best evolution code and register data.
+    FireStarterCode code;
+    FireStarterData data;
+
+    // The current best evolution age and the number of optimized registers.
+    unsigned int evolveAge = 0;
+    unsigned int bestAge = 0;
+    unsigned int registers = 0;
 
     // Evolve the program registers for each variation.
     unsigned long long memberSeed = seed + SEED0(member) + SEED10(variation);   // Unique seed for the member
 
-    // Initialize or load the code, data, result and age.
-    FireStarterCode bestCode;
-    FireStarterData bestData;
-    unsigned int registers;
-    unsigned int bestAge;
-    float bestResult;
+    // The first pass randomly initalizes the code and register data.
+    code.InitCode(memberSeed);
+    registers = code.Optimize();
+    data.InitData(memberSeed, registers);
 
-    // The first generation is initalized with random numbers.
-    bestCode.InitCode(memberSeed);
-    registers = bestCode.Optimize();
-    bestData.InitData(memberSeed, registers);
-    bestResult = SINSIM_INIT_GRADE;
-    bestAge = 0;
-
-    // The best code, data, result and age.
-    FireStarterCode code(bestCode);
-    FireStarterData data(bestData);
-    float result = bestResult;
-    unsigned int age = bestAge;
+    // Initialize the best code, data and result.
+    FireStarterCode bestCode = code;
+    FireStarterData bestData = data;
+    float memberResult = SINSIM_INIT_GRADE;
+    float bestResult = memberResult;
 
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
@@ -53,15 +56,17 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
         if (SetSharedKillSwitch(pass, 0xFF))
             return;
 
-        // Iterate to evolve the data.
-        if (age > SINSIM_NETWORK_MAXAGE) {
+        // Iterate to evolve the register data.
+        if (evolveAge > SINSIM_NETWORK_MAXAGE) {
+            // If no evolution occurs after a number of passes, the code and register data are re-randomized.
             code.InitCode(memberSeed);
             registers = code.Optimize();
             data.InitData(memberSeed, registers, 1.0f);
-            result = SINSIM_INIT_GRADE;
-            age = 0;
+            memberResult = SINSIM_INIT_GRADE;
+            evolveAge = 0;
         }
 
+        // Iterate to evolve the register data.
         for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_SINSIM_ITERATIONS; i++) {
             // Randomize a data element.
             FireStarterData newData = data;
@@ -83,32 +88,32 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
             }
 
             // Did the result improve?
-            if (newResult < result) {
+            if (newResult < memberResult) {
                 // If the result improved, save the data.
                 data = newData;
-                result = newResult;
-                age = 0;
+                memberResult = newResult;
+                evolveAge = 0;
             } else
                 // If not, restore the old data.
-                age++;
+                evolveAge++;
         }
 
-        // If the result was better, save the results.
-        if (result < bestResult) {
+        // If the result was better, save the best code, register data and result.
+        if (memberResult < bestResult) {
             bestCode = code;
             bestData = data;
-            bestResult = result;
-            bestAge = age;
+            bestResult = memberResult;
+            bestAge = evolveAge;
         }
     }
+
+    // Return the best evolved code.
+    codes[member].Copy(bestCode);
 
     // Return the best result.
     results[member] = bestResult;
 
-    // Return the population data for debugging.
+    // Optionally return the best register data and evolve age for debugging.
     if (population)
         FireStarterPopulation::PopulationResult(population, member, variation)->InitResult(bestData, bestResult, bestAge);
-
-    // Return the optimized best code.
-    codes[member].Copy(bestCode);
 } // EvolverSinSim
