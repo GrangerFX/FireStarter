@@ -27,7 +27,7 @@ inline bool OptimizeEvaluate(const FireStarterData& data, const float target[], 
 {
     float maxResult = result;
     result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_OPTIMIZE_SAMPLES; i++) {
+    for (unsigned int i = 0; i < FIRESTARTER_OPTIMIZE_SAMPLES; i++) {
         float n = fabsf(OptimizeCompiledEvaluate(data, theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
@@ -74,7 +74,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
 
     // The first pass initalizes the data with random numbers.
     if (!optimizePass) {
-        for (int i = 1; i <= 10; i++) {
+        for (unsigned int i = 1; i <= 10; i++) {
             data.InitData(memberSeed, registers);
             result = FIRESTARTER_START_RESULT;
             if (OptimizeEvaluate(data, target, theta, result))
@@ -137,7 +137,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         unsigned int bestCandidate = member;
 
         // Search for a better result among a set of randomly selected candidates.
-        for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, populationCount);
             const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate, variation);
