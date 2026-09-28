@@ -1,0 +1,6 @@
+Test: 0  Generation=1  Evolve Result=0.00158069  Duration: 3.2
+Test: 1  Generation=1  Evolve Result=0.00232148  Duration: 3.2
+Test: 2  Generation=1  Evolve Result=0.00053793  Duration: 3.2
+Test: 3  Generation=1  Evolve Result=0.00066638  Duration: 3.2
+Test: 4  Generation=1  Evolve Result=0.00171097  Duration: 3.2
+Test: 5  Generation=1  Evolve Result=0.00111240  Duration: 3.2

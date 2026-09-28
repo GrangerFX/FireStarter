@@ -265,7 +265,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Get the best code to optimize.
                 const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
                 if (bestCode) {
-                    optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, 0, test);
+                    optimizeState.InitState(optimizeSettings, evolveState.m_generation, 0, 0, test);
                     optimizeState.CopyCode(bestCode);
 
                     // Compile the optimize code asynchronously.
@@ -505,34 +505,30 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
                 FireStarterStates allStates;
                 unsigned long long test = FIRESTARTER_START_TEST + t;
 
-                // Optimize the evolved state.
-                FireStarterState optimizeState(speedTestSettings);
-                optimizeState.CopyCode(evolveState);
-                optimizeState.m_test = test;
-                FireStarterState bestState(optimizeState);
+                // Test the evolution.
+                FireStarterState testState(speedTestSettings);
+                testState.m_test = test;
+                FireStarterState bestState(testState);
 
-                // Loop until the the optimize completion condition or the host program is quit.
-                while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
-                    // Optimize the current generation.
-                    execute->ExecuteEvolve(optimizeState);
+                // Loop for the number of generations, the completion condition or the host program is quit.
+                do {
+                    // Test the current generation.
+                    execute->ExecuteEvolve(testState);
+                    testState.m_generation++;
 
                     // Update the results in the UI and check for completion.
-                    if (complete->CompleteState(bestState, optimizeState))
-                        break;
+                    complete->CompleteState(bestState, testState);
 
-                    // Increment the generation.
-                    optimizeState.m_optimize_pass++;
-                }
-
-                // Output the test results.
-                if (!WillTerminate()) {
-                    // Output the evolve results.
-                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResults(), optimizeState.MaxResults(), bestState.Duration());
-                    if (bestState.MaxResults() <= speedTestSettings.m_target)
-                        resultText += " *******";
-                    resultText += "\n";
-                    FireStarterSource::AppendSource(resultText, Format("Logs\\%s_OptimizeResults.txt", streamDate.c_str()));
-                }
+                    // Output the test results.
+                    if (!WillTerminate()) {
+                        // Output the evolve results.
+                        std::string resultText = Format("Test: %llu  Generation=%llu  Evolve Result=%.8f  Duration: %.1f", test, testState.m_generation, testState.MaxResults(), testState.Duration());
+                        if (bestState.MaxResults() <= speedTestSettings.m_target)
+                            resultText += " *******";
+                        resultText += "\n";
+                        FireStarterSource::AppendSource(resultText, Format("Logs\\%s_SpeedTestResults.txt", streamDate.c_str()));
+                    }
+                } while (!WillTerminate() && (testState.m_generation < testState.Settings().m_generations) && !bestState.m_evolveComplete);
             }
         }
 
