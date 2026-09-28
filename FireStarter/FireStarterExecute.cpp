@@ -15,6 +15,8 @@
 #include "FireSinSim.cu"
 #include "FireSpeedTest.cu"
 
+#define FIRESTARTER_EVOLVE_RANDOM_STATES    1    // Number of random states to add each generation.
+
 uint3 threadIdx = { 0, 0, 0 };
 uint3 blockIdx = { 0, 0, 0 };
 dim3 blockDim = { 1, 1, 1 };
@@ -984,7 +986,7 @@ void FireStarterExecute::ExecuteSelectStates(unsigned long long test, const Fire
     DispatchSync([this, test, &selectSettings, &optimizeSettings, &states, &allStates, &testedCodes, generation] {
         if (GenerateEvolve(selectSettings.m_mode) && InitPopulation(selectSettings)) {
             unsigned long long numStates = states.size();
-            unsigned long long randomStates = generation == 0 ? numStates : FIRESTARTER_EVOLVE_RANDOM;
+            unsigned long long randomStates = generation == 0 ? numStates : FIRESTARTER_EVOLVE_RANDOM_STATES;
             unsigned long long totalStates = allStates.size();
 
             for (unsigned long long index = 0; index < numStates; index++) {
@@ -1076,7 +1078,7 @@ void FireStarterExecute::EvolveStates(unsigned long long test, const FireStarter
     // The weight is determined by mutiplying the maximum error among all target variations by the state's generation. 
     DispatchSync([this, test, &evolveSettings, &states, &allStates, &testedCodes, generation] {
         unsigned long long numStates = states.size();
-        unsigned long long randomStates = generation == 0 ? numStates : FIRESTARTER_EVOLVE_RANDOM;
+        unsigned long long randomStates = generation == 0 ? numStates : FIRESTARTER_EVOLVE_RANDOM_STATES;
         unsigned long long totalStates = allStates.size();
 
         // Process each state in the current bach of states.

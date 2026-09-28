@@ -35,7 +35,7 @@
 #define FIRESTARTER_SAVE_BESTCODE   0           // Save Optimizer.cu with the best evolved code.
 #define FIRESTARTER_AUTO_QUIT       1           // Automatically exit the app after completing the work.
 
-#define FIRESTARTER_EVOLVE_RANDOM   1           // Number of random states to add each generation.
+#define FIRESTARTER_KILL_SWITCH     FIRESTARTER_MULTI_GPU   // The GPU kernel kill switch is only used with multiple GPUs.
 
 #define FIRESTARTER_FIRSTLIGHT      0           // Use the original instructions from FireStarter First Light.
 

@@ -17,6 +17,7 @@
 #define GPU_SHARED __shared__
 #define nullptr 0
 
+#if FIRESTARTER_KILL_SWITCH
 // Define a device-side integer initialized to 0 in global memory
 __device__ int g_KillSwitchValue = 0;
 
@@ -27,11 +28,12 @@ __device__ int* g_GPUKillSwitch = &g_KillSwitchValue;
 // FILE SCOPE: Visible to all functions in this NVRTC translation unit.
 // Hardware still instantiates this per thread-block!
 __shared__ bool g_s_GPUKillSwitch;
+#endif
 
 // Check the GPU kill switch and return true if it's set
 inline bool GPUKillSwitch(void)
 {
-#if FIRESTARTER_MULTI_GPU
+#if FIRESTARTER_KILL_SWITCH
     return *(volatile int*)g_GPUKillSwitch != 0;
 #else
     return false;
@@ -42,7 +44,7 @@ inline bool GPUKillSwitch(void)
 // Return the current shared kill switch value.
 inline bool SetSharedKillSwitch(unsigned int counter = 0, unsigned int mask = 0)
 {
-#if FIRESTARTER_MULTI_GPU
+#if FIRESTARTER_KILL_SWITCH
     if ((counter & mask) == mask) {
         if ((threadIdx.x == 0) && (threadIdx.y == 0) && (threadIdx.z == 0))
             g_s_GPUKillSwitch = GPUKillSwitch();
@@ -56,7 +58,7 @@ inline bool SetSharedKillSwitch(unsigned int counter = 0, unsigned int mask = 0)
 
 inline bool CheckSharedKillSwitch(void)
 {
-#if FIRESTARTER_MULTI_GPU
+#if FIRESTARTER_KILL_SWITCH
     return g_s_GPUKillSwitch;
 #else
     return false;
