@@ -179,6 +179,7 @@ void FireStarterStream::EvolveCPUStream(void)
     FireStarterSettings evolveSettings(FIRESTARTER_EVOLVE_CPU);
     unsigned int numStates = evolveSettings.m_states;
     std::string streamDate = m_streamDate;
+    unsigned long long totalGenerations = 0;
 
     // Create the evolution code generator.
     FireStarterExecute* executeEvolve = new FireStarterExecute("EvolveCPU");
@@ -237,8 +238,10 @@ void FireStarterStream::EvolveCPUStream(void)
 
         // Optimize the best state.
         if (!WillTerminate() && !allStates.empty()) {
+            totalGenerations += generation;
+
             // Output the evolve results.
-            std::string resultText = Format("Duration: %6.1f  Average: %6.1f  Seed=%u  Test=%3u  Generation=%3u  Best Generations=%3u  Evolutions=%3u  Evolve Result=%.8f", bestEvolveState.Duration(), SimpleTimer::RunDuration() / (t + 1), bestEvolveState.Settings().m_evolveSeed, test, generation, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResults());
+            std::string resultText = Format("Duration: %6.1f  Average: %6.1f  Seed=%u  Test=%3u  Generation=%3u  Total=%6u  Best Generations=%3u  Evolutions=%3u  Evolve Result=%.8f", bestEvolveState.Duration(), SimpleTimer::RunDuration() / (t + 1), bestEvolveState.Settings().m_evolveSeed, test, generation, totalGenerations, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResults());
 
             // Optimize the evolved state.
             if (evolveSettings.m_optimize) {
@@ -294,6 +297,7 @@ void FireStarterStream::EvolveGPUStream(void)
     double totalDuration = 0.0;
     unsigned long long evolveID = 0;
     unsigned long long optimizeID = 0;
+    unsigned long long totalGenerations = 0;
 
 #if FIRESTARTER_MULTI_GPU
     size_t numDevices = CUDAContext::CUDADevices();
@@ -356,7 +360,8 @@ void FireStarterStream::EvolveGPUStream(void)
             double duration = bestState.Duration();
             totalDuration += duration;
             for (size_t i = 0; i < numDevices; i++) {
-                std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %6.1f  GenTime: %4.1f  Total: %4.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, evolveStates[i].MaxResults(), bestState.MaxResults(), duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
+                totalGenerations += evolveStates[i].m_generation;
+                std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %6.1f  GenTime: %4.1f  Total: %8.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
                 if (bestState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
@@ -385,6 +390,7 @@ void FireStarterStream::EvolveNewStream(void)
     double totalDuration = 0.0;
     unsigned long long evolveID = 0;
     unsigned long long optimizeID = 0;
+    unsigned long long totalGenerations = 0;
 
 #if FIRESTARTER_MULTI_GPU
     size_t numDevices = CUDAContext::CUDADevices();
@@ -446,7 +452,8 @@ void FireStarterStream::EvolveNewStream(void)
             double duration = bestState.Duration();
             totalDuration += duration;
             for (size_t i = 0; i < numDevices; i++) {
-                std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %6.1f  GenTime: %4.1f  Total: %4.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, evolveStates[i].MaxResults(), bestState.MaxResults(), duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
+                totalGenerations += evolveStates[i].m_generation;
+                std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %6.1f  GenTime: %4.1f  Total: %8.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
                 if (bestState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
@@ -473,6 +480,7 @@ void FireStarterStream::EvolveSinSimStream(void)
     FireStarterSettings optimizeSettings(FIRESTARTER_EVOLVE_SINSIM);
     std::string streamDate = m_streamDate;
     double totalDuration = 0.0;
+    unsigned long long totalGenerations = 0;
 
     // Create the evolution completion unit.
     FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings);
@@ -509,8 +517,9 @@ void FireStarterStream::EvolveSinSimStream(void)
             // Output the evolve results.
             double duration = bestState.Duration();
             totalDuration += duration;
+            totalGenerations += evolveState.m_generation;
 
-            std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %8.1f  GenTime: %4.1f  Total: %4.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation, totalDuration, totalDuration / (t + 1));
+            std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Best Result=%.8f  Duration: %8.1f  GenTime: %4.1f  Total: %8.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, totalGenerations, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation, totalDuration, totalDuration / (t + 1));
             if (bestState.MaxResults() <= evolveSettings.m_target)
                 resultText += " *******";
             resultText += "\n";
@@ -537,6 +546,7 @@ void FireStarterStream::SinSimStream(void)
     FireStarterSettings sinSimSettings(FIRESTARTER_SINSIM);
     std::string streamDate = m_streamDate;
     double totalDuration = 0.0;
+    unsigned long long totalGenerations = 0;
 
     // Create the evolution completion unit.
     FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, sinSimSettings, false);
@@ -570,8 +580,9 @@ void FireStarterStream::SinSimStream(void)
         // Output the evolve results.
         double duration = bestState.Duration();
         totalDuration += duration;
+        totalGenerations += evolveState.m_generation;
 
-        std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %8.1f  GenTime: %6.1f", sinSimSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation);
+        std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Best Result=%.8f  Duration: %8.1f  GenTime: %6.1f", sinSimSettings.m_evolveSeed, test, evolveState.m_generation, totalGenerations, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation);
         if (bestState.MaxResults() <= sinSimSettings.m_target)
             resultText += " *******";
         resultText += "\n";
@@ -866,7 +877,7 @@ void FireStarterStream::SpeedTestStream(void)
     FireStarterExecute* execute = new FireStarterExecute();
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, speedTestSettings);
+    FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, speedTestSettings, false);
 
     if (execute->ExecuteGenerateEvolve(speedTestSettings.m_mode)) {
         // Loop until the the evolve completion condition or the host program is quit.
@@ -898,9 +909,6 @@ void FireStarterStream::SpeedTestStream(void)
                     resultText += "\n";
                     FireStarterSource::AppendSource(resultText, Format("Logs\\%s_SpeedTestResults.txt", streamDate.c_str()));
                 }
-
-                // Increment the generation.
-                testState.m_generation++;
             } while (!WillTerminate() && (testState.m_generation < testState.Settings().m_generations) && !bestState.Complete());
         }
     }

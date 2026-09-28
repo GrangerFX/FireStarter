@@ -212,6 +212,7 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state, FireStart
         unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
         dim3 cudaBlockSize(threadsPerBlock, 1, 1);
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
+
         blockDim = cudaBlockSize;
         for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
             for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
@@ -223,11 +224,10 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state, FireStart
     } else {
         unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
         unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
-        CUDAParameters parameters(m_CUDAResults.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDACodes.DevicePtr(), variation, seed, passes, populationCount);
-
         dim3 cudaBlockSize(threadsPerBlock, 1, 1);
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
+        CUDAParameters parameters(m_CUDAResults.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDACodes.DevicePtr(), variation, seed, passes, populationCount);
         checkCUDAErrors(cuLaunchKernel(Module().m_executeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim

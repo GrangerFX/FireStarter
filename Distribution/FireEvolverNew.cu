@@ -75,7 +75,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
     float theta[FIRESTARTER_EVOLVE_NEW_SAMPLES];
     float target[FIRESTARTER_EVOLVE_NEW_SAMPLES];
     float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_EVOLVE_NEW_SAMPLES - 1);
-    unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
+    unsigned int targetVariation = variation % FIRESTARTER_EVOLVE_NEW_VARIATIONS;
     for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_NEW_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
         target[i] = Target(t, targetVariation);

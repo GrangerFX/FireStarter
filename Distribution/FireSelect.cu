@@ -20,7 +20,7 @@ inline bool SelectEvaluate(FireStarterSharedData& sharedData, const FireStarterD
 {
     float maxResult = result;
     result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_EVOLVE_GPU_SAMPLES; i++) {
+    for (int i = 0; i < FIRESTARTER_EVOLVE_SELECT_SAMPLES; i++) {
         sharedData = data;
         float n = fabsf(code.Evaluate(sharedData, theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
@@ -57,11 +57,11 @@ GPU_GLOBAL void Selecter(float* results, FireStarterResult* population, FireStar
     FireStarterData data;
 
     // Precalculate the target theta values and target samples.
-    float theta[FIRESTARTER_EVOLVE_GPU_SAMPLES];
-    float target[FIRESTARTER_EVOLVE_GPU_SAMPLES];
-    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_EVOLVE_GPU_SAMPLES - 1);
-    unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
-    for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_SAMPLES; i++) {
+    float theta[FIRESTARTER_EVOLVE_SELECT_SAMPLES];
+    float target[FIRESTARTER_EVOLVE_SELECT_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_EVOLVE_SELECT_SAMPLES - 1);
+    unsigned int targetVariation = variation % FIRESTARTER_EVOLVE_SELECT_VARIATIONS;
+    for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_SELECT_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
         target[i] = Target(t, targetVariation);
     }
@@ -124,7 +124,7 @@ GPU_GLOBAL void Selecter(float* results, FireStarterResult* population, FireStar
         }
 
         // Iterate to evolve the register data.
-        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_SELECT_ITERATIONS; i++) {
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);

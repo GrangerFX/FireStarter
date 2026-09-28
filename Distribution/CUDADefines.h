@@ -31,24 +31,36 @@ __shared__ bool g_s_GPUKillSwitch;
 // Check the GPU kill switch and return true if it's set
 inline bool GPUKillSwitch(void)
 {
+#if FIRESTARTER_MULTI_GPU
     return *(volatile int*)g_GPUKillSwitch != 0;
+#else
+    return false;
+#endif
 } // GPUKillSwitch
 
 // If the counter anded with the mask is zer0, then set the shared kill switch to the global kill switch value.
 // Return the current shared kill switch value.
 inline bool SetSharedKillSwitch(unsigned int counter = 0, unsigned int mask = 0)
 {
+#if FIRESTARTER_MULTI_GPU
     if ((counter & mask) == mask) {
         if ((threadIdx.x == 0) && (threadIdx.y == 0) && (threadIdx.z == 0))
             g_s_GPUKillSwitch = GPUKillSwitch();
         __syncthreads();
     }
     return g_s_GPUKillSwitch;
+#else
+    return false;
+#endif
 } // SetSharedKillSwitch
 
 inline bool CheckSharedKillSwitch(void)
 {
+#if FIRESTARTER_MULTI_GPU
     return g_s_GPUKillSwitch;
+#else
+    return false;
+#endif
 } // CheckSharedKillSwitch
 
 #else
@@ -82,7 +94,11 @@ static int* g_GPUKillSwitch = &g_KillSwitchValue;
 // Check the GPU kill switch and return true if it's set
 inline bool GPUKillSwitch(void)
 {
+#if FIRESTARTER_MULTI_GPU
     return *(volatile int*)g_GPUKillSwitch != 0;
+#else
+    return 0;
+#endif
 } // GPUKillSwitch
 
 // In the CPU simulation, we don't have shared memory, so we just return the global kill switch value.
