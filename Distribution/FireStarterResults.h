@@ -204,6 +204,8 @@ typedef struct FireStarterSharedData {
     } // FireStarterSharedData
 } FireStarterSharedData;
 
+typedef unsigned int FireStarterRegisters[FIRESTARTER_INSTRUCTIONS];
+
 typedef struct FireStarterCodeInstruction {
     FireStarterOpcode op = (FireStarterOpcode)0;
     unsigned short reg = 0;
@@ -404,6 +406,20 @@ typedef struct FireStarterCode {
     {
         for (unsigned int i = 0; i < instructions; i++)
             c[i].Evaluate(data[c[i].reg], n);
+        return n;
+    } // Evaluate
+
+    inline float Evaluate(const FireStarterRegisters& registers, FireStarterData& data, float n, unsigned int instructions = FIRESTARTER_INSTRUCTIONS) const
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            c[i].Evaluate(data[registers[i]], n);
+        return n;
+    } // Evaluate
+
+    inline float Evaluate(const FireStarterRegisters& registers, FireStarterSharedData& data, float n, unsigned int instructions = FIRESTARTER_INSTRUCTIONS) const
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            c[i].Evaluate(data[registers[i]], n);
         return n;
     } // Evaluate
 

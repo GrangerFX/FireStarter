@@ -13,7 +13,7 @@
 // The result of the code evaluation will subtracted from the target value for each sample.
 // Each sample is checked for infinite numbers.
 // The maximum absolute value of the difference for all the samples is returned if it was less than the previous result.
-inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
+inline bool EvolveGPUEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
     float maxResult = result;
     result = 0.0f;
@@ -27,7 +27,7 @@ inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterD
             result = fmaxf(n, result);
     }
     return true;
-} // EvolveEvaluate
+} // EvolveGPUEvaluate
 
 // Each member in the popluation has its code and register data randomly initialized.
 // The code and register data is evolved over a number of passes.
@@ -76,7 +76,7 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
     for (unsigned int i = 0; i < 10; i++) {
         registers = code.InitOptimizedCode(memberSeed);
         data.InitData(memberSeed, registers);
-        if (EvolveEvaluate(sharedData, data, code, target, theta, memberResult))
+        if (EvolveGPUEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
     }
 
@@ -117,7 +117,7 @@ GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireSt
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = memberResult * 0.99f;
-            if (EvolveEvaluate(sharedData, data, code, target, theta, curResult))
+            if (EvolveGPUEvaluate(sharedData, data, code, target, theta, curResult))
                 memberResult = curResult;
             else
                 data[d] = old;
