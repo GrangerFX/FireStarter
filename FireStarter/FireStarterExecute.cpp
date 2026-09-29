@@ -137,7 +137,7 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
 {
     // Launch the calculation kernel
     unsigned int populationCount = selectSettings.m_population;
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
     unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -210,7 +210,7 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state, FireStart
     unsigned int variation = FIRESTARTER_VARIATION;
 
     if (m_simulateGPU) {
-        unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+        unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
         unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
         dim3 cudaBlockSize(threadsPerBlock, 1, 1);
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -224,7 +224,7 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state, FireStart
                             for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
                                 EvolverGPU(m_CUDAResults.HostPtr(), m_CUDAPopulation0.HostPtr(), m_CUDACodes.HostPtr(), variation, seed, passes, populationCount);
     } else {
-        unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+        unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
         unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
         dim3 cudaBlockSize(threadsPerBlock, 1, 1);
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -277,7 +277,7 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, FireStart
     unsigned int variation = FIRESTARTER_VARIATION;
 
     if (m_simulateGPU) {
-        unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+        unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
         unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
         dim3 cudaBlockSize(threadsPerBlock, 1, 1);
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -290,7 +290,7 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, FireStart
                             for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
                                 EvolverGPU(m_CUDAResults.HostPtr(), m_CUDAPopulation0.HostPtr(), m_CUDACodes.HostPtr(), variation, seed, passes, populationCount);
     } else {
-        unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+        unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
         unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
         CUDAParameters parameters(m_CUDAResults.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDACodes.DevicePtr(), variation, seed, passes, populationCount);
 
@@ -342,7 +342,7 @@ void FireStarterExecute::ExecuteEvolveSinSimPass(FireStarterState& state, unsign
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
     unsigned int populationCount = settings.m_population;
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
     unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -410,7 +410,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
     unsigned int populationCount = settings.m_population;
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
     unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -709,7 +709,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     if (m_simulateGPU) {
         for (unsigned int pass = 0; pass < passes; pass++) {
             // Run all the evolve states in parallel.
-            unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+            unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
             unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
             dim3 cudaBlockSize(threadsPerBlock, 1, 1);
             dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -736,7 +736,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             memcpy(oldPopulation, newPopulation, m_populationSize);
     } else {
         for (unsigned int pass = 0; pass < passes; pass++) {
-            unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+            unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
             unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
             dim3 cudaBlockSize(threadsPerBlock, 1, 1);
             dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -882,7 +882,7 @@ void FireStarterExecute::ExecuteSpeedTestPass(FireStarterState& state)
     unsigned int variation = FIRESTARTER_VARIATION;
 
     if (m_simulateGPU) {
-        unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+        unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
         unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
         dim3 cudaBlockSize(threadsPerBlock, 1, 1);
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -895,7 +895,7 @@ void FireStarterExecute::ExecuteSpeedTestPass(FireStarterState& state)
                             for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
                                 EvolverGPU(m_CUDAResults.HostPtr(), m_CUDAPopulation0.HostPtr(), m_CUDACodes.HostPtr(), variation, seed, passes, populationCount);
     } else {
-        unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+        unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
         unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
         CUDAParameters parameters(m_CUDAResults.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDACodes.DevicePtr(), variation, seed, passes, populationCount);
 

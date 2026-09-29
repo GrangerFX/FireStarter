@@ -56,7 +56,8 @@
 #define FIRESTARTER_SM_WARPS_5090   64          // RTX 5090
 
 #define FIRESTARTER_WARP_THREADS    32          // Threads per warp (CUDA hardware constant)
-#define FIRESTARTER_BLOCK_THREADS   128         // Threads per block (threadIdx.x) (max is 1024 on all consumer GPUs for the past decade).
+#define FIRESTARTER_BLOCK_THREADS   32          // Threads per block (threadIdx.x) (max is 1024 on all consumer GPUs for the past decade).
+// Note: Setting the block threads equal to the warp threads has proven to be fastest in Evolve GPU and the same speed as 128 block threads for MoneyMaker.
 
 // Original population size.
 //#define FIRESTARTER_POPULATION    8192 * FIRESTARTER_WARP_THREADS // = 262,144
