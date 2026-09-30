@@ -179,14 +179,14 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
 
     // The first generation is initalized with random numbers.
     if (!optimizePass) {
-        for (unsigned int i = 0; i < 10; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_INIT; i++) {
             data.InitData(memberSeed, registers, MONEYMAKER_SCALE);
-            result = settings->m_startResult;
+            result = FIRESTARTER_START_RESULT;
             if (MoneyOptimizeEvaluateStocks(settings, data, stocks, optimizeSeed, result))
                 break;
         }
-        memberResult = settings->m_startResult;
-        evolutionScale = settings->m_startScale;
+        memberResult = FIRESTARTER_START_RESULT;
+        evolutionScale = FIRESTARTER_START_SCALE;
         evolveAge = 0;
     } else {
         // Later generations randomize a single register if they were copied.
@@ -200,24 +200,24 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
             // This makes it less likely for the evolution to get stuck.
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
-            data[d] = oldData + RANDOMFACTOR(memberSeed) * settings->m_startScale * (evolveAge - 1);
+            data[d] = oldData + RANDOMFACTOR(memberSeed) * FIRESTARTER_START_SCALE * (evolveAge - 1);
             if (!MoneyOptimizeEvaluateStocks(settings, data, stocks, optimizeSeed, result)) {
                 // If the result did not improve, return to the previous data.
                 data[d] = oldData;
                 result = oldResult.MaxResult();
             }
             memberResult = result;
-            evolutionScale = (2.0f * settings->m_scale) * memberResult;
+            evolutionScale = (2.0f * FIRESTARTER_START_SCALE) * memberResult;
         } else {
             // When the evolveAge is 0, this member was the source of an improved result.
             // Keep keep attempting to evolve the original register data.
             memberResult = result = oldResult.MaxResult();
-            evolutionScale = settings->m_scale * memberResult;
+            evolutionScale = FIRESTARTER_START_SCALE * memberResult;
         }
     }
 
     // Iterate to evolve the register data.
-    for (unsigned int i = 0; i < settings->m_iterations; i++) {
+    for (unsigned int i = 0; i < FIRESTARTER_ITERATIONS; i++) {
         // Check if the user is trying to abort and quit the application.
         if (CheckSharedKillSwitch())
             return;
@@ -241,7 +241,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
         unsigned int bestCandidate = member;
 
         // Search for a better result among a set of randomly selected candidates.
-        for (unsigned int i = 0; i < settings->m_candidates; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, settings->m_population);
             const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate);

@@ -69,7 +69,7 @@ public:
 class CUDAContext {
 private:
     // Static members for global CUDA state
-    inline static int m_CUDA_devices = 0;
+    inline static unsigned int m_CUDA_devices = 0;
     inline static bool m_initialized = false;
     inline static std::mutex m_ContextMutex;
 
@@ -98,11 +98,13 @@ private:
             checkCUDAErrors(cuInit(0));
             m_initialized = true;
 
-            checkCUDAErrors(cuDeviceGetCount(&m_CUDA_devices));
-            if (m_CUDA_devices <= 0) {
+            int numDevices = 0;
+            checkCUDAErrors(cuDeviceGetCount(&numDevices));
+            if (numDevices <= 0) {
                 m_CUDA_devices = 0;
             } else {
-                for (int i = 0; i < m_CUDA_devices; i++) {
+                m_CUDA_devices = (unsigned int)numDevices;
+                for (unsigned int i = 0; i < m_CUDA_devices; i++) {
                     CUdevice device;
                     checkCUDAErrors(cuDeviceGet(&device, i));
 
@@ -120,7 +122,7 @@ private:
     } // CUDAInitialize
 
 public:
-    static inline int CUDADevices(void)
+    static inline unsigned int CUDADevices(void)
     {
         CUDAInitialize();
         return m_CUDA_devices;
@@ -175,7 +177,7 @@ public:
         checkCUDAErrors(cuCtxPopCurrent(&oldContext));
     } // PopContext
 
-    inline void InitContext(size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY)
+    inline void InitContext(unsigned int deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY)
     {
         if (m_CUDA_devices) {
             // Get the CUDA device id.
@@ -199,7 +201,7 @@ public:
         CUDAContext::CUDAInitialize();
     } // CUDAContext
 
-    inline CUDAContext(size_t deviceIndex, int priority = CUDA_PRIORITY)
+    inline CUDAContext(unsigned int deviceIndex, unsigned int priority = CUDA_PRIORITY)
     {
         CUDAContext::CUDAInitialize();
         InitContext(deviceIndex, priority);

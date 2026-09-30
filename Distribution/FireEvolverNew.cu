@@ -6,7 +6,6 @@
 #endif
 #include "FireStarterSettings.h"
 #include "FireStarterResults.h"
-#include "MoneyMakerStocks.h"
 
 // FireEvolverNew is an experimental version of FireEvolverGPU. It tests the idea of using fixed sets of register indices for code emulation.
 // This avoids needing to index registers via shared memory and offers a very substantial performance increase.
@@ -33,9 +32,8 @@ inline bool EvolveNewEvaluate(const FireStarterData& data, const FireStarterCode
 {
     float maxResult = result;
     result = 0.0f;
-    for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_NEW_SAMPLES; i++) {
+    for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         FireStarterData workData = data;
-
         float n = fabsf(code.Evaluate(codeRegisters, workData, theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
@@ -68,11 +66,11 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
     FireStarterData data;
 
     // Precalculate the target theta values and target samples.
-    float theta[FIRESTARTER_EVOLVE_NEW_SAMPLES];
-    float target[FIRESTARTER_EVOLVE_NEW_SAMPLES];
-    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_EVOLVE_NEW_SAMPLES - 1);
-    unsigned int targetVariation = variation % FIRESTARTER_EVOLVE_NEW_VARIATIONS;
-    for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_NEW_SAMPLES; i++) {
+    float theta[FIRESTARTER_SAMPLES];
+    float target[FIRESTARTER_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
+    unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
+    for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
         target[i] = Target(t, targetVariation);
     }
@@ -87,7 +85,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
 
     // The first pass randomly initalizes the code opcodes and register data.
     float memberResult = FIRESTARTER_START_RESULT;
-    for (unsigned int i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_INIT; i++) {
         code.InitCode(memberSeed);
         for (int j = 0; j < FIRESTARTER_INSTRUCTIONS; j++)
             code[j].reg = codeRegisters[j];
@@ -99,9 +97,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
 
     // Initialize the best and old code, data and result.
     FireStarterCode bestCode = code;
-    FireStarterCode oldCode = code;
     FireStarterData bestData = data;
-    FireStarterData oldData = data;
     float bestResult = memberResult;
     float oldResult = memberResult;
 
@@ -113,7 +109,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
 
         // Evolve the code and data.
         float evolutionScale;
-        if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
+        if ((evolveAge >= FIRESTARTER_EVOLVE_MAX_AGE) || (memberResult >= FIRESTARTER_START_RESULT)) {
             // If no evolution occurs after six passes, the code opcodes and register data are re-randomized.
             evolutionScale = FIRESTARTER_START_SCALE;
             code.InitCode(memberSeed);
@@ -132,7 +128,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
         }
 
         // Iterate to evolve the register data.
-        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_NEW_ITERATIONS; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_ITERATIONS; i++) {
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
@@ -143,11 +139,9 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
                 data[d] = old;
         }
 
-        // Save the results if they improved or revert to the original code and register data.
+        // Did the result improve?
         if (!pass || (memberResult < oldResult)) {
-            // The result improved. Save the code, data and result.
-            oldCode = code;
-            oldData = data;
+            // The result improved. Save result and reset the evolve age to 0.
             oldResult = memberResult;
             evolveAge = 0;
 
@@ -158,13 +152,9 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
                 bestResult = memberResult;
                 bestAge = evolveAge;
             }
-        } else {
-            // Revert to the original code and data.
-            code = oldCode;
-            data = oldData;
-            memberResult = oldResult;
+        } else
+            // The result did not improve. Increment the evolve age.
             evolveAge++;
-        }
     }
 
     // Return the optimized best code.

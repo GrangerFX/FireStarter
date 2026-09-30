@@ -27,7 +27,7 @@ inline bool OptimizeEvaluate(const FireStarterData& data, const float target[], 
 {
     float maxResult = result;
     result = 0.0f;
-    for (unsigned int i = 0; i < FIRESTARTER_OPTIMIZE_SAMPLES; i++) {
+    for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         float n = fabsf(OptimizeCompiledEvaluate(data, theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
@@ -54,11 +54,11 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         return;
 
     // Precalculate the sample theta values and target values for the current variation.
-    float theta[FIRESTARTER_OPTIMIZE_SAMPLES];
-    float target[FIRESTARTER_OPTIMIZE_SAMPLES];
-    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_OPTIMIZE_SAMPLES - 1);
+    float theta[FIRESTARTER_SAMPLES];
+    float target[FIRESTARTER_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
     unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
-    for (unsigned int i = 0; i < FIRESTARTER_OPTIMIZE_SAMPLES; i++) {
+    for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
         target[i] = Target(t, targetVariation);
     }
@@ -110,7 +110,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
             memberResult = result;
             evolutionScale = (2.0f * FIRESTARTER_SCALE) * memberResult;
         } else {
-            // When the evolveAge is 0, this member was the source of an improved result.
+            // When the evolveAge is 0, this member is new or the source of an improved result.
             // Keep keep attempting to evolve the original register data.
             memberResult = result = oldResult.MaxResult();
             evolutionScale = FIRESTARTER_SCALE * memberResult;
@@ -118,7 +118,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
     }
 
     // Iterate to evolve the register data.
-    for (unsigned int i = 0; i < FIRESTARTER_OPTIMIZE_ITERATIONS; i++) {
+    for (unsigned int i = 0; i < FIRESTARTER_ITERATIONS; i++) {
         unsigned int d = RANDOMMOD(memberSeed, registers);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);

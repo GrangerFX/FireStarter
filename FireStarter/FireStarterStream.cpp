@@ -300,25 +300,27 @@ void FireStarterStream::EvolveGPUStream(void)
     unsigned long long totalGenerations = 0;
 
 #if FIRESTARTER_MULTI_GPU
-    size_t numDevices = CUDAContext::CUDADevices();
+    unsigned int numDevices = CUDAContext::CUDADevices();
 #else
-    size_t numDevices = 1;
+    unsigned int numDevices = 1;
 #endif
+    unsigned int numEvolve = numDevices;
+    unsigned int numOptimize = numDevices * 4;
 
     // Create the evolution completion unit.
     FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings);
 
     // Create the execution unit used to evolve and optimize the best states.
-    FireStarterUnits evolveUnits(numDevices, "Evolve");
-    FireStarterUnits optimizeUnits(numDevices, "Optimize");
+    FireStarterUnits evolveUnits(numEvolve, "Evolve");
+    FireStarterUnits optimizeUnits(numOptimize, "Optimize");
 
     // Loop until the the evolve completion condition or the host program is quit.
     unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
     for (unsigned int t = 0; (t < evolveTests) && !WillTerminate(); t++) {
         // Initialize the states.
         unsigned long long test = FIRESTARTER_START_TEST + t;
-        FireStarterStates evolveStates(numDevices, evolveSettings, 0, 0, test);
-        FireStarterStates optimizeStates(numDevices, optimizeSettings, 0, 0, test);
+        FireStarterStates evolveStates(numEvolve, evolveSettings, 0, 0, test);
+        FireStarterStates optimizeStates(numOptimize, optimizeSettings, 0, 0, test);
         FireStarterState bestState = FireStarterState(optimizeSettings, 0, 0, 0, test);
         FireStarterBestCodes bestCodes(evolveSettings);
 
@@ -327,20 +329,19 @@ void FireStarterStream::EvolveGPUStream(void)
         evolveUnits.ExecuteEvolveGPU(evolveStates, bestCodes);
  
         // Evolve the current test.
+        unsigned int generation = 0;
         while (!WillTerminate() && !bestState.Complete()) {
             // Get the best code to optimize.
-            for (size_t i = 0; i < numDevices; i++) {
+            for (size_t i = 0; i < optimizeStates.size(); i++) {
                 FireStarterCodeVector bestCode(optimizeSettings);
                 bestCodes.GetBestCode(bestCode);
-                float bestResult = optimizeStates[i].m_bestResult;
-                optimizeStates[i].InitState(optimizeSettings, evolveStates[i].m_generation, i, optimizeID, test);
+                optimizeStates[i].InitState(optimizeSettings, generation, i, optimizeID, test);
                 optimizeStates[i].CopyCode(bestCode);
-                optimizeStates[i].m_bestResult = bestResult;
             }
             optimizeUnits.ExecuteGenerateOptimize(optimizeStates);
 
             // Execute the next GPU evolve while the optimize code is compiling.
-            if (!evolveSettings.m_generations || (evolveStates[0].m_generation < evolveSettings.m_generations))
+            if (!evolveSettings.m_generations || (generation < evolveSettings.m_generations))
                 evolveUnits.ExecuteEvolveGPU(evolveStates, bestCodes);
 
             // Check for termination mid-generation.
@@ -351,15 +352,16 @@ void FireStarterStream::EvolveGPUStream(void)
             optimizeUnits.ExecuteEvolveOptimize(optimizeStates, bestState, complete);
 
             // Exit after a set number of generations.
-            if (evolveSettings.m_generations && (evolveStates[0].m_generation >= evolveSettings.m_generations))
+            if (evolveSettings.m_generations && (generation >= evolveSettings.m_generations))
                 break;
+            generation++;
         }
 
         if (!WillTerminate()) {
             // Output the evolve results.
             double duration = bestState.Duration();
             totalDuration += duration;
-            for (size_t i = 0; i < numDevices; i++) {
+            for (size_t i = 0; i < evolveStates.size(); i++) {
                 totalGenerations += evolveStates[i].m_generation;
                 std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %6.1f  GenTime: %4.1f  Total: %8.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
                 if (bestState.MaxResults() <= evolveSettings.m_target)

@@ -140,7 +140,7 @@ nvidia-smi dmon
         return m_CUDAContext.Device();
     } // Device
 
-    inline CUDAThread(const std::string threadName = "", size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY) : SerialThread(threadName), m_CUDAContext()
+    inline CUDAThread(const std::string threadName = "", unsigned int deviceIndex = CUDA_DEVICE, unsigned int priority = CUDA_PRIORITY) : SerialThread(threadName), m_CUDAContext()
     {
         if (threadName.empty())
             m_threadName = "CUDAThread";

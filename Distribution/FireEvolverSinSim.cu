@@ -68,7 +68,7 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
         }
 
         // Iterate to evolve the register data.
-        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_SINSIM_ITERATIONS; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_ITERATIONS; i++) {
             // Randomize a data element.
             FireStarterData newData = data;
             newData.RandomData(memberSeed, 1.0f, registers);

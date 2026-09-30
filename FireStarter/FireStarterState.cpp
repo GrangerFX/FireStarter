@@ -203,7 +203,6 @@ void FireStarterState::SettingsText(const FireStarterSettings& settings, std::st
     text += prefix + Format("passes = %u", settings.m_passes) + postfix + "\r\n";
     text += prefix + Format("samples = %u", settings.m_samples) + postfix + "\r\n";
     text += prefix + Format("iterations = %u", settings.m_iterations) + postfix + "\r\n";
-    text += prefix + Format("candidates = %u", settings.m_candidates) + postfix + "\r\n";
     text += prefix + Format("optimize = %u", settings.m_optimize) + postfix + "\r\n";
     text += "\r\n";
     text += prefix + Format("scale = %ff", settings.m_scale) + postfix + "\r\n";

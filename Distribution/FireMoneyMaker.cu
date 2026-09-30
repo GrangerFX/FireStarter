@@ -172,56 +172,53 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
     FireStarterCode code;
     FireStarterData data;
 
-    // The first pass randomly initalizes the code and register data.
-    float startResult = settings->m_startResult;
-    float startScale = settings->m_startScale;
-    float result = startResult;
+    // The current evolution age, best evolution age and the number of optimized registers.
+    unsigned int evolveAge = 0;
+    unsigned int bestAge = 0;
     unsigned int registers = 0;
-    for (unsigned int i = 0; i < 10; i++) {
-        code.InitCode(memberSeed);
-        registers = code.Optimize();
+
+    // The first pass randomly initalizes the code and register data.
+    float memberResult = FIRESTARTER_START_RESULT;
+    for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_INIT; i++) {
+        registers = code.InitOptimizedCode(memberSeed);
         data.InitData(memberSeed, registers, MONEYMAKER_SCALE);
-        if (MoneyEvolveEvaluateStocks(settings, code, data, stocks, evolutionSeed, result))
+        if (MoneyEvolveEvaluateStocks(settings, code, data, stocks, evolutionSeed, memberResult))
             break;
     }
 
     // Initialize the best and member code, data and result.
     FireStarterCode bestCode = code;
-    FireStarterCode memberCode = code;
     FireStarterData bestData = data;
-    FireStarterData memberData = data;
-    float bestResult = result;
-    float memberResult = result;
-    unsigned int bestAge = 0;
-    unsigned int memberAge = 0;
+    float bestResult = memberResult;
+    float oldResult = memberResult;
 
     // Perform all the evolution passes on the GPU.
-    for (unsigned int pass = 0; pass < settings->m_passes; pass++) {
+    unsigned int passes = settings->m_passes;
+    for (unsigned int pass = 0; pass < passes; pass++) {
         // Check if the user is trying to abort and quit the application.
         if (SetSharedKillSwitch())
             return;
 
         // Evolve the code and data.
         float evolutionScale;
-        if ((memberAge >= 6) || (result >= startResult)) {
+        if ((evolveAge == FIRESTARTER_EVOLVE_MAX_AGE) || (memberResult >= FIRESTARTER_START_RESULT)) {
             // If no evolution occurs after six passes, the code and register data is re-randomized.
-            evolutionScale = startScale;
+            evolutionScale = FIRESTARTER_START_RESULT;
             code.InitCode(memberSeed);
             registers = code.Optimize();
             data.InitData(memberSeed, registers, MONEYMAKER_SCALE);
-            result = startResult;
-            memberData = data;
-            memberResult = startResult;
-            memberAge = 0;
+            memberResult = FIRESTARTER_START_RESULT;
+            oldResult = FIRESTARTER_START_RESULT;
+            evolveAge = 0;
         } else {
             // If the result did not improve compared to the previous pass, one register data is randomized.
-            evolutionScale = result * startScale;
-            if (memberAge > 0)
+            evolutionScale = memberResult * FIRESTARTER_START_SCALE;
+            if (evolveAge > 0)
                 data.RandomData(memberSeed, evolutionScale, registers);
         }
 
         // Iterate to evolve the register data.
-        for (unsigned int i = 0; i < settings->m_iterations; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_ITERATIONS; i++) {
             // Check if the user is trying to abort and quit the application.
             if (CheckSharedKillSwitch())
                 return;
@@ -229,36 +226,29 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
-            float curResult = result * 0.99f;
-            unsigned int curTrades = 0;
+            float curResult = memberResult * 0.99f;
             if (MoneyEvolveEvaluateStocks(settings, code, data, stocks, evolutionSeed, curResult))
-                result = curResult;
+                memberResult = curResult;
             else
                 data[d] = old;
         }
 
-        // Save the results if they improved or revert to the original code and register data.
-        if (!pass || (result < memberResult)) {
-            // If the result was better, save the results.
-            memberCode = code;
-            memberData = data;
-            memberResult = result;
-            memberAge = 0;
-
-            // Update the best result.
-            if (!pass || (result < bestResult)) {
+        // Did the result improve?
+        if (!pass || (memberResult < oldResult)) {
+            // The result improved. Update the best result.
+            if (!pass || (memberResult < bestResult)) {
                 bestCode = code;
                 bestData = data;
-                bestResult = result;
-                bestAge = memberAge;
+                bestResult = memberResult;
+                bestAge = evolveAge;
             }
-        } else {
-            // Revert to the original code and data.
-            code = memberCode;
-            data = memberData;
-            result = memberResult;
-            memberAge++;
-        }
+
+            // Save result and reset the evolve age to 0.
+            oldResult = memberResult;
+            evolveAge = 0;
+        } else
+            // The result did not improve. Increment the evolve age.
+            evolveAge++;
     }
 
     // Return the best evolved code.
@@ -268,7 +258,7 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
     results[member] = bestResult;
 
     // Optionally return the best register data and evolve age for debugging.
-    FireStarterPopulation::PopulationResult(population, *settings, member)->InitResult(bestData, bestResult, bestAge);
+    FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
 } // MoneyEvolve
 
 GPU_GLOBAL void MoneyEvolveTest(const FireStarterSettings* settings, FireStarterCode* newCodes, FireStarterCode* oldCodes, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
@@ -284,14 +274,14 @@ GPU_GLOBAL void MoneyEvolveTest(const FireStarterSettings* settings, FireStarter
     FireStarterData data;
     unsigned int registers = code.InitOptimizedCode(memberSeed);
     data.InitData(memberSeed, registers, MONEYMAKER_SCALE);
-    float result = 1.0e+10f; // settings->m_startResult;
-    float evolutionScale = settings->m_startScale;
+    float result = 1.0e+10f; // FIRESTARTER_START_RESULT;
+    float evolutionScale = FIRESTARTER_START_SCALE;
 
     // Initial result for optimization.
     MoneyEvolveEvaluateStocks(settings, code, data, stocks, evolutionSeed, result);
 
     // Iterate to optimize the data.
-    for (unsigned int i = 0; i < settings->m_iterations; i++) {
+    for (unsigned int i = 0; i < FIRESTARTER_ITERATIONS; i++) {
         unsigned int d = RANDOMMOD(memberSeed, registers);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);

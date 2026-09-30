@@ -19,7 +19,7 @@ inline bool SpeedTestEvaluate(FireStarterSharedData& sharedData, const FireStart
 {
     float maxResult = result;
     result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_SPEED_TEST_SAMPLES; i++) {
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         sharedData = data;
         float n = fabsf(code.Evaluate(sharedData, theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
@@ -56,11 +56,11 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     FireStarterData data;
 
     // Precalculate the sample theta values and target values for the current variation.
-    float theta[FIRESTARTER_SPEED_TEST_SAMPLES];
-    float target[FIRESTARTER_SPEED_TEST_SAMPLES];
-    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SPEED_TEST_SAMPLES - 1);
-    unsigned int targetVariation = variation % FIRESTARTER_SPEED_TEST_VARIATIONS;
-    for (unsigned int i = 0; i < FIRESTARTER_SPEED_TEST_SAMPLES; i++) {
+    float theta[FIRESTARTER_SAMPLES];
+    float target[FIRESTARTER_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
+    unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
+    for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
         target[i] = Target(t, targetVariation);
     }
@@ -71,21 +71,20 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     unsigned int registers = 0;
 
     // Each member of the population has its own unique random number seed.
-    unsigned long long memberSeed = seed + SEED0(member);    // Unique seed for the generation/pass/member/variation
+    unsigned long long memberSeed = seed + SEED1(member);    // Unique seed for the generation/pass/member/variation
 
     // The first pass randomly initalizes the code and register data.
     float memberResult = FIRESTARTER_START_RESULT;
-    for (unsigned int i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_INIT; i++) {
         registers = code.InitOptimizedCode(memberSeed);
         data.InitData(memberSeed, registers);
-        if (SpeedTestEvaluate(sharedData, data, code, target, theta, memberResult))
+        if (EvolveGPUEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
     }
 
     // Initialize the best code, best data, oldData, bestResult and oldResult.
     FireStarterCode bestCode = code;
     FireStarterData bestData = data;
-    FireStarterData oldData = data;
     float bestResult = memberResult;
     float oldResult = memberResult;
 
@@ -97,14 +96,13 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
 
         // Evolve the code and data.
         float evolutionScale;
-        if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
+        if ((evolveAge == FIRESTARTER_EVOLVE_MAX_AGE) || (memberResult == FIRESTARTER_START_RESULT)) {
             // If no evolution occurs after six passes, the code and register data are re-randomized.
             evolutionScale = FIRESTARTER_START_SCALE;
             registers = code.InitOptimizedCode(memberSeed);
             data.InitData(memberSeed, registers);
-            oldData = data;
-            oldResult = FIRESTARTER_START_RESULT;
             memberResult = FIRESTARTER_START_RESULT;
+            oldResult = FIRESTARTER_START_RESULT;
             evolveAge = 0;
         } else {
             // If the result did not improve compared to the previous pass, one register data is randomized.
@@ -114,22 +112,20 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
         }
 
         // Iterate to evolve the register data.
-        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_ITERATIONS; i++) {
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = memberResult * 0.99f;
-            if (SpeedTestEvaluate(sharedData, data, code, target, theta, curResult))
+            if (EvolveGPUEvaluate(sharedData, data, code, target, theta, curResult))
                 memberResult = curResult;
             else
                 data[d] = old;
         }
 
-        // Save the results if they improved or revert to the original code and register data.
+        // Did the result improve?
         if (!pass || (memberResult < oldResult)) {
-            // The result improved. Save the code, data and result.
-            // The code and registers do not need to be restored.
-            oldData = data;
+            // The result improved. Save result and reset the evolve age to 0.
             oldResult = memberResult;
             evolveAge = 0;
 
@@ -140,12 +136,9 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
                 bestResult = memberResult;
                 bestAge = evolveAge;
             }
-        } else {
-            // Revert to the original code and data.
-            data = oldData;
-            memberResult = oldResult;
+        } else
+            // The result did not improve. Increment the evolve age.
             evolveAge++;
-        }
     }
 
     // Return the best evolved code.
