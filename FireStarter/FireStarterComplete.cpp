@@ -7,11 +7,13 @@
 void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
 {
     std::string bestStateCode;
-    bestState.SaveState(bestStateCode);
     std::string saveFile = "FireStarter_LoadState.h";
-    FireStarterSource::SaveSource(bestStateCode, saveFile);
     std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
+
+    bestState.SaveState(bestStateCode);
     FireStarterSource::SaveSource(bestStateCode, savePath);
+    if (m_saveBestState)
+        FireStarterSource::SaveSource(bestStateCode, saveFile);
 } // SaveBestState
 
 void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
@@ -123,18 +125,21 @@ void FireStarterComplete::SaveResults(const FireStarterState& bestState)
 
     if (bestState.Settings().m_mode != FIRESTARTER_SINSIM) {
         // Update the best code on disk.
+#if FIRESTARTER_SAVE_BESTCODE
         SaveBestCode(bestState);
+#endif
 
         // Update the solution code on disk.
+#if FIRESTARTER_SAVE_SOLUTION
         SaveSolution(bestState);
+#endif
     }
 } // SaveResults
 
 void FireStarterComplete::DisplayResults(const FireStarterState& bestState, const MoneyMakerStocks* stocks, const MoneyMakerStocks* tradingResults)
 {
     // Save the new best state.
-    if (m_saveBestState)
-        SaveResults(bestState);
+    SaveResults(bestState);
 
     // Draw the graphs for both variations.
     m_fireShow.FireShow(bestState, stocks, tradingResults);

@@ -371,10 +371,8 @@ void FireStarterStream::EvolveGPUStream(void)
             }
 
             // Save the best state and best solution.
-#if FIRESTARTER_SAVE_BESTSTATE
             if (bestState.m_optimizeValid)
                 complete->CompleteSaveResults(bestState);
-#endif
         }
     }
 
@@ -463,10 +461,8 @@ void FireStarterStream::EvolveNewStream(void)
             }
 
             // Save the best state and best solution.
-#if FIRESTARTER_SAVE_BESTSTATE
             if (bestState.m_optimizeValid)
                 complete->CompleteSaveResults(bestState);
-#endif
         }
     }
 
@@ -528,9 +524,7 @@ void FireStarterStream::EvolveSinSimStream(void)
             FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
 
             // Save the best state and best solution.
-#if FIRESTARTER_SAVE_BESTSTATE
             complete->CompleteSaveResults(bestState);
-#endif
         }
     }
 
@@ -591,9 +585,7 @@ void FireStarterStream::SinSimStream(void)
         FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
 
         // Save the best state and best solution.
-#if FIRESTARTER_SAVE_BESTSTATE
         complete->CompleteSaveResults(bestState);
-#endif
     }
 
     // Delete the completion unit.
@@ -800,10 +792,8 @@ void FireStarterStream::MoneyMakerStream(void)
         }
 
         // Save the best state. Note: TODO: Output all evolve and optimize states?
-#if FIRESTARTER_SAVE_BESTSTATE
         if (bestState.m_optimizeValid)
             complete->CompleteSaveResults(bestState);
-#endif
     }
 
     // Delete the completion unit.
