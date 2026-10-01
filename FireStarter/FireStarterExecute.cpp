@@ -385,10 +385,10 @@ void FireStarterExecute::ExecuteEvolveSinSimPass(FireStarterState& state, unsign
 
     // Get the best variation results.
     bool validResult = false;
-    float minResult = FireStarterPopulation::PopulationMaxResult(m_CUDAPopulation0.HostPtr(), settings, 0, variation);
+    float minResult = FireStarterPopulation::PopulationMaxResult(m_CUDAPopulation0.HostPtr(), settings, 0);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < populationCount; i++) {
-        float curResult = FireStarterPopulation::PopulationMaxResult(m_CUDAPopulation0.HostPtr(), settings, i, variation);
+        float curResult = FireStarterPopulation::PopulationMaxResult(m_CUDAPopulation0.HostPtr(), settings, i);
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
@@ -396,7 +396,7 @@ void FireStarterExecute::ExecuteEvolveSinSimPass(FireStarterState& state, unsign
     }
 
     // Update the state's best results.
-    state.InitResult(settings, m_CUDACodes.HostPtr(), m_CUDAPopulation0.HostPtr(), minIndex, variation);
+    state.InitResult(settings, m_CUDACodes.HostPtr(), m_CUDAPopulation0.HostPtr(), minIndex);
 
     // Note: The above is used by Optimize and does not init the following variables:
     state.m_oldResult = state.m_bestResult;
@@ -621,7 +621,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
     // Gather the best results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    FireStarterResult* hostPopulation = m_CUDAPopulation0.HostPtr();
+    FireStarterPopulation* hostPopulation = m_CUDAPopulation0.HostPtr();
     float minResult = FireStarterPopulation::PopulationMaxResult(hostPopulation, settings, 0);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < settings.m_population; i++) {
@@ -703,8 +703,9 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     FireStarterSettings settings = state.Settings();
     unsigned int populationCount = settings.m_population;
     unsigned long long passes = settings.m_passes;
-    FireStarterResult* newPopulation = nullptr;
-    FireStarterResult* oldPopulation = nullptr;
+    FireStarterPopulation* newPopulation = nullptr;
+    FireStarterPopulation* oldPopulation = nullptr;
+    unsigned int variations = settings.m_variations;
 
     if (m_simulateGPU) {
         for (unsigned int pass = 0; pass < passes; pass++) {
@@ -716,8 +717,8 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             unsigned int registers = state.m_uniqueRegisters;
             unsigned long long optimizePass = state.m_optimize_pass * passes + pass;
             unsigned long long optimizeSeed = state.OptimizationSeed(optimizePass);
-            FireStarterResult* newPopulation = pass & 1 ? m_CUDAPopulation0.HostPtr() : m_CUDAPopulation1.HostPtr();
-            FireStarterResult* oldPopulation = pass & 1 ? m_CUDAPopulation1.HostPtr() : m_CUDAPopulation0.HostPtr();
+            FireStarterPopulation* newPopulation = pass & 1 ? m_CUDAPopulation0.HostPtr() : m_CUDAPopulation1.HostPtr();
+            FireStarterPopulation* oldPopulation = pass & 1 ? m_CUDAPopulation1.HostPtr() : m_CUDAPopulation0.HostPtr();
 
             blockDim = cudaBlockSize;
             for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
@@ -726,7 +727,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
                         for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
                             for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
                                 for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                    Optimizer(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, populationCount);
+                                    Optimizer(newPopulation, oldPopulation, variation, variations, registers, optimizeSeed, optimizePass, populationCount);
 
             // Check if the user quit the app.
             if (WillTerminate())
@@ -745,7 +746,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             unsigned long long optimizeSeed = state.OptimizationSeed(optimizePass);
             CUdeviceptr newPopulation = pass & 1 ? m_CUDAPopulation0.DevicePtr() : m_CUDAPopulation1.DevicePtr();
             CUdeviceptr oldPopulation = pass & 1 ? m_CUDAPopulation1.DevicePtr() : m_CUDAPopulation0.DevicePtr();
-            CUDAParameters parameters(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, populationCount);
+            CUDAParameters parameters(newPopulation, oldPopulation, variation, variations, registers, optimizeSeed, optimizePass, populationCount);
 
             checkCUDAErrors(cuLaunchKernel(Module().m_executeFunction,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
@@ -774,11 +775,12 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    FireStarterResult* hostPopulation = m_CUDAPopulation0.HostPtr();
-    float minResult = FireStarterPopulation::PopulationMaxResult(hostPopulation, settings, 0, variation);
+    FireStarterPopulation* hostPopulation = m_CUDAPopulation0.HostPtr();
+    FireStarterPopulation* hostVariation = FireStarterPopulation::PopulationVariation(hostPopulation, settings, variation);
+    float minResult = FireStarterPopulation::PopulationMaxResult(hostVariation, settings, 0);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < settings.m_population; i++) {
-        float curResult = FireStarterPopulation::PopulationMaxResult(hostPopulation, settings, i, variation);
+        float curResult = FireStarterPopulation::PopulationMaxResult(hostVariation, settings, i);
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;

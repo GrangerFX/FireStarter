@@ -69,10 +69,9 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
     float theta[FIRESTARTER_SAMPLES];
     float target[FIRESTARTER_SAMPLES];
     float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
-    unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
     for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
-        target[i] = Target(t, targetVariation);
+        target[i] = Target(t, variation);
     }
 
     // The current evolution age, best evolution age and the number of optimized registers.

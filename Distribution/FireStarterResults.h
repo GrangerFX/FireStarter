@@ -698,36 +698,57 @@ typedef struct FireStarterResult {
 
 typedef struct FireStarterPopulation : public FireStarterResult
 {
-    static inline FireStarterResult* PopulationResult(FireStarterResult* population, size_t index, unsigned int variation = 0)
+    static inline FireStarterResult* PopulationResult(FireStarterResult* population, size_t index)
     {
-        return (FireStarterResult*)((char*)population + ResultSize() * (index * FIRESTARTER_VARIATIONS + variation));
+        return (FireStarterResult*)((char*)population + ResultSize() * index);
     } // PopulationResult
 
-    static inline const FireStarterResult* PopulationResult(const FireStarterResult* population, size_t index, unsigned int variation = 0)
+    static inline const FireStarterResult* PopulationResult(const FireStarterResult* population, size_t index)
     {
-        return (FireStarterResult*)((char*)population + ResultSize() * (index * FIRESTARTER_VARIATIONS + variation));
+        return (FireStarterResult*)((char*)population + ResultSize() * index);
     } // Result
 
-    static inline FireStarterResult* PopulationResult(FireStarterResult* population, const FireStarterSettings& settings, size_t index, unsigned int variation = 0)
+    static inline FireStarterResult* PopulationResult(FireStarterResult* population, const FireStarterSettings& settings, size_t index)
     {
-        return (FireStarterResult*)((char*)population + ResultSize(settings.m_registers) * (index * settings.m_variations + variation));
+        return (FireStarterResult*)((char*)population + ResultSize(settings.m_registers) * index);
     } // PopulationResult
 
-    static inline const FireStarterResult* PopulationResult(const FireStarterResult* population, const FireStarterSettings& settings, size_t index, unsigned int variation = 0)
+    static inline const FireStarterResult* PopulationResult(const FireStarterResult* population, const FireStarterSettings& settings, size_t index)
     {
-        return (FireStarterResult*)((char*)population + ResultSize(settings.m_registers) * (index * settings.m_variations + variation));
+        return (FireStarterResult*)((char*)population + ResultSize(settings.m_registers) * index);
     } // PopulationResult
 
-    static inline float PopulationMaxResult(const FireStarterResult* population, const FireStarterSettings& settings, size_t index, unsigned int variation = 0)
+    static inline FireStarterPopulation* PopulationVariation(FireStarterPopulation* population, size_t members, unsigned int variation)
     {
-        return PopulationResult(population, settings, index, variation)->MaxResult();
+        return (FireStarterPopulation*)((char*)population + ResultSize() * members * variation);
+    } // PopulationVariation
+
+    static inline const FireStarterPopulation* PopulationVariation(const FireStarterPopulation* population, size_t members, unsigned int variation)
+    {
+        return (const FireStarterPopulation*)((const char*)population + ResultSize() * members * variation);
+    } // PopulationVariation
+
+    static inline FireStarterPopulation* PopulationVariation(FireStarterPopulation* population, const FireStarterSettings& settings, unsigned int variation)
+    {
+        return (FireStarterPopulation*)((char*)population + ResultSize(settings.m_registers) * settings.m_population * variation);
+    } // PopulationVariation
+
+    static inline const FireStarterPopulation* PopulationVariation(const FireStarterPopulation* population, const FireStarterSettings& settings, unsigned int variation)
+    {
+        return (const FireStarterPopulation*)((const char*)population + ResultSize(settings.m_registers) * settings.m_population * variation);
+    } // PopulationVariation
+
+    static inline float PopulationMaxResult(const FireStarterPopulation* population, const FireStarterSettings& settings, size_t index)
+    {
+        return PopulationResult(population, settings, index)->MaxResult();
     } // PopulationMaxResult
 
-    static inline float PopulationMaxResults(const FireStarterResult* population, const FireStarterSettings& settings, size_t index)
+    static inline float PopulationMaxResults(const FireStarterPopulation* population, const FireStarterSettings& settings, size_t index)
     {
-        float maxResult = PopulationMaxResult(population, settings, index, 0);
+        float maxResult = PopulationMaxResult(population, settings, index);
         for (unsigned int v = 1; v < settings.m_variations; v++) {
-            float result = PopulationMaxResult(population, settings, index, v);
+            FireStarterPopulation* variationPopulation = PopulationVariation((FireStarterPopulation*)population, settings, v);
+            float result = PopulationMaxResult(variationPopulation, settings, index);
             maxResult = MAX(maxResult, result);
         }
         return maxResult;
@@ -735,30 +756,6 @@ typedef struct FireStarterPopulation : public FireStarterResult
 
     static inline size_t PopulationSize(const FireStarterSettings& settings)
     {
-        return ResultSize(settings.m_registers) * ((size_t)settings.m_variations * (size_t)settings.m_population);
+        return ResultSize(settings.m_registers) * (size_t)settings.m_population * (size_t)settings.m_variations;
     } // PopulationSize
-
-#ifndef __CUDACC__
-    static inline uint64_t PopulationResultChecksum(const FireStarterResult* population, const FireStarterSettings& settings, size_t index, unsigned int variation = 0)
-    {
-        const FireStarterResult* member = PopulationResult(population, settings, index, variation);
-        return Checksum(member, FireStarterResult::ResultSize(settings));
-    } // PopulationResultChecksum
-
-    static inline uint64_t PopulationVariationChecksum(const FireStarterResult* population, const FireStarterSettings& settings, unsigned int variation)
-    {
-        uint64_t checksum = 0;
-        for (unsigned int i = 0; i < settings.m_population; i++)
-            checksum ^= PopulationResultChecksum(population, settings, i, variation);
-        return checksum;
-    } // PopulationVariationChecksum
-
-    static inline uint64_t PopulationChecksum(const FireStarterResult* population, const FireStarterSettings& settings)
-    {
-        uint64_t checksum = 0;
-        for (unsigned int v = 0; v < settings.m_variations; v++)
-            checksum ^= PopulationVariationChecksum(population, settings, v);
-        return checksum;
-    } // PopulationChecksum
-#endif
 } FireStarterPopulation;

@@ -137,8 +137,8 @@ private:
     CUDAMemory<FireStarterSettings> m_CUDASettings;
     CUDAMemory<float> m_CUDAResults;
     CUDAMemory<FireStarterCode> m_CUDACodes;
-    CUDAMemory<FireStarterResult> m_CUDAPopulation0;
-    CUDAMemory<FireStarterResult> m_CUDAPopulation1;
+    CUDAMemory<FireStarterPopulation> m_CUDAPopulation0;
+    CUDAMemory<FireStarterPopulation> m_CUDAPopulation1;
     CUDAMemory<FireStarterCode> m_CUDAParentCode;
     CUDAMemory<SinSimNetwork> m_CUDANetworks;
     CUDAMemory<FireStarterData> m_CUDATradingData;

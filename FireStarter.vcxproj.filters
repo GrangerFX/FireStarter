@@ -19,9 +19,6 @@
     <ClCompile Include="FireStarter\FireStarterMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FireStarter\FireStarterProcess.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FireStarter\FireStarterShow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -81,9 +78,6 @@
     <ClInclude Include="FireStarter\FireStarterGenerate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FireStarter\FireStarterProcess.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Distribution\FireStarterResults.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -133,9 +127,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Distribution\FireSinSim.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FireStarter\FireStarterPacket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Distribution\MoneyMakerStocks.h">

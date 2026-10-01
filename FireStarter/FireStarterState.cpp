@@ -466,16 +466,16 @@ void FireStarterState::InitCode(const FireStarterSettings& settings, const FireS
     m_optimizeValid = true;
 } // InitCode
 
-void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index, unsigned int variation)
+void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index, unsigned int variation)
 {
     // Load the state's data from the population data.
     if (population) {
-        const FireStarterResult* result = FireStarterPopulation::PopulationResult(population, settings, index, variation);
+        const FireStarterResult* result = FireStarterPopulation::PopulationResult(FireStarterPopulation::PopulationVariation(population, settings, variation), settings, index);
         Result(variation)->Copy(result, settings.m_registers);
     }
 } // InitResult
 
-void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int index, unsigned int variation)
+void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterPopulation* population, unsigned int index, unsigned int variation)
 {
     // Load the state's code from the GPU evolved code.
     if (codes)
@@ -485,7 +485,7 @@ void FireStarterState::InitResult(const FireStarterSettings& settings, const Fir
     InitResult(settings, population, index, variation);
 } // InitResult
 
-void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index)
+void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index)
 {
     for (unsigned int v = 0; v < settings.m_variations; v++)
         InitResult(settings, population, index, v);
@@ -495,7 +495,7 @@ void FireStarterState::InitResults(const FireStarterSettings& settings, const Fi
     m_optimizeValid = true;
 } // InitResults
 
-void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int index)
+void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterPopulation* population, unsigned int index)
 {
     // Load the state's program from the GPU evolved code.
     if (codes)

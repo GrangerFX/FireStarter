@@ -116,5 +116,5 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
 
     // Optionally return the best register data and evolve age for debugging.
     if (population)
-        FireStarterPopulation::PopulationResult(population, member, variation)->InitResult(bestData, bestResult, bestAge);
+        FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
 } // EvolverSinSim

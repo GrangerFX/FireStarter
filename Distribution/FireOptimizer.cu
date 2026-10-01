@@ -42,7 +42,7 @@ inline bool OptimizeEvaluate(const FireStarterData& data, const float target[], 
 // This function is executed on the GPU for each member of the population.
 // The evolved code to be evaluated must have been inserted into the OptimizeCompiledEvaluate function above.
 // Optimizer is called repeatedly in a series of passes. Before each pass, the new and old populations are swapped.
-GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int populationCount)
+GPU_GLOBAL void Optimizer(FireStarterPopulation* newPopulation, const FireStarterPopulation* oldPopulation, const unsigned int variation, const unsigned int variations, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int populationCount)
 {
     // Check if the user is trying to abort and quit the application.
     if (SetSharedKillSwitch())
@@ -57,10 +57,9 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
     float theta[FIRESTARTER_SAMPLES];
     float target[FIRESTARTER_SAMPLES];
     float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
-    unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
     for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
-        target[i] = Target(t, targetVariation);
+        target[i] = Target(t, variation);
     }
 
     // The initial register values are stored in the FireStarterData array. These are randomly initialized and then evolved for each member.
@@ -68,6 +67,10 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
     unsigned int evolveAge;
     float result, memberResult;
     float evolutionScale;
+
+    // Get the variation populations.
+    newPopulation = FireStarterPopulation::PopulationVariation(newPopulation, populationCount, variation);
+    oldPopulation = FireStarterPopulation::PopulationVariation(oldPopulation, populationCount, variation);
 
     // Each member of the population has its own unique random number seed.
     unsigned long long memberSeed = optimizeSeed + SEED11(member); // Unique seed for the generation/pass/member/variation
@@ -85,7 +88,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         evolveAge = 0;
     } else {
         // Later passes randomize a single register if they were copied.
-        const FireStarterResult& oldResult = *FireStarterPopulation::PopulationResult(oldPopulation, member, variation);
+        const FireStarterResult& oldResult = *FireStarterPopulation::PopulationResult(oldPopulation, member);
         data.Copy(oldResult.Data());
         evolveAge = oldResult.EvolveAge();
 
@@ -140,7 +143,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         for (unsigned int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, populationCount);
-            const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate, variation);
+            const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate);
             unsigned int candidateAge = candidateResult->EvolveAge();
             if (candidateAge == 0) {
                 float candidateMaxResult = candidateResult->MaxResult();
@@ -153,7 +156,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
 
         // If the candate's result was better, copy its data and result.
         if (bestCandidate != member) {
-            const FireStarterResult* bestCandidateResult = FireStarterPopulation::PopulationResult(oldPopulation, bestCandidate, variation);
+            const FireStarterResult* bestCandidateResult = FireStarterPopulation::PopulationResult(oldPopulation, bestCandidate);
             data = bestCandidateResult->Data();
             evolveAge = 1;  // The register data was copied from the best candidate.
         } else
@@ -162,5 +165,5 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         evolveAge = 0;      // The result improved.
 
     // Return the best register data, fitness result and evolve age.
-    FireStarterPopulation::PopulationResult(newPopulation, member, variation)->InitResult(data, result, evolveAge);
+    FireStarterPopulation::PopulationResult(newPopulation, member)->InitResult(data, result, evolveAge);
 } // Optimizer

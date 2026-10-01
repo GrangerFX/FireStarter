@@ -1,6 +1,5 @@
 #pragma once
 #include "FireStarterCodeGenerate.h"
-#include "FireStarterPacket.h"
 #include "FireSinSim.h"
 #include "SimpleTimer.h"
 #include "SerialThread.h"
@@ -22,15 +21,6 @@ private:
 #endif
 
 public:
-    inline bool Packetize(FireStarterPacket& packet) // Note: Not used currently.
-    {
-        bool result = packet.Packetize(m_codeVector);
-#if FIRESTARTER_STATE_DEBUG
-        m_codeDebug = CodePtr();
-#endif
-        return result;
-    } // Packetize
-
     inline void operator=(const FireStarterCodeVector& code)
     {
         m_codeVector = code.m_codeVector;
@@ -156,15 +146,6 @@ private:
 #endif
 
 public:
-    inline bool Packetize(FireStarterPacket& packet) // Note: Not used currently.
-    {
-        bool result = packet.Packetize(m_dataVector);
-#if FIRESTARTER_STATE_DEBUG
-        m_dataDebug = DataPtr();
-#endif
-        return result;
-    } // Packetize
-
     inline void operator=(const FireStarterDataVector& other)
     {
         m_dataVector = other.m_dataVector;
@@ -284,27 +265,14 @@ public:
 class FireStarterResultVector {
 private:
     std::vector<unsigned char> m_resultData;    // Backing data for the result.
+#if FIRESTARTER_STATE_DEBUG
+    std::vector<FireStarterResult*> m_resultDebug;          // For debugging purposes only!
+#endif
     size_t m_resultSize = 0;
     unsigned int m_variations = 0;
     unsigned int m_registers = 0;
-#if FIRESTARTER_STATE_DEBUG
-    FireStarterResult* m_resultDebug[FIRESTARTER_VARIATIONS] = {};          // For debugging purposes only!
-#endif
 
 public:
-    inline bool Packetize(FireStarterPacket& packet) // Note: Not used currently.
-    {
-        bool result = packet.Packetize(m_resultData);
-        result = result && packet.Packetize(m_resultSize);
-        result = result && packet.Packetize(m_variations);
-        result = result && packet.Packetize(m_registers);
-#if FIRESTARTER_STATE_DEBUG
-        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
-            m_resultDebug[v] = Result(v);
-#endif
-        return result;
-    } // Packetize
-
     inline void operator=(const FireStarterResultVector& result)
     {
         m_resultData = result.m_resultData;
@@ -312,7 +280,8 @@ public:
         m_variations = result.m_variations;
         m_registers = result.m_registers;
 #if FIRESTARTER_STATE_DEBUG
-        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
+        m_resultDebug.resize(m_variations);
+        for (unsigned int v = 0; v < m_variations; v++)
             m_resultDebug[v] = Result(v);
 #endif
     } // operator=
@@ -324,7 +293,8 @@ public:
         m_variations = result->m_variations;
         m_registers = result->m_registers;
 #if FIRESTARTER_STATE_DEBUG
-        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
+        m_resultDebug.resize(m_variations);
+        for (unsigned int v = 0; v < m_variations; v++)
             m_resultDebug[v] = Result(v);
 #endif
     } // operator=
@@ -429,7 +399,8 @@ public:
         for (unsigned int v = 0; v < m_variations; v++)
             InitResult(settings, v);
 #if FIRESTARTER_STATE_DEBUG
-        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
+        m_resultDebug.resize(m_variations);
+        for (unsigned int v = 0; v < m_variations; v++)
             m_resultDebug[v] = Result(v);
 #endif
     } // InitResults
@@ -542,34 +513,6 @@ private:
     } // swap
 
 public:
-    inline bool Packetize(FireStarterPacket& packet)
-    {
-        bool result = true;
-        result = result && packet.Packetize(&m_settings, sizeof(m_settings));
-        result = result && m_results.Packetize(packet);
-        result = result && m_code.Packetize(packet);
-//      result = result && m_bestCodes.Packetize(packet);
-        result = result && packet.Packetize(&m_network, sizeof(m_network));
-//      result = result && packet.Packetize(&m_timer, sizeof(m_timer));
-        result = result && packet.Packetize(m_evaluateCode);
-        result = result && packet.Packetize(m_generation);
-        result = result && packet.Packetize(m_age);
-        result = result && packet.Packetize(m_evolution);
-        result = result && packet.Packetize(m_index);
-        result = result && packet.Packetize(m_evolveIndex);
-        result = result && packet.Packetize(m_id);
-        result = result && packet.Packetize(m_test);
-        result = result && packet.Packetize(m_seed);
-        result = result && packet.Packetize(m_optimize_pass);
-        result = result && packet.Packetize(m_minIndex);
-        result = result && packet.Packetize(m_uniqueRegisters);
-        result = result && packet.Packetize(m_bestResult);
-        result = result && packet.Packetize(m_oldResult);
-        result = result && packet.Packetize(m_evolveWeight);
-        result = result && packet.Packetize(m_optimizeValid);
-        return result;
-    } // Packetize
-
     inline FireStarterState& operator = (const FireStarterState& other)
     {
         swap(other);
@@ -902,10 +845,10 @@ public:
 
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
     void InitCode(const FireStarterSettings& settings, const FireStarterCode* codes, float result, unsigned int index);
-    void InitResult(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int index, unsigned int variation = 0);
-    void InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index, unsigned int variation = 0);
-    void InitResults(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int index);
-    void InitResults(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index);
+    void InitResult(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterPopulation* population, unsigned int index, unsigned int variation = 0);
+    void InitResult(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index, unsigned int variation = 0);
+    void InitResults(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterPopulation* population, unsigned int index);
+    void InitResults(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index);
 
     inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)
     {
