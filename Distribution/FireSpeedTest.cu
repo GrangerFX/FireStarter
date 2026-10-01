@@ -77,7 +77,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_INIT; i++) {
         registers = code.InitOptimizedCode(memberSeed);
         data.InitData(memberSeed, registers);
-        if (EvolveGPUEvaluate(sharedData, data, code, target, theta, memberResult))
+        if (SpeedTestEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
     }
 
@@ -116,7 +116,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = memberResult * 0.99f;
-            if (EvolveGPUEvaluate(sharedData, data, code, target, theta, curResult))
+            if (SpeedTestEvaluate(sharedData, data, code, target, theta, curResult))
                 memberResult = curResult;
             else
                 data[d] = old;
