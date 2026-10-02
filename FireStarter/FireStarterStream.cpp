@@ -58,7 +58,7 @@ void FireStarterStream::RandomStream(void)
     // Delete the completion unit.
     delete complete;
 
-    // Finish processing and terminate each unit.
+    // Delete the execute unit.
     delete execute;
 } // RandomStream
 

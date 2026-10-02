@@ -42,35 +42,31 @@ This algorithm does a good job of avoiding stuck evolutions. It is the most test
 
 Problem: Indexing registers is much less performant than accessing fixed registers directly. In code, the difference is n = r[0] += n and n = r0 += n. The former requires looking up the register in shared memory while the latter accesses it directly.
 
-Solution 1: Perform only a small amount of iterations for randomized code to determine the best candidates. Compile the best candidates into CUDA PTX code with fixed register indices. Fully evolve only the data registers.
+Solution 1: CPU Evolution. Perform only a small amount of iterations for randomized code to determine the best candidates. Compile the best candidates into CUDA PTX code with fixed register indices. Fully evolve only the data registers.
 This works very well for relatively simple problems but cannot solve more complex problems.
 
-Solution 2: Randomly generate and the evolve a large set of code candidates using the CPU. Each candidate is assigned a weight based on its fitness multiplied by the number of times it has been evolved without an improvement. The candidate with the lowest weight is selected for further evolution, compilation to CUDA PTX and initial data value evolution.
+Solution 2: GPU Evolution. Randomly generate and the evolve a large set of code candidates using the CPU. Each candidate is assigned a weight based on its fitness multiplied by the number of times it has been evolved without an improvement. The candidate with the lowest weight is selected for further evolution, compilation to CUDA PTX and initial data value evolution.
 
-Solution 3 (In research): Maintain a pool of successful register indices. Evolve the opcodes directly on the GPU by emulating them using the fixed registers. This removes the slow register indexing problem while allowing both the opcodes and initial data values to be evolved in parallel.
-As of this writing, the technique of using a constant array of register indices while emulating the opcodes has been successfully demonstrated but full code evolution has not yet been implemented or tested.
-
-Solution 4 (Proposed): It should be possible to implement very limited on GPU code compilation as an expansion of CUDA. A small set of instructions could be generated, compiled and executed directly on the GPU. This could be done between generations rather than on the fly to avoid self-modifying code which likely is not possible in current GPU hardware architectures. With a fairly limited set of instructions it should be possible to avoid GPU security issues.
+Solution 3: New Evolution. Maintain a library of successfully evolved register indices. Evolve the opcodes directly on the GPU by emulating them using the fixed registers. This removes the slow register indexing problem while allowing both the opcodes and initial data values to be evolved in parallel.
+This method has been tested and is several times faster at evolving code compared to using register indexing while emulating code instructions. The speed comes from both avoiding register indexing and also from the smaller number of generations required to find a successful result.
 
 
 Programming Evolutionary Code
 
-
-
-
 The Breakthroughs:
+GPU Data Evolution: Code and the data it uses can be evolved separately. This allows the code to be generated and compiled on either the CPU or GPU while the data used by the compiled code is evolved on the GPU. The data can be evolved many thousands of times faster than it can be on a CPU.
 
-GPU Data Evolution:Code and the data it uses can be evolved separately. This allows the code to be generated and compiled on either the CPU or GPU while the data used by the compiled code is evolved on the GPU. The data can be evolved many thousands of times faster than it can be on a CPU.
+CPU Code Evolution: A code evolution algorithm has been created that can solve more difficult problems. It uses natural selection among an ever increasing pool of candidate algorithms. It has a tree of code generations and weights that prefers newer and more successful members for evolution.
 
-GPU Random Code Evolution: Rather than attempting to evolve code by randomly changing instructions, this very simple method of evolution is based on population size alone. A very large population of randomly generated programs are generated and then emulated on the GPU. A relatively small number of generations of data evolution is then performed on each of them. This is at least ten times slower than GPU data evolution using compiled code but it allows early candidates to be found for full data evolution.
-
-CPU Code Evolution:
-A code evolution algorithm has been created that can solve more difficult problems. It uses natural selection among an ever increasing pool of candidate algorithms. It has a tree of code generations and weights that prefers newer and more successful members for evolution.
+GPU Random Code Evolution: Rather than attempting to evolve code by randomly changing instructions, this very simple method of evolution is based on population size alone. A very large population of randomly generated programs are generated and then emulated on the GPU. A relatively small number of generations of data evolution is then performed on each of them. This is at least ten times slower than GPU data evolution using compiled code but it allows early candidates to be found for full data evolution. This algorithm is based on the concept of evolvability. That is the speed at which a set of random instructions can have its register data evolved to converge on a solution. This discovery was made while attempting to use data evolution on thousands of randomly generated code candidates. The ones that ended up with better results had more improvements per generation than ones with worse results.
 
 The Results:
-GPU random code evolution takes 2.1 seconds, on average, to generate a sin() function with six digits of accuracy on a RTX 5090. The code uses 32 instructions, up to 30 registers and just two opcodes. This code is entirely generated from scratch with the evolutionary algorithm knowing only if the results are better or worse than the original.
+GPU random code evolution takes 2.1 seconds, on average, to generate a sin() function with six digits of accuracy on a tuned RTX 5090. The code uses 32 instructions, up to 30 registers and just two opcodes. This code is entirely generated from scratch with the evolutionary algorithm knowing only if the results are better or worse than the original.
+Since the data evolution pass takes far less time than the code evolution pass, performing data evolution on the top four candidates drops the average solution time to 1.7 seconds on an untuned RTX 5090.
 
-To complicate the problem, three variations of sine waves can be generated using the same code but different data evolution. This implies that certain patterns of code can solve a range of problems.
+GPU random code evolution with fixed register indices takes 0.5 seconds on average to generate a sin() function with six digits of accuracy on an untuned RTX 5090.
+
+To complicate the problem, three variations of sine waves can be generated using the same code but different register data evolution. This implies that certain patterns of code can solve a range of problems. It also implies that having a library of successful register indices could solve a range of problems.
 
 
 Unexpected Results:
@@ -78,7 +74,8 @@ Unexpected Results:
 For the small set of samples used to test the evolved code against sin(), the results are better than 6 digits of accuracy. It arranges the floating point math errors such that on those exact samples the precision is much higher than expected. The actual precision is about ten times less than the sampled precision.
 
 
-Example Result:Note: This is only one of a very large number of solutions that can be evolved.
+Example Result:
+Note: This is only one of a very large number of solutions that can be evolved.
 
     inline float Sin(float n)
     {
