@@ -698,7 +698,6 @@
     <ClCompile Include="FireStarter\FireStarterState.cpp" />
     <ClCompile Include="FireStarter\FireStarterStream.cpp" />
     <ClCompile Include="FireStarter\MoneyMakerStocks.cpp" />
-    <ClInclude Include="FireStarter\Checksum.h" />
     <ClInclude Include="FireStarter\CUDADefines.h" />
     <ClInclude Include="FireStarter\FireMoneyMaker.h" />
     <ClInclude Include="FireStarter\FireSinSim.h" />
@@ -729,10 +728,8 @@
     <ClInclude Include="FireStarter\FireStarterUtil.h" />
     <ClInclude Include="FireStarter\Format.h" />
     <ClInclude Include="FireStarter\PrintF.h" />
-    <ClInclude Include="FireStarter\SerialOutput.h" />
     <ClInclude Include="FireStarter\SerialThread.h" />
     <ClInclude Include="FireStarter\FireStarterWindow.h" />
-    <ClInclude Include="FireStarter\SimpleOutput.h" />
     <ClInclude Include="FireStarter\SimpleTimer.h" />
     <ClInclude Include="FireStarter\Sin.h" />
   </ItemGroup>

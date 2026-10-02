@@ -3,7 +3,6 @@
 #include "FireStarterSettings.h"
 #include "HashRandom.h"
 #ifndef __CUDACC__
-#include "Checksum.h"
 #include <vector>
 #endif
 

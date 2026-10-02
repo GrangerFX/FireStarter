@@ -36,9 +36,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FireStarter\Checksum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FireStarter\cnprintf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -114,13 +111,7 @@
     <ClInclude Include="FireStarter\PrintF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FireStarter\SerialOutput.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FireStarter\SerialThread.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FireStarter\SimpleOutput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FireStarter\SimpleTimer.h">
