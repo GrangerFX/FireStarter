@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Evolve_CPU_Debug|x64">
@@ -698,21 +698,21 @@
     <ClCompile Include="FireStarter\FireStarterState.cpp" />
     <ClCompile Include="FireStarter\FireStarterStream.cpp" />
     <ClCompile Include="FireStarter\MoneyMakerStocks.cpp" />
-    <ClInclude Include="Distribution\Checksum.h" />
-    <ClInclude Include="Distribution\CUDADefines.h" />
-    <ClInclude Include="Distribution\FireMoneyMaker.h" />
-    <ClInclude Include="Distribution\FireSinSim.h" />
-    <ClInclude Include="Distribution\FireStarterCodeGenerate.h" />
-    <ClInclude Include="Distribution\FireStarterModes.h" />
-    <ClInclude Include="Distribution\FireStarterResults.h" />
-    <ClInclude Include="Distribution\FireStarterSettings.h" />
-    <ClInclude Include="Distribution\FireStarterTarget.h" />
-    <ClInclude Include="Distribution\FireStarter_LoadState.h" />
-    <ClInclude Include="Distribution\FireStarter_MoneyMakerSolution.h" />
-    <ClInclude Include="Distribution\HashRandom.h" />
-    <ClInclude Include="Distribution\FireStarter_Solution.h" />
-    <ClInclude Include="Distribution\cnprintf.h" />
-    <ClInclude Include="Distribution\MoneyMakerStocks.h" />
+    <ClInclude Include="FireStarter\Checksum.h" />
+    <ClInclude Include="FireStarter\CUDADefines.h" />
+    <ClInclude Include="FireStarter\FireMoneyMaker.h" />
+    <ClInclude Include="FireStarter\FireSinSim.h" />
+    <ClInclude Include="FireStarter\FireStarterCodeGenerate.h" />
+    <ClInclude Include="FireStarter\FireStarterModes.h" />
+    <ClInclude Include="FireStarter\FireStarterResults.h" />
+    <ClInclude Include="FireStarter\FireStarterSettings.h" />
+    <ClInclude Include="FireStarter\FireStarterTarget.h" />
+    <ClInclude Include="FireStarter\FireStarter_LoadState.h" />
+    <ClInclude Include="FireStarter\FireStarter_MoneyMakerSolution.h" />
+    <ClInclude Include="FireStarter\HashRandom.h" />
+    <ClInclude Include="FireStarter\FireStarter_Solution.h" />
+    <ClInclude Include="FireStarter\cnprintf.h" />
+    <ClInclude Include="FireStarter\MoneyMakerStocks.h" />
     <ClInclude Include="FireStarter\CUDACompile.h" />
     <ClInclude Include="FireStarter\CUDAContext.h" />
     <ClInclude Include="FireStarter\CUDAErrors.h" />
@@ -737,8 +737,8 @@
     <ClInclude Include="FireStarter\Sin.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Distribution\FireEvolverGPU.cu" />
-    <None Include="Distribution\FireEvolverNew.cu">
+    <None Include="FireStarter\FireEvolverGPU.cu" />
+    <None Include="FireStarter\FireEvolverNew.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
@@ -784,7 +784,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">
       </ExcludedFromBuild>
     </None>
-    <None Include="Distribution\FireEvolverSinSim.cu">
+    <None Include="FireStarter\FireEvolverSinSim.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
@@ -830,9 +830,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">
       </ExcludedFromBuild>
     </None>
-    <None Include="Distribution\FireMoneyMaker.cu" />
-    <None Include="Distribution\FireMoneyOptimizer.cu" />
-    <None Include="Distribution\FireSelect.cu">
+    <None Include="FireStarter\FireMoneyMaker.cu" />
+    <None Include="FireStarter\FireMoneyOptimizer.cu" />
+    <None Include="FireStarter\FireSelect.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
@@ -879,7 +879,7 @@
       </ExcludedFromBuild>
       <FileType>Document</FileType>
     </None>
-    <None Include="Distribution\FireOptimizer.cu">
+    <None Include="FireStarter\FireOptimizer.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
@@ -925,7 +925,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">
       </ExcludedFromBuild>
     </None>
-    <None Include="Distribution\FireSinSim.cu">
+    <None Include="FireStarter\FireSinSim.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
@@ -971,7 +971,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">
       </ExcludedFromBuild>
     </None>
-    <None Include="Distribution\FireSpeedTest.cu">
+    <None Include="FireStarter\FireSpeedTest.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
@@ -1019,7 +1019,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="Distribution\FireGenerate.cu">
+    <CudaCompile Include="FireStarter\FireGenerate.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">true</ExcludedFromBuild>
@@ -1043,7 +1043,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Random_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">true</ExcludedFromBuild>
     </CudaCompile>
-    <CudaCompile Include="Distribution\FireSettings.cu">
+    <CudaCompile Include="FireStarter\FireSettings.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">true</ExcludedFromBuild>
