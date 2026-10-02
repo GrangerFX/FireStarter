@@ -26,7 +26,7 @@
 #define MONEYMAKER_ADDEDVALUE       1           // Set to 1 to compare the value of the predicted trades vs a buy-and-hold strategy.
 #define MONEYMAKER_WINS             0           // Set to 1 to grade by wins vs losses. Set to 0 for profits.
 #define MONEYMAKER_EVOLVE_COUNT     1           // The number of times to evolve each stock to generate bestCodes.
-#define MONEYMAKER_OPTIMIZE_COUNT   1           // The number of best evolved codes to optimize.
+#define MONEYMAKER_OPTIMIZE_COUNT   2           // The number of best evolved codes to optimize.
 #define MONEYMAKER_TEST_RESULTS     1           // Set to 1 to test the results to see how they perform on unseen data.
 #define MONEYMAKER_SCALE            1.0f        // The scale of the initial randomized register data.
 
@@ -166,7 +166,7 @@
 #define FIRESTARTER_MONEYMAKER_UNITS            1
 #define FIRESTARTER_MONEYMAKER_STATES           1
 #define FIRESTARTER_MONEYMAKER_GENERATIONS      1
-#define FIRESTARTER_MONEYMAKER_POPULATION       4 * FIRESTARTER_POPULATION // 4 * 16384 // 4 * FIRESTARTER_POPULATION
+#define FIRESTARTER_MONEYMAKER_POPULATION       4 * FIRESTARTER_POPULATION
 #define FIRESTARTER_MONEYMAKER_PASSES           8
 #define FIRESTARTER_MONEYMAKER_OPTIMIZE         1
 #define FIRESTARTER_MONEYMAKER_TESTS            8
@@ -174,8 +174,8 @@
 #define FIRESTARTER_MONEYOPTIMIZE_UNITS         1
 #define FIRESTARTER_MONEYOPTIMIZE_STATES        1
 #define FIRESTARTER_MONEYOPTIMIZE_GENERATIONS   1
-#define FIRESTARTER_MONEYOPTIMIZE_POPULATION    FIRESTARTER_POPULATION // 16384 // FIRESTARTER_POPULATION
-#define FIRESTARTER_MONEYOPTIMIZE_PASSES        FIRESTARTER_PASSES // 384 // FIRESTARTER_PASSES
+#define FIRESTARTER_MONEYOPTIMIZE_POPULATION    FIRESTARTER_POPULATION
+#define FIRESTARTER_MONEYOPTIMIZE_PASSES        FIRESTARTER_PASSES
 #define FIRESTARTER_MONEYOPTIMIZE_OPTIMIZE      1
 #define FIRESTARTER_MONEYOPTIMIZE_TESTS         1
 

@@ -5,6 +5,7 @@
 #include <vector>
 #endif
 
+// Stock data is parsed from text files from this source: https://stooq.com/db/h/
 typedef struct MoneyMakerStock
 {
     unsigned int symbol, numDays;

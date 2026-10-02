@@ -35,7 +35,7 @@ inline bool SelectEvaluate(FireStarterSharedData& sharedData, const FireStarterD
 // Each member in the popluation has its code and register data randomly initialized.
 // The code and register data is evolved over a number of passes.
 // If the result did not improve compared to the previous pass, one register data is randomized.
-// If no evolution occurs after six passes, two or three code instructions and the register data are re-randomized.
+// If no evolution occurs after several passes, two or three code instructions and the register data are re-randomized.
 // The register data is evolved by iterating adding a random value to one register and testing the code.
 // After each pass, if the result did not improve the code and data is restored to the last pass when the result did improve.
 GPU_GLOBAL void Selecter(float* results, FireStarterResult* population, FireStarterCode* codes, FireStarterCode* parentCode, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount, const unsigned int variation)

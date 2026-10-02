@@ -1230,8 +1230,10 @@ void FireStarterExecute::ExecuteEvolveSinSim(FireStarterState& evolveState)
     DispatchSync([this, &evolveState] {
         if (GenerateEvolve(evolveState.Settings().m_mode)) {
             evolveState.m_timer.Start();
-            if (InitPopulation(evolveState.Settings()))
+            if (InitPopulation(evolveState.Settings())) {
                 ExecuteEvolveSinSimPass(evolveState);
+                evolveState.m_generation++;
+            }
         }
     });
 } // ExecuteEvolveNew
@@ -1241,8 +1243,10 @@ void FireStarterExecute::ExecuteSinSim(FireStarterState& evolveState)
     DispatchSync([this, &evolveState] {
         if (GenerateEvolve(evolveState.Settings().m_mode)) {
             evolveState.m_timer.Start();
-            if (InitPopulation(evolveState.Settings()))
+            if (InitPopulation(evolveState.Settings())) {
                 ExecuteSinSimPass(evolveState);
+                evolveState.m_generation++;
+            }
         }
     });
 } // ExecuteSinSim

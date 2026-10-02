@@ -8,7 +8,11 @@
 
 void FireStarterStream::RandomStream(void)
 {
+    // RandomStream creates randomly generated code instructions and the uses one or more Optimize passes to evolve the best register data.
+    // The results demonstrate that some random code instructions are far more evolvable than others.
+    // This discovery was the basis for the EvolveGPU code evolution method.
     FireStarterSettings randomSettings(FIRESTARTER_RANDOM);
+    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
 
     // Create the execution unit.
     FireStarterExecute* execute = new FireStarterExecute();
@@ -48,8 +52,7 @@ void FireStarterStream::RandomStream(void)
         if (evolveState.Settings().m_tests > 1)
             resultText += Format("Test=%u  ", evolveState.m_test);
         resultText += Format("Random Result=%.8f\n", evolveState.MaxResults());
-        if (!m_streamDate.empty())
-            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_RandomResults.txt", m_streamDate.c_str()));
+        FireStarterSource::AppendSource(resultText, Format("Logs\\%s_RandomResults.txt", streamDate.c_str()));
     }
 
     // Delete the completion unit.
@@ -61,11 +64,12 @@ void FireStarterStream::RandomStream(void)
 
 void FireStarterStream::SelectStream(void)
 {
-    // Evolve a number of states equal to the evolveSettings.m_seeds.
+    // Select is an earlier version of EvolveGPU. It attempts to evolve by changing just two or three instructions when the code fails to evolve afer a number of generations.
+    // EvolveGPU's simpler approach of re-randomizing all the instructions with the goal of finding code with maximum evolvability was more efficient in the end.
     FireStarterSettings selectSettings(FIRESTARTER_EVOLVE_SELECT);
     FireStarterSettings optimizeSettings(FIRESTARTER_EVOLVE_OPTIMIZE);
     unsigned int numStates = selectSettings.m_states;
-    std::string streamDate = m_streamDate;
+    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
 
     // Create the evolution code generator.
     FireStarterExecute* executeSelect = new FireStarterExecute("SelectStates");
@@ -175,10 +179,14 @@ void FireStarterStream::SelectStream(void)
 
 void FireStarterStream::EvolveCPUStream(void)
 {
-    // Evolve a number of states equal to the evolveSettings.m_seeds.
+    // EvolveCPU the CPU to randomly generate a number of code instructions and then evolves them over many generations using EvolveStates().
+    // The Optimize pass is used to evolve the initial register data for the code instructions with the best weights. The results are used by
+    // EvolveStates() for determining the weights and selection of the next generation of code instructions.
+    // The process is repeated until the completion condition is met.
+    // This method works best for more difficult problems like finding a single piece of code that can solve multiple variations of Sin().
     FireStarterSettings evolveSettings(FIRESTARTER_EVOLVE_CPU);
     unsigned int numStates = evolveSettings.m_states;
-    std::string streamDate = m_streamDate;
+    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
     unsigned long long totalGenerations = 0;
 
     // Create the evolution code generator.
@@ -290,10 +298,12 @@ void FireStarterStream::EvolveCPUStream(void)
 
 void FireStarterStream::EvolveGPUStream(void)
 {
-    // Evolve a number of states equal to the evolveSettings.m_seeds.
+    // EvolveGPU uses CUDA code running on the GPU to randomly generate code instructions and then tests them for evolvability.
+    // The Optimize pass is then used to evolve the initial register data for the code instructions with the best evolvability results.
+    // This method works best for simple problems like generating the Sin() function.
     FireStarterSettings evolveSettings(FIRESTARTER_EVOLVE_GPU);
     FireStarterSettings optimizeSettings(FIRESTARTER_EVOLVE_OPTIMIZE);
-    std::string streamDate = m_streamDate;
+    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
     double totalDuration = 0.0;
     unsigned long long evolveID = 0;
     unsigned long long optimizeID = 0;
@@ -383,26 +393,32 @@ void FireStarterStream::EvolveGPUStream(void)
 
 void FireStarterStream::EvolveNewStream(void)
 {
-    // Evolve a number of states equal to the evolveSettings.m_seeds.
+    // EvolveNew is an experimental version of EvolveGPU that uses a fixed set of instruction registers but still evolves the instruction opcodes.
+    // This is significantly faster than EvolveGPU but the instruction registers must be generated ahead of time. The improved performance is gained
+    // by not needing to index the registers using a shared memory array on the GPU. In practice, a library of know good sets of registers could be
+    // tested to find the ones that work best to solve the problem.
     FireStarterSettings evolveSettings(FIRESTARTER_EVOLVE_NEW);
     FireStarterSettings optimizeSettings(FIRESTARTER_EVOLVE_OPTIMIZE);
-    std::string streamDate = m_streamDate;
+    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
     double totalDuration = 0.0;
     unsigned long long evolveID = 0;
     unsigned long long optimizeID = 0;
     unsigned long long totalGenerations = 0;
 
 #if FIRESTARTER_MULTI_GPU
-    size_t numDevices = CUDAContext::CUDADevices();
+    unsigned int numDevices = CUDAContext::CUDADevices();
 #else
-    size_t numDevices = 1;
+    unsigned int numDevices = 1;
 #endif
+    unsigned int numEvolve = numDevices;
+    unsigned int numOptimize = numDevices * 2;
+
     // Create the evolution completion unit.
     FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings);
 
     // Create the execution unit used to evolve and optimize the best states.
-    FireStarterUnits evolveUnits(numDevices, "Evolve");
-    FireStarterUnits optimizeUnits(numDevices, "Optimize");
+    FireStarterUnits evolveUnits(numEvolve, "Evolve");
+    FireStarterUnits optimizeUnits(numOptimize, "Optimize");
 
     // Loop until the the evolve completion condition or the host program is quit.
     unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
@@ -419,20 +435,19 @@ void FireStarterStream::EvolveNewStream(void)
         evolveUnits.ExecuteEvolveNew(evolveStates, bestCodes);
  
         // Evolve the current test.
+        unsigned int generation = 0;
         while (!WillTerminate() && !bestState.Complete()) {
             // Get the best code to optimize.
             for (size_t i = 0; i < numDevices; i++) {
                 FireStarterCodeVector bestCode(optimizeSettings);
                 bestCodes.GetBestCode(bestCode);
-                float bestResult = optimizeStates[i].m_bestResult;
-                optimizeStates[i].InitState(optimizeSettings, evolveStates[i].m_generation, i, optimizeID, test);
+                optimizeStates[i].InitState(optimizeSettings, generation, i, optimizeID, test);
                 optimizeStates[i].CopyCode(bestCode);
-                optimizeStates[i].m_bestResult = bestResult;
             }
             optimizeUnits.ExecuteGenerateOptimize(optimizeStates);
 
             // Execute the next GPU evolve while the optimize code is compiling.
-            if (!evolveSettings.m_generations || (evolveStates[0].m_generation < evolveSettings.m_generations))
+            if (!evolveSettings.m_generations || (generation < evolveSettings.m_generations))
                 evolveUnits.ExecuteEvolveNew(evolveStates, bestCodes);
 
             // Check for termination mid-generation.
@@ -443,8 +458,9 @@ void FireStarterStream::EvolveNewStream(void)
             optimizeUnits.ExecuteEvolveOptimize(optimizeStates, bestState, complete);
 
             // Exit after a set number of generations.
-            if (evolveSettings.m_generations && (evolveStates[0].m_generation >= evolveSettings.m_generations))
+            if (evolveSettings.m_generations && (generation >= evolveSettings.m_generations))
                 break;
+            generation++;
         }
 
         if (!WillTerminate()) {
@@ -473,10 +489,13 @@ void FireStarterStream::EvolveNewStream(void)
 
 void FireStarterStream::EvolveSinSimStream(void)
 {
-    // Evolve a number of states equal to the evolveSettings.m_seeds.
+    // EvolveSinSim peforms the same Sin() simulation as the original SinSim() but uses code evolution rather than a fixed neural network.
+    // This explores the generation of code and registers that processes multiple input samples without resetting the registers for each sample.
+    // MoneyMaker is the more complex version of multi-sample processing. This is a current area of research and could lead towards code that can
+    // evolve itself. Currently the results are poor compared to the original SinSim() and EvolveGPU.
     FireStarterSettings evolveSettings(FIRESTARTER_EVOLVE_SINSIM);
     FireStarterSettings optimizeSettings(FIRESTARTER_EVOLVE_SINSIM);
-    std::string streamDate = m_streamDate;
+    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
     double totalDuration = 0.0;
     unsigned long long totalGenerations = 0;
 
@@ -485,9 +504,6 @@ void FireStarterStream::EvolveSinSimStream(void)
 
     // Create the execution unit used to evolve the best states.
     FireStarterExecute* executeEvolve = new FireStarterExecute();
-
-    // Generate and compile the evolve code.
-    executeEvolve->ExecuteGenerateEvolve(evolveSettings.m_mode);
 
     // Loop until the the evolve completion condition or the host program is quit.
     unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
@@ -506,7 +522,7 @@ void FireStarterStream::EvolveSinSimStream(void)
             complete->CompleteState(bestState, evolveState);
 
             // Exit after a set number of generations.
-            if (++evolveState.m_generation == evolveSettings.m_generations)
+            if (evolveSettings.m_generations && (evolveState.m_generation >= evolveSettings.m_generations))
                 break;
         }
 
@@ -538,9 +554,13 @@ void FireStarterStream::EvolveSinSimStream(void)
 
 void FireStarterStream::SinSimStream(void)
 {
-    // Test the original SinSim neural net.
+    // This is a demonstration of the best version of original SinSim neural network from around 2008.
+    // It uses just four neurons and successfully converges match the target function to six digits of accuracy.
+    // The Sin() simulation initializes the neuron weights and then runs the simulation over a number of samples.
+    // The target function is Sin(theta) where theta is offset 45 degrees.
+    // This version runs using CUDA on the GPU with a population size of 65536.
     FireStarterSettings sinSimSettings(FIRESTARTER_SINSIM);
-    std::string streamDate = m_streamDate;
+    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
     double totalDuration = 0.0;
     unsigned long long totalGenerations = 0;
 
@@ -549,9 +569,6 @@ void FireStarterStream::SinSimStream(void)
 
     // Create the execution unit used to evolve the best states.
     FireStarterExecute* executeSinSim = new FireStarterExecute();
-
-    // Generate and compile the evolve code.
-    executeSinSim->ExecuteGenerateEvolve(sinSimSettings.m_mode);
 
     // Initialize the states.
     unsigned long long test = FIRESTARTER_START_TEST;
@@ -567,7 +584,7 @@ void FireStarterStream::SinSimStream(void)
         complete->CompleteState(bestState, evolveState);
 
         // Exit after a set number of generations.
-        if (++evolveState.m_generation == sinSimSettings.m_generations)
+        if (sinSimSettings.m_generations && (evolveState.m_generation >= sinSimSettings.m_generations))
             break;
     }
 
@@ -598,24 +615,33 @@ void FireStarterStream::SinSimStream(void)
 
 void FireStarterStream::MoneyMakerStream(void)
 {
+    // MoneyMaker is an experiment to find out if code evolution can be used to predict the future rather than simulate a static function.
+    // This code is based on EvolveSinSim() but uses stock market data as the input and output. The goal is to evolve code that signal when to
+    // buy, sell or hold shares in a stock. Currently results are inconclusive. This problem may not be solvable using the current number of
+    // instrucitons, registers and opcodes. See MoneyMaker.cu for more details.
 #if FIRESTARTER_MULTI_GPU
     unsigned int numDevices = CUDAContext::CUDADevices();
 #else
     unsigned int numDevices = 1;
 #endif
-        
+    size_t numEvolve = MONEYMAKER_EVOLVE_COUNT * numDevices;
+    size_t numOptimize = MONEYMAKER_OPTIMIZE_COUNT * numDevices;
+
     // Evolve a number of states equal to the evolveSettings.m_seeds.
     // Note: These are used by the units so they must be declared first so they are destroyed last.
     FireStarterSettings evolveSettings(FIRESTARTER_MONEYMAKER);
     FireStarterSettings optimizeSettings(FIRESTARTER_MONEYOPTIMIZE);
-    std::string streamResultsPath = Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str());
+    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
+    std::string streamResultsPath = Format("Logs\\%s_EvolveResults.txt", streamDate.c_str());
     unsigned long long evolveID = 0;
     unsigned long long optimizeID = 0;
 
     // Create the evolution completion unit.
     FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings);
 
-    // Load the stock market data;
+    // Load the stock market data.
+    // Note: The stock data is not a part of the FireStarter distribution and must be downloaded separately.
+    // Source: https://stooq.com/db/h/
     MoneyMakerManager stockManager(evolveSettings);
     stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 'AAPL', evolveSettings.m_offset);
     stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/nvda.us.txt", 'NVDA', evolveSettings.m_offset);
@@ -627,9 +653,6 @@ void FireStarterStream::MoneyMakerStream(void)
     stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amd.us.txt",  'AMD ', evolveSettings.m_offset);
     MoneyMakerStocks* stocks = stockManager.Stocks();
     unsigned int numStocks = stocks->size();
-
-    size_t numEvolve = (MONEYMAKER_EVOLVE_COUNT + (numDevices - 1)) / numDevices;
-    size_t numOptimize = (MONEYMAKER_OPTIMIZE_COUNT + (numDevices - 1)) / numDevices;
     unsigned int startStock = evolveSettings.m_stock;
 
     // Loop until the the evolve completion condition or the host program is quit.
@@ -639,8 +662,8 @@ void FireStarterStream::MoneyMakerStream(void)
         unsigned int testStock = (startStock + test) % numStocks;
 
         // Create the execution unit used to evolve and optimize the best states.
-        FireStarterUnits evolveUnits(numDevices, "MoneyEvolve");
-        FireStarterUnits optimizeUnits(numDevices, "MoneyOptimize");
+        FireStarterUnits evolveUnits(numEvolve, "MoneyEvolve");
+        FireStarterUnits optimizeUnits(numOptimize, "MoneyOptimize");
         evolveUnits.ExecuteSetStocks(stocks);
         optimizeUnits.ExecuteSetStocks(stocks);
         evolveUnits.ExecuteGenerateEvolve(evolveSettings.m_mode); // Generate and compile the evolve code.
@@ -726,8 +749,8 @@ void FireStarterStream::MoneyMakerStream(void)
 
 #if MONEYMAKER_TEST_RESULTS
             // Note: This is not multi-gpu but is fast.
-            optimizeUnits[0]->ExecuteMoneyTest(optimizeStates[optimize], optimizeSettings.m_variation, optimizeSettings.m_trading, optimizeSettings.m_validation);
-            const MoneyMakerStocks* tradingResults = optimizeUnits[0]->GetTradingResults();
+            optimizeUnits[optimize]->ExecuteMoneyTest(optimizeStates[optimize], optimizeSettings.m_variation, optimizeSettings.m_trading, optimizeSettings.m_validation);
+            const MoneyMakerStocks* tradingResults = optimizeUnits[optimize]->GetTradingResults();
             if (tradingResults) {
                 float tradingAverage = 0.0f;
                 float differenceAverage = 0.0f;
@@ -802,9 +825,11 @@ void FireStarterStream::MoneyMakerStream(void)
 
 void FireStarterStream::OptimizeStream(void)
 {
-    // Evolve a number of states equal to the evolveSettings.m_seeds.
+    // Optimize modes allows previously evolved code instructions to have their data fully evolved.
+    // In addition, Optimize can run multiple tests to find alternate register data values.
+    // This is also a way to test the Optimize pass separately from the Evolve passes.
     FireStarterSettings optimizeSettings(FIRESTARTER_OPTIMIZE);
-    std::string streamDate = m_streamDate;
+    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
     FireStarterState evolveState;
     LoadState(evolveState);
 
@@ -861,9 +886,9 @@ void FireStarterStream::OptimizeStream(void)
 
 void FireStarterStream::SpeedTestStream(void)
 {
-    // Evolve a number of states equal to the evolveSettings.m_seeds.
+    // SpeedTest can be used to test the performance impact of changes to the evolve code.
     FireStarterSettings speedTestSettings(FIRESTARTER_SPEED_TEST);
-    std::string streamDate = m_streamDate;
+    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
 
     // Create the optimization execution unit.
     FireStarterExecute* execute = new FireStarterExecute();
@@ -914,12 +939,8 @@ void FireStarterStream::SpeedTestStream(void)
 
 FireStarterStream::FireStarterStream(FireStarterWindow& window) : SerialThread("FireStarterStream"), m_streamWindow(window)
 {
-    // Get the time string for when the stream was created.
-    static std::string fileDate;
-    if (fileDate.empty())
-        fileDate = FileNameDate(SimpleTimer::RunSecond()).c_str();
-    m_streamDate = fileDate;
-
+    // Launch the task based on FIRESTARTER_MODE.
+    // FIRESTARTER_MODE is set in the C++ preprocessor settings for each build target.
     DispatchSync([this] {
         switch (FIRESTARTER_MODE) {
         case FIRESTARTER_RANDOM:
