@@ -95,8 +95,8 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
     // Get the result.
     if (state.m_optimizeValid) {
         static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
-        bestStateMutex.lock();
-        bool update = (state.m_optimizeValid && ((state.MaxResults() < bestState.MaxResults())) || !bestState.m_optimizeValid);
+        std::lock_guard<std::mutex> lock(bestStateMutex);
+        bool update = ((state.MaxResults() < bestState.MaxResults())) || !bestState.m_optimizeValid;
         if (update) {
             // Update the best state.
             float oldBestResult = bestState.m_bestResult;
@@ -112,7 +112,6 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
             bestState.m_age = 0;
         } else
             bestState.m_age++;
-        bestStateMutex.unlock();
         return update;
     }
     return false;
@@ -174,8 +173,6 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, const FireS
         if (!bestState.Complete()) {        // Update the best state and display the results.
             if (UpdateBestState(bestState, state))
                 DisplayResults(bestState, stocks, tradingResults);
-            else
-                bestState.m_age++;
 
             // Update the render status after every pass.
             CompleteStatus(bestState, state, state.m_generation);
