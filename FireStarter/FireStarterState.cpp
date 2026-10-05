@@ -25,7 +25,6 @@ const float FireStarterBestCodes::BestCodes::GetBestCode(FireStarterCodeVector& 
         m_bestResults[i - 1] = m_bestResults[i];
     }
     m_numCodes--;
-    m_worstResult = m_settings.m_startResult;
     m_bestCodes[m_maxCodes - 1] = bestCode;
     m_bestResults[m_maxCodes - 1] = bestResult;
     return bestResult;
@@ -33,15 +32,12 @@ const float FireStarterBestCodes::BestCodes::GetBestCode(FireStarterCodeVector& 
 
 void FireStarterBestCodes::BestCodes::AddCode(const FireStarterCode* code, float result)
 {
-    // Skip bad results entirely.
-    if (result >= m_worstResult)
+    // Skip bad or worse results entirely.
+    if ((m_numCodes == m_maxCodes) && (result >= m_bestResults[m_maxCodes - 1]))
         return;
 
     // Only add states with a unique instruction set.
     FireStarterCodeVector newCode(m_settings, code);
-    if (m_testedCodes.count(newCode.Vector()))
-        return;
-    m_testedCodes.insert(newCode.Vector());
 
     // Insert the new code and result at the end of the list.
     float newResult = result;
@@ -69,18 +65,12 @@ void FireStarterBestCodes::BestCodes::AddCode(const FireStarterCode* code, float
     return;
 } // AddCode
 
-float FireStarterBestCodes::BestCodes::WorstResult(void)
-{
-    return m_worstResult;
-} // WorstResult
-
 void FireStarterBestCodes::BestCodes::InitBestCodes(const FireStarterSettings& settings, size_t maxCodes)
 {
     m_settings = settings;
     m_maxCodes = maxCodes;
     m_codeSize = FireStarterCode::CodeSize(m_settings);
     m_numCodes = 0;
-    m_worstResult = m_settings.m_startResult;
     m_bestCodes.resize(m_maxCodes);
     m_bestResults.resize(m_maxCodes);
     for (size_t i = 0; i < m_maxCodes; i++) {
@@ -132,22 +122,11 @@ const float FireStarterBestCodes::GetBestCode(FireStarterCodeVector& bestCode)
 
 void FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
 {
-    if (result >= m_bestCodes.m_worstResult)
-        return;
-
-    DispatchAsync([this, code, result] {
-        m_bestCodes.AddCode(code, result);
-    });
+    if (result < m_bestCodes.m_settings.m_startResult)
+        DispatchAsync([this, code, result] {
+            m_bestCodes.AddCode(code, result);
+        });
 } // AddCode
-
-float FireStarterBestCodes::WorstResult(void)
-{
-    float worstResult = 0.0f;
-    DispatchSync([this, &worstResult] {
-        worstResult = m_bestCodes.WorstResult();
-    });
-    return worstResult;
-} // WorstResult
 
 void FireStarterBestCodes::InitBestCodes(const FireStarterSettings& settings, size_t maxCodes)
 {

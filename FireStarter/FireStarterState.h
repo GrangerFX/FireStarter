@@ -424,20 +424,17 @@ class FireStarterBestCodes : public SerialThread {
 private:
     class BestCodes {
     public:
-        std::set<std::vector<unsigned char>> m_testedCodes;
         std::vector<FireStarterCodeVector> m_bestCodes;
         std::vector<float> m_bestResults;
         FireStarterSettings m_settings;
         size_t m_codeSize = 0;
         size_t m_maxCodes = 0;
         size_t m_numCodes = 0;
-        float m_worstResult = 0.0f;
 
         size_t Size(void);
         float GetBestResult(void);
         const float GetBestCode(FireStarterCodeVector& bestCode);
         void AddCode(const FireStarterCode* code, float result);
-        float WorstResult(void);
         void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
         BestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
         BestCodes(void);
@@ -448,7 +445,6 @@ public:
     float GetBestResult(void);
     const float GetBestCode(FireStarterCodeVector& bestCode);
     void AddCode(const FireStarterCode* code, float result);
-    float WorstResult(void);
     void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
     FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
     FireStarterBestCodes(const FireStarterBestCodes& copy);

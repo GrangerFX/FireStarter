@@ -253,7 +253,7 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state, FireStart
             minResult = curResult;
             minIndex = i;
         }
-        if (curResult < bestCodes.WorstResult())
+        if (curResult < settings.m_startResult)
             bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);   // Note: Async so the best code may not match the state's code.
     }
 
@@ -323,7 +323,7 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, FireStart
             minResult = curResult;
             minIndex = i;
         }
-        if (curResult < bestCodes.WorstResult())
+        if (curResult < settings.m_startResult)
             bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);
     }
 
@@ -521,8 +521,7 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
                     bestResult = curResult;
                     bestIndex = i;
                 }
-                if (curResult < bestCodes.WorstResult())
-                    bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);
+                bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);
                 goodResults++;
             }
         }
