@@ -31,16 +31,16 @@ const float FireStarterBestCodes::BestCodes::GetBestCode(FireStarterCodeVector& 
     return bestResult;
 } // GetBestCode
 
-bool FireStarterBestCodes::BestCodes::AddCode(const FireStarterCode* code, float result)
+void FireStarterBestCodes::BestCodes::AddCode(const FireStarterCode* code, float result)
 {
     // Skip bad results entirely.
     if (result >= m_worstResult)
-        return false;
+        return;
 
     // Only add states with a unique instruction set.
     FireStarterCodeVector newCode(m_settings, code);
     if (m_testedCodes.count(newCode.Vector()))
-        return false;
+        return;
     m_testedCodes.insert(newCode.Vector());
 
     // Insert the new code and result at the end of the list.
@@ -66,7 +66,7 @@ bool FireStarterBestCodes::BestCodes::AddCode(const FireStarterCode* code, float
     m_bestCodes[m_numCodes] = newCode;
     m_bestResults[m_numCodes] = newResult;
     m_numCodes++;
-    return true;
+    return;
 } // AddCode
 
 float FireStarterBestCodes::BestCodes::WorstResult(void)
@@ -130,16 +130,14 @@ const float FireStarterBestCodes::GetBestCode(FireStarterCodeVector& bestCode)
     return result;
 } // GetBestCode
 
-bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
+void FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
 {
     if (result >= m_bestCodes.m_worstResult)
-        return false;
+        return;
 
-    bool added = false;
-    DispatchAsync([this, code, result, &added] {
-        added = m_bestCodes.AddCode(code, result);
+    DispatchAsync([this, code, result] {
+        m_bestCodes.AddCode(code, result);
     });
-    return added;
 } // AddCode
 
 float FireStarterBestCodes::WorstResult(void)

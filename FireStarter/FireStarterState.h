@@ -436,7 +436,7 @@ private:
         size_t Size(void);
         float GetBestResult(void);
         const float GetBestCode(FireStarterCodeVector& bestCode);
-        bool AddCode(const FireStarterCode* code, float result);
+        void AddCode(const FireStarterCode* code, float result);
         float WorstResult(void);
         void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
         BestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
@@ -447,7 +447,7 @@ public:
     inline size_t Size(void);
     float GetBestResult(void);
     const float GetBestCode(FireStarterCodeVector& bestCode);
-    bool AddCode(const FireStarterCode* code, float result);
+    void AddCode(const FireStarterCode* code, float result);
     float WorstResult(void);
     void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
     FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
