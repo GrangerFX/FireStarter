@@ -1,5 +1,5 @@
 #pragma once
-#include "FireStarterCodeGenerate.h"
+#include "FireStarterResults.h"
 #include "FireSinSim.h"
 #include "SimpleTimer.h"
 #include "SerialThread.h"
@@ -77,22 +77,22 @@ public:
         return m_codeVector;
     } // Vector
 
-    inline FireStarterCodeGenerate* CodePtr(void)
+    inline FireStarterCode* CodePtr(void)
     {
-        return (FireStarterCodeGenerate*)m_codeVector.data();
+        return (FireStarterCode*)m_codeVector.data();
     } // CodePtr
 
-    inline const FireStarterCodeGenerate* CodePtr(void) const
+    inline const FireStarterCode* CodePtr(void) const
     {
-        return (const FireStarterCodeGenerate*)m_codeVector.data();
+        return (const FireStarterCode*)m_codeVector.data();
     } // CodePtr
 
-    inline FireStarterCodeGenerate& Code(void)
+    inline FireStarterCode& Code(void)
     {
         return *CodePtr();
     } // Code
 
-    inline const FireStarterCodeGenerate& Code(void) const
+    inline const FireStarterCode& Code(void) const
     {
         return *CodePtr();
     } // Code
@@ -608,12 +608,12 @@ public:
         return FireStarterCode::CodeSize(m_settings);
     } // CodeSize
 
-    inline FireStarterCodeGenerate* Code(void)
+    inline FireStarterCode* Code(void)
     {
         return m_code.size() == CodeSize() ? m_code.CodePtr() : nullptr;
     } // Code
 
-    inline const FireStarterCodeGenerate* Code(void) const
+    inline const FireStarterCode* Code(void) const
     {
         return m_code.size() == CodeSize() ? m_code.CodePtr() : nullptr;
     } // Code
@@ -725,7 +725,7 @@ public:
 
     inline void CopyCode(const FireStarterCode* srcCode, unsigned int uniqueRegisters = 0)
     {
-        FireStarterCodeGenerate* dstCode = Code();
+        FireStarterCode* dstCode = Code();
         if (srcCode && dstCode) {
             memcpy(dstCode, srcCode, FireStarterCode::CodeSize(m_settings));
             if (!uniqueRegisters)
@@ -737,7 +737,7 @@ public:
 
     inline void CopyCode(const FireStarterState& srcState)
     {
-        const FireStarterCodeGenerate* srcCode = srcState.Code();
+        const FireStarterCode* srcCode = srcState.Code();
         if (srcCode && (srcState.m_settings.m_instructions == m_settings.m_instructions))
             CopyCode(srcCode, srcState.m_uniqueRegisters);
         else

@@ -7,7 +7,6 @@
 #include "FireEvolverGPU.cu"
 #include "FireEvolverNew.cu"
 #include "FireEvolverSinSim.cu"
-#include "FireGenerate.cu"
 #include "FireMoneyMaker.cu"
 #include "FireMoneyOptimizer.cu"
 #include "FireOptimizer.cu"
@@ -957,7 +956,7 @@ bool FireStarterExecute::GenerateEvolve(unsigned int mode)
     return Module().CompileProgram(m_executeCode, m_executeProgramName, m_executeFunctionName, m_executeTestName);
 } // GenerateEvolve
 
-bool FireStarterExecute::GenerateOptimize(const FireStarterSettings& settings, const FireStarterCodeGenerate* code, std::string& evaluateCode, unsigned int mode)
+bool FireStarterExecute::GenerateOptimize(const FireStarterSettings& settings, const FireStarterCode* code, std::string& evaluateCode, unsigned int mode)
 {
     // Load the base Optimizer code into memory.
     // Note: The same execute code is used by all GPU device units.

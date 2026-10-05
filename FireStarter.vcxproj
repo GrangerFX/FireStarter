@@ -701,7 +701,6 @@
     <ClInclude Include="FireStarter\CUDADefines.h" />
     <ClInclude Include="FireStarter\FireMoneyMaker.h" />
     <ClInclude Include="FireStarter\FireSinSim.h" />
-    <ClInclude Include="FireStarter\FireStarterCodeGenerate.h" />
     <ClInclude Include="FireStarter\FireStarterModes.h" />
     <ClInclude Include="FireStarter\FireStarterResults.h" />
     <ClInclude Include="FireStarter\FireStarterSettings.h" />
@@ -710,7 +709,6 @@
     <ClInclude Include="FireStarter\FireStarter_MoneyMakerSolution.h" />
     <ClInclude Include="FireStarter\HashRandom.h" />
     <ClInclude Include="FireStarter\FireStarter_Solution.h" />
-    <ClInclude Include="FireStarter\cnprintf.h" />
     <ClInclude Include="FireStarter\MoneyMakerStocks.h" />
     <ClInclude Include="FireStarter\CUDACompile.h" />
     <ClInclude Include="FireStarter\CUDAContext.h" />

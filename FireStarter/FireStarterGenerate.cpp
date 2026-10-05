@@ -1,6 +1,247 @@
 #include "FireStarterGenerate.h"
 #include "FireStarterSource.h"
-#include "FireStarterCodeGenerate.h"
+#include "Format.h"
+
+class FireStarterCodeGenerate : public FireStarterCode
+{
+public:
+    inline void GenerateTabs(std::string& buffer, unsigned int tabs) const
+    {
+        // Insert leading tabs (four spaces).
+        while (tabs--)
+            buffer += "    ";
+    } // GenerateTabs
+
+    inline void GenerateEvaluate(std::string& buffer, unsigned int tabs, unsigned int instruction, bool instructionLast = false) const
+    {
+        // Convert the instructions.
+        FireStarterOpcode op = Operation(instruction);
+        unsigned int reg = Register(instruction);
+
+        GenerateTabs(buffer, tabs);
+        switch (op) {
+            case Operation_data_multiply:
+                if (instructionLast)
+                    buffer += Format("n *= data[%u];\r\n", reg);
+                else
+                    buffer += Format("n = data[%u] *= n;\r\n", reg);
+                break;
+
+            case Operation_data_add:
+                if (instructionLast)
+                    buffer += Format("n += data[%u];\r\n", reg);
+                else
+                    buffer += Format("n = data[%u] += n;\r\n", reg);
+                break;
+
+            case Operation_store:
+                buffer += Format("data[%u] = n;\r\n", reg);
+                break;
+
+            case Operation_load:
+                buffer += Format("n = data[%u];\r\n", reg);
+                break;
+
+            case Operation_square:
+                buffer += Format("n *= n;\r\n");
+                break;
+
+            case Operation_multiply:
+                buffer += Format("n *= data[%u];\r\n", reg);
+                break;
+
+            case Operation_divide:
+                buffer += Format("n /= data[%u];\r\n", reg);
+                break;
+
+            case Operation_add:
+                buffer += Format("n += data[%u];\r\n", reg);
+                break;
+
+            case Operation_subtract:
+                buffer += Format("n -= data[%u];\r\n", reg);
+                break;
+
+            case Operation_min:
+                buffer += Format("n = data[%u] < n ? data[%u] : n;\r\n", reg, reg);
+                break;
+
+            case Operation_max:
+                buffer += Format("n = data[%u] > n ? data[%u] : n;\r\n", reg, reg);
+                break;
+        }
+    } // GenerateEvaluate
+
+    inline void GenerateSolution(std::string& buffer, unsigned int tabs, unsigned int reg, float data, unsigned int instruction, bool instructionFirst = false, bool instructionLast = false) const
+    {
+        GenerateTabs(buffer, tabs);
+        
+        // Convert the instructions.
+        FireStarterOpcode op = Operation(instruction);
+        switch (op) {
+            case Operation_data_multiply:
+                if (instructionFirst)
+                    if (instructionLast)
+                        buffer += Format("n *= %.8ff;\r\n", data);
+                    else
+                        buffer += Format("r%u = n *= %.8ff;\r\n", reg, data);
+                else
+                    if (instructionLast)
+                        buffer += Format("n *= r%u;\r\n", reg);
+                    else
+                        buffer += Format("n = r%u *= n;\r\n", reg);
+                break;
+
+            case Operation_data_add:
+                if (instructionFirst)
+                    if (instructionLast)
+                        buffer += Format("n += %.8ff;\r\n", data);
+                    else
+                        buffer += Format("r%u = n += %.8ff;\r\n", reg, data);
+                else
+                    if (instructionLast)
+                        buffer += Format("n += r%u;\r\n", reg);
+                    else
+                        buffer += Format("n = r%u += n;\r\n", reg);
+                break;
+
+            case Operation_store:
+                buffer += Format("r%u = n;\r\n", reg);
+                break;
+
+            case Operation_load:
+                buffer += Format("n = r%u;\r\n", reg);
+                break;
+
+            case Operation_square:
+                buffer += Format("n *= n;\r\n");
+                break;
+
+            case Operation_multiply:
+                buffer += Format("n *= r%u;\r\n", reg);
+                break;
+
+            case Operation_divide:
+                buffer += Format("n /= r%u;\r\n", reg);
+                break;
+
+            case Operation_add:
+                buffer += Format("n += r%u;\r\n", reg);
+                break;
+
+            case Operation_subtract:
+                buffer += Format("n -= r%u;\r\n", reg);
+                break;
+
+            case Operation_min:
+                buffer += Format("n = r%u < n ? r%u : n;\r\n", reg, reg);
+                break;
+
+            case Operation_max:
+                buffer += Format("n = r%u > n ? r%u : n;\r\n", reg, reg);
+                break;
+        }
+    } // GenerateSolution
+
+    inline void GenerateData(std::string& buffer, unsigned int tabs, unsigned int numRegisters, const FireStarterData* data) const
+    {
+        if (!numRegisters)
+            numRegisters = FIRESTARTER_REGISTERS;
+        for (unsigned int i = 0; i < tabs; i++)
+            buffer += Format("    ");
+        buffer += Format("FireStarterData data = { %.8ff", numRegisters, data->d[0]);
+        for (unsigned int i = 1; i < numRegisters; i++)
+            buffer += Format(", %.8ff", data->d[i]);
+        buffer += Format("};\r\n");
+    } // GenerateData
+
+    inline void GenerateEvaluate(std::string& buffer, unsigned int tabs, unsigned int numInstructions, const FireStarterRegisterUsage* registerUsage, unsigned int numRegisters) const
+    {
+        // Generate the evaluate function code.
+        bool optimize = registerUsage && numRegisters;
+        for (unsigned int i = 0; i < numInstructions; i++) {
+            unsigned int reg = Register(i);
+            const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
+            GenerateEvaluate(buffer, tabs, i, optimize && (i == dataRegister.instructionLast));
+        }
+    } // GenerateEvaluate
+
+    inline void GenerateSolution(std::string& buffer, unsigned int tabs, unsigned int numInstructions, const FireStarterRegisterUsage* registerUsage, unsigned int numRegisters, const FireStarterData* data) const
+    {
+#if FIRESTARTER_FIRSTLIGHT
+        // Generate the solution function registers.
+        for (unsigned int i = 0; i < numRegisters; i++) {
+            GenerateTabs(buffer, tabs);
+            FormatString(buffer, "float r%u = %.8ff;\r\n", i, data->d[i]);
+        }
+        FormatString(buffer, "\r\n");
+
+        // Generate the solution function code.
+        for (unsigned int i = 0; i < numInstructions; i++) {
+            unsigned int reg = Register(i);
+            const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
+            float f = (float)data->d[reg];
+            GenerateSolution(buffer, tabs, reg, f, i);
+        }
+#elif (FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER) || (FIRESTARTER_MODE == FIRESTARTER_MONEYOPTIMIZE)
+        // Generate the MoneyMaker solution function registers.
+        for (unsigned int i = 0; i < numRegisters; i++) {
+            GenerateTabs(buffer, tabs);
+            FormatString(buffer, "float r%u = %.8ff;\r\n", i, data->d[i]);
+        }
+        FormatString(buffer, "\r\n");
+
+        // Loop for each day in the stock data.
+        GenerateTabs(buffer, tabs);
+        FormatString(buffer, "for (unsigned int d = 0; d < stock.numDays; d++) {\r\n");
+        tabs++;
+
+        // Get the current day's stock price.
+        GenerateTabs(buffer, tabs);
+        FormatString(buffer, "n = stock[d];\r\n");
+
+        // Generate the MoneyMaker solution function code.
+        for (unsigned int i = 0; i < numInstructions; i++) {
+            unsigned int reg = Register(i);
+            const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
+            float f = (float)data->d[reg];
+            GenerateSolution(buffer, tabs, reg, f, i);
+        }
+        tabs--;
+        GenerateTabs(buffer, tabs);
+        FormatString(buffer, "}\r\n");
+#else
+        // Find the first and last instruction register usage.
+        unsigned int maxRegister = 0;
+        for (unsigned int i = 0; i < numInstructions; i++) {
+            unsigned int reg = Register(i);
+            const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
+            if ((i != dataRegister.instructionFirst) || (i != dataRegister.instructionLast)) {
+                unsigned int r = dataRegister.registerIndex;
+                if (r > maxRegister)
+                    maxRegister = r;
+            }
+        }
+
+        // Generate the solution function registers.
+        GenerateTabs(buffer, tabs);
+        buffer += Format("float r0");
+        for (unsigned int i = 1; i <= maxRegister; i++)
+            buffer += Format(", r%u", i);
+        buffer += Format(";\r\n\r\n");
+
+        // Generate the solution function code.
+        for (unsigned int i = 0; i < numInstructions; i++) {
+            unsigned int reg = Register(i);
+            const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
+            unsigned int r = dataRegister.registerIndex;
+            float f = (float)data->d[reg];
+            GenerateSolution(buffer, tabs, r, f, i, i == dataRegister.instructionFirst, i == dataRegister.instructionLast);
+        }
+#endif
+    } // GenerateSolution
+
+}; // class FireStarterCodeGenerate
 
 unsigned int FireStarterGenerate::RegisterInfo(const FireStarterCode* code, std::vector<FireStarterRegisterInfo>& registerInfo, const FireStarterSettings& settings)
 {
@@ -48,22 +289,18 @@ unsigned int FireStarterGenerate::RegisterInfo(const FireStarterCode* code, std:
     return uniqueRegisters;
 } // RegisterInfo
 
-void FireStarterGenerate::GenerateEvaluate(const FireStarterSettings& settings, const FireStarterCodeGenerate* code, std::string& text)
+void FireStarterGenerate::GenerateEvaluate(const FireStarterSettings& settings, const FireStarterCode* code, std::string& text)
 {
     // Generate the evaluate function.
     unsigned int numInstructions = settings.m_instructions;
     std::vector<FireStarterRegisterInfo> registerInfo;
     unsigned int numRegisters = RegisterInfo(code, registerInfo, settings);
     FireStarterRegisterUsage* registersUsage = (FireStarterRegisterUsage*)registerInfo.data();
-    std::string generateText;
     unsigned int tabs = 1;
     size_t textLength = 0;
 
-    code->GenerateEvaluate(nullptr, 0, textLength, tabs, numInstructions, registersUsage, numRegisters);
-    generateText.resize(textLength, 0);
-    textLength = 0;
-    code->GenerateEvaluate(generateText.data(), generateText.max_size(), textLength, tabs, numInstructions, registersUsage, numRegisters);
-    text += generateText;
+    FireStarterCodeGenerate* codeGenerate = (FireStarterCodeGenerate*)code;
+    codeGenerate->GenerateEvaluate(text, tabs, numInstructions, registersUsage, numRegisters);
 } // GenerateEvaluate
 
 void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::string& text, const std::string& targetCode)
@@ -75,7 +312,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
 
     // Generate the solution function.
     unsigned int numInstructions = settings.m_instructions;
-    const FireStarterCodeGenerate* code = state.Code();
+    const FireStarterCodeGenerate* code = (FireStarterCodeGenerate*)state.Code();
     std::vector<FireStarterRegisterInfo> registers;
     unsigned int numRegisters = RegisterInfo(code, registers, settings);
     FireStarterRegisterUsage* registersUsage = (FireStarterRegisterUsage*)registers.data();
@@ -114,12 +351,8 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
             text += "{\r\n";
         }
 
-        size_t textLength = 0;
-        code->GenerateSolution(nullptr, 0, textLength, tabs, numInstructions, registersUsage, numRegisters, data);
-        generateText.resize(textLength, 0);
-        textLength = 0;
-        code->GenerateSolution(generateText.data(), generateText.max_size(), textLength, tabs, numInstructions, registersUsage, numRegisters, data);
-        text += generateText;
+        FireStarterCodeGenerate* codeGenerate = (FireStarterCodeGenerate*)code;
+        codeGenerate->GenerateSolution(text, tabs, numInstructions, registersUsage, numRegisters, data);
 
         text += "    return n;\r\n";
         if ((passMode == FIRESTARTER_MONEYMAKER) || (passMode == FIRESTARTER_MONEYOPTIMIZE)) {

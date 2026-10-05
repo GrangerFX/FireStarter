@@ -183,7 +183,7 @@ private:
     void ExecuteSmartOptimizePasses(FireStarterState& state);
     void ExecuteSpeedTestPass(FireStarterState& state);
     bool GenerateEvolve(unsigned int mode);
-    bool GenerateOptimize(const FireStarterSettings& settings, const FireStarterCodeGenerate* code, std::string& evaluateCode, unsigned int mode);
+    bool GenerateOptimize(const FireStarterSettings& settings, const FireStarterCode* code, std::string& evaluateCode, unsigned int mode);
     
 public:
     inline size_t ExecuteIndex(void) const { return m_executeIndex; }

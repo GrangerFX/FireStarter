@@ -32,3 +32,4 @@ inline std::string Format(const std::string formatString, ...)
 {
     return Format(formatString.c_str());
 } // Format
+

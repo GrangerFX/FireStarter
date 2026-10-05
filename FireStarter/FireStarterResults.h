@@ -512,6 +512,26 @@ typedef struct FireStarterCode {
     } // FireStarterCode
 } FireStarterCode;
 
+struct FireStarterRegisterInfo {
+    unsigned int registerIndex;
+    unsigned int instructionFirst;
+    unsigned int instructionLast;
+}; // struct FireStarterRegisterInfo
+
+typedef struct FireStarterRegisterUsage {
+    FireStarterRegisterInfo r[FIRESTARTER_REGISTERS];
+
+    static inline size_t RegistersSize(unsigned int registers)
+    {
+        return sizeof(FireStarterRegisterInfo) * registers;
+    } // FireStarterRegisterUsage
+
+    inline const FireStarterRegisterInfo& Register(unsigned int index) const
+    {
+        return r[index];
+    } // Register
+} FireStarterRegisterUsage; // FireStarterRegisterUsage
+
 typedef struct FireStarterResult {
     float m_maxResult;
     unsigned int m_evolveAge;
