@@ -411,7 +411,7 @@ void FireStarterStream::EvolveNewStream(void)
     unsigned int numDevices = 1;
 #endif
     unsigned int numEvolve = numDevices;
-    unsigned int numOptimize = numDevices * 2;
+    unsigned int numOptimize = numDevices;
 
     // Create the evolution completion unit.
     FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings);
@@ -425,8 +425,8 @@ void FireStarterStream::EvolveNewStream(void)
     for (unsigned int t = 0; (t < evolveTests) && !WillTerminate(); t++) {
         // Initialize the states.
         unsigned long long test = FIRESTARTER_START_TEST + t;
-        FireStarterStates evolveStates(numDevices, evolveSettings, 0, 0, test);
-        FireStarterStates optimizeStates(numDevices, evolveSettings, 0, 0, test);
+        FireStarterStates evolveStates(numEvolve, evolveSettings, 0, 0, test);
+        FireStarterStates optimizeStates(numOptimize, evolveSettings, 0, 0, test);
         FireStarterState bestState = FireStarterState(optimizeSettings, 0, 0, 0, test);
         FireStarterBestCodes bestCodes(evolveSettings);
 
@@ -438,7 +438,7 @@ void FireStarterStream::EvolveNewStream(void)
         unsigned int generation = 0;
         while (!WillTerminate() && !bestState.Complete()) {
             // Get the best code to optimize.
-            for (size_t i = 0; i < numDevices; i++) {
+            for (size_t i = 0; i < optimizeStates.size(); i++) {
                 FireStarterCodeVector bestCode(optimizeSettings);
                 bestCodes.GetBestCode(bestCode);
                 optimizeStates[i].InitState(optimizeSettings, generation, i, optimizeID, test);
@@ -467,7 +467,7 @@ void FireStarterStream::EvolveNewStream(void)
             // Output the evolve results.
             double duration = bestState.Duration();
             totalDuration += duration;
-            for (size_t i = 0; i < numDevices; i++) {
+            for (size_t i = 0; i < evolveStates.size(); i++) {
                 totalGenerations += evolveStates[i].m_generation;
                 std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %6.1f  GenTime: %4.1f  Total: %8.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
                 if (bestState.MaxResults() <= evolveSettings.m_target)

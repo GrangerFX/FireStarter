@@ -110,6 +110,9 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
 
             // Reset the best state age to zero.
             bestState.m_age = 0;
+
+            // Determine if the best state has met the evolution completion fittness test.
+            bestState.SetComplete();
         } else
             bestState.m_age++;
         return update;

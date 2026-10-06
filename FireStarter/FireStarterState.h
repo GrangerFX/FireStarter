@@ -476,6 +476,7 @@ public:
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_evolveWeight = 0.0f;
     float m_precision = 0.0f;
+    std::atomic<bool> m_complete = false;
     bool m_optimizeValid = false;
 
 private:
@@ -506,6 +507,7 @@ private:
         m_evolveWeight = other.m_evolveWeight;
         m_precision = other.m_precision;
         m_optimizeValid = other.m_optimizeValid;
+//      m_complete.store(false);
     } // swap
 
 public:
@@ -635,9 +637,19 @@ public:
         return m_results.size() == ResultSize();
     } // Initialized
 
+    inline bool SetComplete(void)
+    {
+        // Note: This is called from FireStarterComplete::UpdateBestState().
+        if (MaxResults() < m_settings.m_target) {
+            m_complete.store(true, std::memory_order_release);
+            return true;
+        }
+        return false;
+    } // SetComplete
+
     inline bool Complete(void) const
     {
-        return MaxResults() < m_settings.m_target;
+        return m_complete.load(std::memory_order_acquire);
     } // Complete
 
     inline unsigned int PassMode(void) const
