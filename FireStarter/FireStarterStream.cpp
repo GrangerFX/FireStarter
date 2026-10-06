@@ -255,6 +255,7 @@ void FireStarterStream::EvolveCPUStream(void)
             if (evolveSettings.m_optimize) {
                 FireStarterState optimizeState(bestEvolveState);
                 FireStarterState optimizeBestState(optimizeState);
+                optimizeBestState.SetComplete();
 
                 // Generate the optimize code.
                 if (executeOptimize->ExecuteGenerateOptimize(optimizeState)) {

@@ -136,6 +136,7 @@ public:
 
     inline bool CompileProgram(const std::string& programCode, const std::string& programName, const std::string& functionName = {}, const std::string& testName = {})
     {
+        ClearModule();
         return Compile(programCode, programName) && BuildModule(functionName, testName);
     } // CompileProgram
 
