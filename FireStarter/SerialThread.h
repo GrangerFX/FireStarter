@@ -247,9 +247,9 @@ protected:
                     std::swap(stopToken, interruptDisabled);
                     if (!thread->m_terminate)
                         thread->DispatchAsync([timer] {
-                        timer->m_work();
-                        delete timer;
-                            });
+                            timer->m_work();
+                            delete timer;
+                        });
                     });
                 timer->m_thread.detach();
                 });

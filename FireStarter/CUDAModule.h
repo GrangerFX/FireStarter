@@ -96,10 +96,9 @@ public:
 
             // Initialize the value.
             *m_hostGPUKillSwitch = killNow;
-
-            // Set the global variable in the CUDA module to point to the kill switch in pinned host memory.
-            SetGlobal("g_GPUKillSwitch", &m_deviceGPUKillSwitch, sizeof(CUdeviceptr));
         }
+
+        // Set the global variable in the CUDA module to point to the kill switch in pinned host memory.
         if (killNow)
             *m_hostGPUKillSwitch = killNow;
         return m_hostGPUKillSwitch;
@@ -115,7 +114,13 @@ public:
     {
         ClearModule();
         if (!m_programPTX.empty() && checkCUDAErrors(cuModuleLoadDataEx(&m_module, m_programPTX.c_str(), 0, 0, 0)) && m_module) {
+#if FIRESTARTER_KILL_SWITCH
             InitGPUKillSwitch();
+            if (!SetGlobal("g_GPUKillSwitch", &m_deviceGPUKillSwitch, sizeof(CUdeviceptr))) {
+                ClearModule();
+                return false;
+            }
+#endif
             m_executeFunction = GetFunction(functionName);
             m_executeTest = GetFunction(testName);
             return functionName.empty() || (m_executeFunction != nullptr);

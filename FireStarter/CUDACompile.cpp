@@ -69,6 +69,7 @@ bool CUDACompile::Compile(std::string& ptx, std::string& log, const std::string&
             logNVRTCErrors(log, nvrtcGetProgramLog(prog, compileLog.data()));
             log += compileLog;
         }
+        checkNVRTCErrors(nvrtcDestroyProgram(&prog));
         return false;
     }
 
