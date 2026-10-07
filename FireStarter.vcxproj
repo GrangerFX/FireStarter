@@ -634,30 +634,30 @@
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">true</UseStandardPreprocessor>
     </ClCompile>
     <PostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Select_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Random_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Select_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Random_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Select_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Random_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Select_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Random_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
     </PostBuildEvent>
     <CudaCompile>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>

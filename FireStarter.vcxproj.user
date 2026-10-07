@@ -3,111 +3,111 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Select_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Random_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_New_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_GPU_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_CPU_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Select_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Random_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(ProjectDir)Distribution\$(TargetFileName)</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
 </Project>

@@ -152,7 +152,7 @@ public:
         buffer += Format("FireStarterData data = { %.8ff", numRegisters, data->d[0]);
         for (unsigned int i = 1; i < numRegisters; i++)
             buffer += Format(", %.8ff", data->d[i]);
-        buffer += Format("};\r\n");
+        buffer += "};\r\n";
     } // GenerateData
 
     inline void GenerateEvaluate(std::string& buffer, unsigned int tabs, unsigned int numInstructions, const FireStarterRegisterUsage* registerUsage, unsigned int numRegisters) const
@@ -172,9 +172,9 @@ public:
         // Generate the solution function registers.
         for (unsigned int i = 0; i < numRegisters; i++) {
             GenerateTabs(buffer, tabs);
-            FormatString(buffer, "float r%u = %.8ff;\r\n", i, data->d[i]);
+            buffer += Format("float r%u = %.8ff;\r\n", i, data->d[i]);
         }
-        FormatString(buffer, "\r\n");
+        buffer += Format("\r\n");
 
         // Generate the solution function code.
         for (unsigned int i = 0; i < numInstructions; i++) {
@@ -187,18 +187,18 @@ public:
         // Generate the MoneyMaker solution function registers.
         for (unsigned int i = 0; i < numRegisters; i++) {
             GenerateTabs(buffer, tabs);
-            FormatString(buffer, "float r%u = %.8ff;\r\n", i, data->d[i]);
+            buffer += Format("float r%u = %.8ff;\r\n", i, data->d[i]);
         }
-        FormatString(buffer, "\r\n");
+        buffer += "\r\n";
 
         // Loop for each day in the stock data.
         GenerateTabs(buffer, tabs);
-        FormatString(buffer, "for (unsigned int d = 0; d < stock.numDays; d++) {\r\n");
+        buffer += "for (unsigned int d = 0; d < stock.numDays; d++) {\r\n";
         tabs++;
 
         // Get the current day's stock price.
         GenerateTabs(buffer, tabs);
-        FormatString(buffer, "n = stock[d];\r\n");
+        buffer += "n = stock[d];\r\n";
 
         // Generate the MoneyMaker solution function code.
         for (unsigned int i = 0; i < numInstructions; i++) {
@@ -209,7 +209,7 @@ public:
         }
         tabs--;
         GenerateTabs(buffer, tabs);
-        FormatString(buffer, "}\r\n");
+        buffer += "}\r\n";
 #else
         // Find the first and last instruction register usage.
         unsigned int maxRegister = 0;
@@ -225,10 +225,10 @@ public:
 
         // Generate the solution function registers.
         GenerateTabs(buffer, tabs);
-        buffer += Format("float r0");
+        buffer += "float r0";
         for (unsigned int i = 1; i <= maxRegister; i++)
             buffer += Format(", r%u", i);
-        buffer += Format(";\r\n\r\n");
+        buffer += ";\r\n\r\n";
 
         // Generate the solution function code.
         for (unsigned int i = 0; i < numInstructions; i++) {
