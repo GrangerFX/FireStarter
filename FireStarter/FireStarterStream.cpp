@@ -470,7 +470,7 @@ void FireStarterStream::EvolveNewStream(void)
             totalDuration += duration;
             for (size_t i = 0; i < evolveStates.size(); i++) {
                 totalGenerations += evolveStates[i].m_generation;
-                std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %6.1f  GenTime: %4.1f  Total: %8.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
+                std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %6.2f  GenTime: %4.2f  Total: %8.2f  Average: %4.2f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
                 if (bestState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
