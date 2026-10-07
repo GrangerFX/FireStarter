@@ -145,6 +145,11 @@ FireStarterBestCodes::FireStarterBestCodes(void) : SerialThread("BestCodes")
 {
 } // FireStarterBestCodes
 
+FireStarterBestCodes::~FireStarterBestCodes(void) 
+{
+    Synchronize();
+} // FireStarterBestCodes
+
 void FireStarterState::SettingsText(const FireStarterSettings& settings, std::string& text, const std::string& prefix, const std::string& postfix)
 {
     text += prefix + Format("variations = %u", settings.m_variations) + postfix + "\r\n";
@@ -394,6 +399,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_bestResult = m_settings.m_startResult;
     m_oldResult = m_settings.m_startResult;
     m_optimizeValid = false;
+    m_complete.store(false);
     m_evaluateCode.clear();
 
     InitGenerationSeed();

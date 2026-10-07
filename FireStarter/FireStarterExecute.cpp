@@ -1090,6 +1090,7 @@ void FireStarterExecute::EvolveStates(unsigned long long test, const FireStarter
             if (index < randomStates) {
                 // Randomize the instructions.
                 curState.InitState(evolveSettings, 0, index, allStates.size(), test);
+                curState.InitEvolutionSeed();
 
                 // Keep randomizing instructions until a unique set of instructions is found.
                 do {
@@ -1176,23 +1177,40 @@ bool FireStarterExecute::ExecuteGenerateEvolve(unsigned int mode, bool sync)
         return true;
 
     // Compile the Evolver code for the specified mode.
-    bool result = false;
-    Dispatch([this, mode, &result] {
-        result = GenerateEvolve(mode);
-    }, sync);
-    return sync ? result : true;
+    if (sync) {
+        bool result = false;
+        Dispatch([this, mode, &result] {
+            result = GenerateEvolve(mode);
+        }, sync);
+        return result;
+    } else {
+        Dispatch([this, mode] {
+            GenerateEvolve(mode);
+        }, sync);
+        return true;
+    }
 } // ExecuteGenerateEvolve
 
 bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync)
 {
-    bool result = false;
-    Dispatch([this, &optimizeState, &result] {
-        // Generate the evaluate code. Note: The same code is used by all GPU threads.
-        optimizeState.m_evaluateCode.clear();
-        m_executeGenerate.GenerateEvaluate(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode);
-        result = GenerateOptimize(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode, optimizeState.PassMode());
-    }, sync);
-    return sync ? result : true;
+    if (sync) {
+        bool result = false;
+        Dispatch([this, &optimizeState, &result] {
+            // Generate the evaluate code. Note: The same code is used by all GPU threads.
+            optimizeState.m_evaluateCode.clear();
+            m_executeGenerate.GenerateEvaluate(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode);
+            result = GenerateOptimize(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode, optimizeState.PassMode());
+        }, true);
+        return result;
+    } else {
+        Dispatch([this, &optimizeState] {
+            // Generate the evaluate code. Note: The same code is used by all GPU threads.
+            optimizeState.m_evaluateCode.clear();
+            m_executeGenerate.GenerateEvaluate(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode);
+            GenerateOptimize(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode, optimizeState.PassMode());
+        }, sync);
+        return true;
+    }
 } // ExecuteGenerateOptimize
 
 void FireStarterExecute::ExecuteEvolveGPU(FireStarterState& evolveState, FireStarterBestCodes& bestCodes, bool sync)
