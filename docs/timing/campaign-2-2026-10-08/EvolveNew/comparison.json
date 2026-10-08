@@ -1,0 +1,17 @@
+{
+  "target": "EvolveNew",
+  "paired_tests": 256,
+  "generation_counts_identical": true,
+  "runtime_headers_identical": true,
+  "settings_source_snapshots_identical": true,
+  "result_difference_tests": [],
+  "mean_time_run2_over_run1": 1.0,
+  "final_snapshot_precision_identical": true,
+  "paired_duration_changes": {
+    "faster_run2": 16,
+    "equal_at_logged_resolution": 223,
+    "slower_run2": 17,
+    "mean_delta_seconds": -3.2526065174565133e-19,
+    "median_delta_seconds": 0.0
+  }
+}

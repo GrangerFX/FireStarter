@@ -1,0 +1,522 @@
+{
+  "EvolveNew": [
+    {
+      "run": 1,
+      "generation_strata": [
+        {
+          "generations": 2,
+          "early_half_tests": 70,
+          "late_half_tests": 84,
+          "early_half_mean": 0.0555,
+          "late_half_mean": 0.055
+        },
+        {
+          "generations": 3,
+          "early_half_tests": 40,
+          "late_half_tests": 30,
+          "early_half_mean": 0.06933333333333333,
+          "late_half_mean": 0.06933333333333333
+        },
+        {
+          "generations": 4,
+          "early_half_tests": 12,
+          "late_half_tests": 10,
+          "early_half_mean": 0.07583333333333334,
+          "late_half_mean": 0.07225000000000001
+        },
+        {
+          "generations": 5,
+          "early_half_tests": 5,
+          "late_half_tests": 1,
+          "early_half_mean": 0.0736,
+          "late_half_mean": 0.072
+        },
+        {
+          "generations": 6,
+          "early_half_tests": 1,
+          "late_half_tests": 2,
+          "early_half_mean": 0.07333333333333333,
+          "late_half_mean": 0.07333333333333333
+        },
+        {
+          "generations": 8,
+          "early_half_tests": 0,
+          "late_half_tests": 1,
+          "early_half_mean": null,
+          "late_half_mean": 0.07875
+        }
+      ],
+      "logged_optimization_stage_quarters": [
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ]
+    },
+    {
+      "run": 2,
+      "generation_strata": [
+        {
+          "generations": 2,
+          "early_half_tests": 70,
+          "late_half_tests": 84,
+          "early_half_mean": 0.055214285714285716,
+          "late_half_mean": 0.055
+        },
+        {
+          "generations": 3,
+          "early_half_tests": 40,
+          "late_half_tests": 30,
+          "early_half_mean": 0.06983333333333333,
+          "late_half_mean": 0.06988888888888889
+        },
+        {
+          "generations": 4,
+          "early_half_tests": 12,
+          "late_half_tests": 10,
+          "early_half_mean": 0.07625,
+          "late_half_mean": 0.07075000000000001
+        },
+        {
+          "generations": 5,
+          "early_half_tests": 5,
+          "late_half_tests": 1,
+          "early_half_mean": 0.07279999999999999,
+          "late_half_mean": 0.072
+        },
+        {
+          "generations": 6,
+          "early_half_tests": 1,
+          "late_half_tests": 2,
+          "early_half_mean": 0.07333333333333333,
+          "late_half_mean": 0.07250000000000001
+        },
+        {
+          "generations": 8,
+          "early_half_tests": 0,
+          "late_half_tests": 1,
+          "early_half_mean": null,
+          "late_half_mean": 0.07875
+        }
+      ],
+      "logged_optimization_stage_quarters": [
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ]
+    }
+  ],
+  "EvolveGPU": [
+    {
+      "run": 1,
+      "generation_strata": [
+        {
+          "generations": 2,
+          "early_half_tests": 58,
+          "late_half_tests": 41,
+          "early_half_mean": 0.3586206896551724,
+          "late_half_mean": 0.374390243902439
+        },
+        {
+          "generations": 3,
+          "early_half_tests": 31,
+          "late_half_tests": 36,
+          "early_half_mean": 0.4129032258064516,
+          "late_half_mean": 0.4185185185185185
+        },
+        {
+          "generations": 4,
+          "early_half_tests": 16,
+          "late_half_tests": 26,
+          "early_half_mean": 0.4328125,
+          "late_half_mean": 0.45096153846153847
+        },
+        {
+          "generations": 5,
+          "early_half_tests": 10,
+          "late_half_tests": 9,
+          "early_half_mean": 0.45999999999999996,
+          "late_half_mean": 0.46444444444444444
+        },
+        {
+          "generations": 6,
+          "early_half_tests": 3,
+          "late_half_tests": 6,
+          "early_half_mean": 0.4722222222222222,
+          "late_half_mean": 0.4694444444444444
+        },
+        {
+          "generations": 7,
+          "early_half_tests": 2,
+          "late_half_tests": 4,
+          "early_half_mean": 0.4714285714285714,
+          "late_half_mean": 0.47857142857142854
+        },
+        {
+          "generations": 8,
+          "early_half_tests": 3,
+          "late_half_tests": 1,
+          "early_half_mean": 0.4875,
+          "late_half_mean": 0.4875
+        },
+        {
+          "generations": 9,
+          "early_half_tests": 0,
+          "late_half_tests": 2,
+          "early_half_mean": null,
+          "late_half_mean": 0.48888888888888893
+        },
+        {
+          "generations": 10,
+          "early_half_tests": 3,
+          "late_half_tests": 2,
+          "early_half_mean": 0.49333333333333335,
+          "late_half_mean": 0.49000000000000005
+        },
+        {
+          "generations": 11,
+          "early_half_tests": 1,
+          "late_half_tests": 0,
+          "early_half_mean": 0.49090909090909096,
+          "late_half_mean": null
+        },
+        {
+          "generations": 12,
+          "early_half_tests": 0,
+          "late_half_tests": 1,
+          "early_half_mean": null,
+          "late_half_mean": 0.5
+        },
+        {
+          "generations": 13,
+          "early_half_tests": 1,
+          "late_half_tests": 0,
+          "early_half_mean": 0.49230769230769234,
+          "late_half_mean": null
+        }
+      ],
+      "logged_optimization_stage_quarters": [
+        0.23671875,
+        0.20859375000000002,
+        0.21796875000000002,
+        0.21640625
+      ]
+    },
+    {
+      "run": 2,
+      "generation_strata": [
+        {
+          "generations": 2,
+          "early_half_tests": 58,
+          "late_half_tests": 41,
+          "early_half_mean": 0.33620689655172414,
+          "late_half_mean": 0.348780487804878
+        },
+        {
+          "generations": 3,
+          "early_half_tests": 31,
+          "late_half_tests": 36,
+          "early_half_mean": 0.3827956989247312,
+          "late_half_mean": 0.38703703703703707
+        },
+        {
+          "generations": 4,
+          "early_half_tests": 16,
+          "late_half_tests": 26,
+          "early_half_mean": 0.4140625,
+          "late_half_mean": 0.4096153846153846
+        },
+        {
+          "generations": 5,
+          "early_half_tests": 10,
+          "late_half_tests": 9,
+          "early_half_mean": 0.41600000000000004,
+          "late_half_mean": 0.41111111111111115
+        },
+        {
+          "generations": 6,
+          "early_half_tests": 3,
+          "late_half_tests": 6,
+          "early_half_mean": 0.4222222222222222,
+          "late_half_mean": 0.4305555555555556
+        },
+        {
+          "generations": 7,
+          "early_half_tests": 2,
+          "late_half_tests": 4,
+          "early_half_mean": 0.4285714285714286,
+          "late_half_mean": 0.4178571428571428
+        },
+        {
+          "generations": 8,
+          "early_half_tests": 3,
+          "late_half_tests": 1,
+          "early_half_mean": 0.42083333333333334,
+          "late_half_mean": 0.425
+        },
+        {
+          "generations": 9,
+          "early_half_tests": 0,
+          "late_half_tests": 2,
+          "early_half_mean": null,
+          "late_half_mean": 0.4444444444444444
+        },
+        {
+          "generations": 10,
+          "early_half_tests": 3,
+          "late_half_tests": 2,
+          "early_half_mean": 0.44,
+          "late_half_mean": 0.43
+        },
+        {
+          "generations": 11,
+          "early_half_tests": 1,
+          "late_half_tests": 0,
+          "early_half_mean": 0.43636363636363634,
+          "late_half_mean": null
+        },
+        {
+          "generations": 12,
+          "early_half_tests": 0,
+          "late_half_tests": 1,
+          "early_half_mean": null,
+          "late_half_mean": 0.44166666666666665
+        },
+        {
+          "generations": 13,
+          "early_half_tests": 1,
+          "late_half_tests": 0,
+          "early_half_mean": 0.4538461538461539,
+          "late_half_mean": null
+        }
+      ],
+      "logged_optimization_stage_quarters": [
+        0.303125,
+        0.3046875,
+        0.3015625,
+        0.309375
+      ]
+    }
+  ],
+  "EvolveCPU": [
+    {
+      "run": 1,
+      "generation_strata": [
+        {
+          "generations": 1,
+          "early_half_tests": 1,
+          "late_half_tests": 5,
+          "early_half_mean": 5.3,
+          "late_half_mean": 5.62
+        },
+        {
+          "generations": 2,
+          "early_half_tests": 6,
+          "late_half_tests": 6,
+          "early_half_mean": 5.416666666666666,
+          "late_half_mean": 5.591666666666667
+        },
+        {
+          "generations": 3,
+          "early_half_tests": 8,
+          "late_half_tests": 6,
+          "early_half_mean": 5.554166666666667,
+          "late_half_mean": 5.583333333333333
+        },
+        {
+          "generations": 4,
+          "early_half_tests": 8,
+          "late_half_tests": 4,
+          "early_half_mean": 5.446875,
+          "late_half_mean": 5.5875
+        },
+        {
+          "generations": 5,
+          "early_half_tests": 3,
+          "late_half_tests": 1,
+          "early_half_mean": 5.413333333333333,
+          "late_half_mean": 5.58
+        },
+        {
+          "generations": 6,
+          "early_half_tests": 2,
+          "late_half_tests": 1,
+          "early_half_mean": 5.6083333333333325,
+          "late_half_mean": 5.566666666666666
+        },
+        {
+          "generations": 7,
+          "early_half_tests": 0,
+          "late_half_tests": 2,
+          "early_half_mean": null,
+          "late_half_mean": 5.557142857142857
+        },
+        {
+          "generations": 8,
+          "early_half_tests": 1,
+          "late_half_tests": 0,
+          "early_half_mean": 5.55,
+          "late_half_mean": null
+        },
+        {
+          "generations": 9,
+          "early_half_tests": 0,
+          "late_half_tests": 2,
+          "early_half_mean": null,
+          "late_half_mean": 5.588888888888889
+        },
+        {
+          "generations": 12,
+          "early_half_tests": 0,
+          "late_half_tests": 1,
+          "early_half_mean": null,
+          "late_half_mean": 5.516666666666667
+        },
+        {
+          "generations": 13,
+          "early_half_tests": 1,
+          "late_half_tests": 2,
+          "early_half_mean": 5.576923076923077,
+          "late_half_mean": 5.5576923076923075
+        },
+        {
+          "generations": 16,
+          "early_half_tests": 1,
+          "late_half_tests": 1,
+          "early_half_mean": 5.58125,
+          "late_half_mean": 5.55625
+        },
+        {
+          "generations": 19,
+          "early_half_tests": 1,
+          "late_half_tests": 0,
+          "early_half_mean": 5.568421052631579,
+          "late_half_mean": null
+        },
+        {
+          "generations": 20,
+          "early_half_tests": 0,
+          "late_half_tests": 1,
+          "early_half_mean": null,
+          "late_half_mean": 5.5600000000000005
+        }
+      ],
+      "logged_optimization_stage_quarters": [
+        5.04375,
+        5.009375,
+        5.01875,
+        5.00625
+      ]
+    },
+    {
+      "run": 2,
+      "generation_strata": [
+        {
+          "generations": 1,
+          "early_half_tests": 1,
+          "late_half_tests": 5,
+          "early_half_mean": 5.6,
+          "late_half_mean": 5.62
+        },
+        {
+          "generations": 2,
+          "early_half_tests": 6,
+          "late_half_tests": 6,
+          "early_half_mean": 5.574999999999999,
+          "late_half_mean": 5.591666666666667
+        },
+        {
+          "generations": 3,
+          "early_half_tests": 8,
+          "late_half_tests": 6,
+          "early_half_mean": 5.566666666666666,
+          "late_half_mean": 5.566666666666666
+        },
+        {
+          "generations": 4,
+          "early_half_tests": 8,
+          "late_half_tests": 4,
+          "early_half_mean": 5.578125,
+          "late_half_mean": 5.58125
+        },
+        {
+          "generations": 5,
+          "early_half_tests": 3,
+          "late_half_tests": 1,
+          "early_half_mean": 5.573333333333333,
+          "late_half_mean": 5.62
+        },
+        {
+          "generations": 6,
+          "early_half_tests": 2,
+          "late_half_tests": 1,
+          "early_half_mean": 5.6,
+          "late_half_mean": 5.566666666666666
+        },
+        {
+          "generations": 7,
+          "early_half_tests": 0,
+          "late_half_tests": 2,
+          "early_half_mean": null,
+          "late_half_mean": 5.557142857142857
+        },
+        {
+          "generations": 8,
+          "early_half_tests": 1,
+          "late_half_tests": 0,
+          "early_half_mean": 5.55,
+          "late_half_mean": null
+        },
+        {
+          "generations": 9,
+          "early_half_tests": 0,
+          "late_half_tests": 2,
+          "early_half_mean": null,
+          "late_half_mean": 5.5777777777777775
+        },
+        {
+          "generations": 12,
+          "early_half_tests": 0,
+          "late_half_tests": 1,
+          "early_half_mean": null,
+          "late_half_mean": 5.516666666666667
+        },
+        {
+          "generations": 13,
+          "early_half_tests": 1,
+          "late_half_tests": 2,
+          "early_half_mean": 5.576923076923077,
+          "late_half_mean": 5.546153846153846
+        },
+        {
+          "generations": 16,
+          "early_half_tests": 1,
+          "late_half_tests": 1,
+          "early_half_mean": 5.575,
+          "late_half_mean": 5.55
+        },
+        {
+          "generations": 19,
+          "early_half_tests": 1,
+          "late_half_tests": 0,
+          "early_half_mean": 5.5736842105263165,
+          "late_half_mean": null
+        },
+        {
+          "generations": 20,
+          "early_half_tests": 0,
+          "late_half_tests": 1,
+          "early_half_mean": null,
+          "late_half_mean": 5.555
+        }
+      ],
+      "logged_optimization_stage_quarters": [
+        4.996875,
+        5.00625,
+        5.0,
+        4.975
+      ]
+    }
+  ]
+}

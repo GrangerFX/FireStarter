@@ -1,0 +1,40 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_CPU
+evolveSeed = 0
+optimizeSeed = 0
+tests = 64
+units = 16
+states = 16
+population = 348160
+generations = 0
+passes = 512
+samples = 15
+iterations = 64
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_EVOLVE_CPU: Seed=0  Test=61  Index=   0  Id=   0  Generation=  0  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=10.00000000 *New Result=0.00614642  Best=0.00614642 BestError=0.00732908  Time=   4.6  Run Time=   4.9
+FIRESTARTER_EVOLVE_CPU: Seed=0  Test=61  Index=  14  Id=  14  Generation=  0  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=10.00000000 *New Result=0.00002224  Best=0.00002224 BestError=0.00004007  Time=   4.7  Run Time=   5.0
+FIRESTARTER_EVOLVE_CPU: Seed=0  Test=61  Index=  11  Id=  11  Generation=  0  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=10.00000000 >New Result=0.00775958  Best=0.00002224 BestError=0.00004007  Time=   4.9  Run Time=   5.3
+FIRESTARTER_EVOLVE_CPU: Seed=0  Test=61  Index=   1  Id=   1  Generation=  0  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=10.00000000 >New Result=0.00098621  Best=0.00002224 BestError=0.00004007  Time=   5.1  Run Time=   5.4
+FIRESTARTER_EVOLVE_CPU: Seed=0  Test=61  Index=  15  Id=  15  Generation=  0  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=10.00000000 >New Result=0.00008219  Best=0.00002224 BestError=0.00004007  Time=   5.1  Run Time=   5.4
+FIRESTARTER_EVOLVE_CPU: Seed=0  Test=61  Index=  10  Id=  10  Generation=  0  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=10.00000000 >New Result=0.00201774  Best=0.00002224 BestError=0.00004007  Time=   5.1  Run Time=   5.4
+FIRESTARTER_EVOLVE_CPU: Seed=0  Test=61  Index=   5  Id=   5  Generation=  0  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=10.00000000 >New Result=0.00003405  Best=0.00002224 BestError=0.00004007  Time=   5.0  Run Time=   5.5
+FIRESTARTER_EVOLVE_CPU: Seed=0  Test=61  Index=   3  Id=   3  Generation=  0  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=10.00000000 >New Result=0.00122241  Best=0.00002224 BestError=0.00004007  Time=   5.1  Run Time=   5.5
+FIRESTARTER_EVOLVE_CPU: Seed=0  Test=61  Index=   7  Id=   7  Generation=  0  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=10.00000000 *New Result=0.00000021  Best=0.00000021 BestError=0.00000280  Time=   5.1  Run Time=   5.5
+const unsigned int registers[32] = { 0, 1, 2, 3, 4, 5, 1, 6, 7, 8, 6, 9, 10, 11, 12, 6, 10, 13, 14, 15, 16, 17, 18, 19, 8, 16, 17, 19, 20, 21, 6, 10 };

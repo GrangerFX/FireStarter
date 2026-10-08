@@ -1,0 +1,258 @@
+{
+  "observedUtc": "2026-10-08T21:46:44.7328484Z",
+  "gitCommit": "13461b1733a03019eded0745a557ab021613fa17",
+  "trackedWorkingTreeClean": true,
+  "binaries": [
+    {
+      "configuration": "Evolve_New_Release",
+      "launchPath": "C:\\Work\\FireStarter\\FireStarter\\Evolve_New_Release.exe",
+      "linkerPath": "C:\\Work\\FireStarter\\Build\\FireStarter_x64\\Evolve_New_Release\\Evolve_New_Release.exe",
+      "launchSha256": "1982A6DC33C21E94896366D861C7BFF50D03F12C4CF03CE9FF7178D32ED4ED82",
+      "linkerSha256": "1982A6DC33C21E94896366D861C7BFF50D03F12C4CF03CE9FF7178D32ED4ED82",
+      "bytes": 525824,
+      "lastWriteUtc": "2026-10-08T18:49:15.2029290Z"
+    },
+    {
+      "configuration": "Evolve_GPU_Release",
+      "launchPath": "C:\\Work\\FireStarter\\FireStarter\\Evolve_GPU_Release.exe",
+      "linkerPath": "C:\\Work\\FireStarter\\Build\\FireStarter_x64\\Evolve_GPU_Release\\Evolve_GPU_Release.exe",
+      "launchSha256": "0C4F3F686A8A77FBFA6D5821F024FFB41719DDE0D831D7577CD28394E936CC80",
+      "linkerSha256": "0C4F3F686A8A77FBFA6D5821F024FFB41719DDE0D831D7577CD28394E936CC80",
+      "bytes": 525824,
+      "lastWriteUtc": "2026-10-08T18:49:42.6663344Z"
+    },
+    {
+      "configuration": "Evolve_CPU_Release",
+      "launchPath": "C:\\Work\\FireStarter\\FireStarter\\Evolve_CPU_Release.exe",
+      "linkerPath": "C:\\Work\\FireStarter\\Build\\FireStarter_x64\\Evolve_CPU_Release\\Evolve_CPU_Release.exe",
+      "launchSha256": "D875BD3F82803808C269CD083F4CC57AAD7F5638DB311BF8B1C993D99142EA33",
+      "linkerSha256": "D875BD3F82803808C269CD083F4CC57AAD7F5638DB311BF8B1C993D99142EA33",
+      "bytes": 513024,
+      "lastWriteUtc": "2026-10-08T18:49:56.3344503Z"
+    }
+  ],
+  "userProtocolConfirmation": "User confirmed all six runs after reboot on direct console; ChatGPT, Ollama, LM Studio, Visual Studio closed; no rebuild or settings change within a pair",
+  "sourceHashes": [
+    {
+      "name": "CUDACompile.cpp",
+      "sha256": "239C93550CB244D0A8B162E8C3CE145281218BAD5830EA6E86078BC1E8D56071"
+    },
+    {
+      "name": "CUDACompile.h",
+      "sha256": "E81DCBC4406459C9FFBC57AB1D41938C719EA70DB26A9CF15731592D103A2F93"
+    },
+    {
+      "name": "CUDAContext.h",
+      "sha256": "3861223836FAC41C076637B6D7F0CD92131224769112301B40D7E97AA1C0DB6A"
+    },
+    {
+      "name": "CUDADefines.h",
+      "sha256": "4738663D5E2A279DEA22B90DD1202F0533793B8261DCC48421BBF8DA91859FD5"
+    },
+    {
+      "name": "CUDAErrors.h",
+      "sha256": "5D5D1748757823B342692A395B775C29208EAB7640D6E6A81824F327D3A260A5"
+    },
+    {
+      "name": "CUDAModule.h",
+      "sha256": "1BEC2ABD93AA3E7971C88880B23BDBA65758EE40C0AC0EA7E1E683627DEF13E9"
+    },
+    {
+      "name": "CUDAThread.h",
+      "sha256": "F6BB74757C643C28259C0F81225F83128803CB337954B3EE0DF414B77DF886FF"
+    },
+    {
+      "name": "FireEvolverGPU.cu",
+      "sha256": "51808407F00B62D99D5A9C72D4780C92C71AD7F01ACC225A0EC3DDF0C80F117D"
+    },
+    {
+      "name": "FireEvolverNew.cu",
+      "sha256": "E2C9532F656AC83FD76BE26352A6D235A4DEA60A752B10CA2543262E9F0E1CE8"
+    },
+    {
+      "name": "FireEvolverSinSim.cu",
+      "sha256": "1ACB4A36CA22C6346A9F1FB6386ACEC87014D053DA3170B1748434277339D905"
+    },
+    {
+      "name": "FireMoneyMaker.cu",
+      "sha256": "EB175251CB87936858914098A4310F1F64F70A7A94CDC93546BD2879F28F58FA"
+    },
+    {
+      "name": "FireMoneyMaker.h",
+      "sha256": "D0195D77436E0E9DEF780BF7D780387C6951BD403A6DE575471167E5B297732B"
+    },
+    {
+      "name": "FireMoneyOptimizer.cu",
+      "sha256": "86CE54ABD3CB87C0D80D267667DF1335A7769C5CFFDB0A6B91D57C7723E7BC4C"
+    },
+    {
+      "name": "FireOptimizer.cu",
+      "sha256": "8C88E058E5F8D33FF276F4B039F4371AE0657055AFCACD1F749842C2FB74CEE9"
+    },
+    {
+      "name": "FireSelect.cu",
+      "sha256": "BF319766724E0D54D8E3390C024481972C6026CFA8A6123B6724209A674A9980"
+    },
+    {
+      "name": "FireSinSim.cu",
+      "sha256": "FD25CB76BE0E0A6269B9693240322850CC7DEA92ADD806A1F8C3C84F56AD1CCF"
+    },
+    {
+      "name": "FireSinSim.h",
+      "sha256": "1341808ACD0AB094F1C23528EFB9DBC930D039315EB4688813A58D901DCFB043"
+    },
+    {
+      "name": "FireSolution.cpp",
+      "sha256": "4C0E869BF7A632D328ED6064B9C8E12CE150E126558798DC0EA1B75A1C726AED"
+    },
+    {
+      "name": "FireSpeedTest.cu",
+      "sha256": "7BA707654A17A38E392DCD6FA4F19403170DF84AC9821424AEC9A261724BE1B2"
+    },
+    {
+      "name": "FireStarter_LoadState.h",
+      "sha256": "54832952D1F45E4D1CFEFE0BE6C1EA8D085F03B8B98DE8D90EB72E2E911FAE0C"
+    },
+    {
+      "name": "FireStarter_MoneyMakerSolution.h",
+      "sha256": "12961265BF92C1C7E6C6E04676E8012F90218962F14C06553B1B5F963A34EFDD"
+    },
+    {
+      "name": "FireStarter_Solution.h",
+      "sha256": "2488B78512B8933325ED117A1DA9996010CC75C8F0B728E5A019687B1A36704A"
+    },
+    {
+      "name": "FireStarter.cpp",
+      "sha256": "86BE8BDC2BD587110C51BCA4A5FA039E932B3136F4FE1889342C70278B330E1A"
+    },
+    {
+      "name": "FireStarter.h",
+      "sha256": "681A61AADC4FADFF8B14A330D76AF2B80972916EE970946880D996806E450C7C"
+    },
+    {
+      "name": "FireStarterComplete.cpp",
+      "sha256": "E7B15F4DD05B3AEB556E17649125BE56562E4FB663F3E3FD8F48EADF721F1DF0"
+    },
+    {
+      "name": "FireStarterComplete.h",
+      "sha256": "6C8E82FF3FA0DB3F4CF1C956FF7FE11F3BC6D6E1A1185CF9D91E20D449CB39AE"
+    },
+    {
+      "name": "FireStarterEvolve.cpp",
+      "sha256": "644CB595F6EA73D1EB0FB688C4BFC900DB8C28713D1DCD53B445C3A8866903EE"
+    },
+    {
+      "name": "FireStarterEvolve.h",
+      "sha256": "F106A28EE9C261CE7520B124028BCACBE819337E055B10F310ED22C79CF1D3CB"
+    },
+    {
+      "name": "FireStarterExecute.cpp",
+      "sha256": "F6E3889911C25B67C622863C44DD0A1416B2802C213D6E6E9A9C7ABBC80EE241"
+    },
+    {
+      "name": "FireStarterExecute.h",
+      "sha256": "34D3786F8C575F2EA70C64F2BF479A4913802E4B7E7C2E19612BE6E370182601"
+    },
+    {
+      "name": "FireStarterGenerate.cpp",
+      "sha256": "74566D79FA4D91772055CCC08380E5AB54476D864A0871C887DB36D4AB55E52A"
+    },
+    {
+      "name": "FireStarterGenerate.h",
+      "sha256": "B71728598C4EA267AB75ABB0E0A8CC751F23ED7F869F87AD8BD77E70E33E311F"
+    },
+    {
+      "name": "FireStarterMain.cpp",
+      "sha256": "67A69491DDA60E42F82214B09F618069943A6050CD1FCA6F1F6383261D0DC0F0"
+    },
+    {
+      "name": "FireStarterModes.h",
+      "sha256": "75B4B9AA913D2928768DF73307C1EF3C8C198A3F3586585ED221E0563DB83E77"
+    },
+    {
+      "name": "FireStarterResults.h",
+      "sha256": "84D9E18B4A0BE21E131E4912A995A8472F1DE353FE90AE11512133E7F740853C"
+    },
+    {
+      "name": "FireStarterSettings.h",
+      "sha256": "A9CFA4733FF86744BB18D0A2A0EB79F24A41F886634B897EEFD49481FCD0EAA5"
+    },
+    {
+      "name": "FireStarterShow.cpp",
+      "sha256": "BFEFB615ED6DE67A61A2C4518044FCB975ABA926890B66198FC70ED9AFFC34F9"
+    },
+    {
+      "name": "FireStarterShow.h",
+      "sha256": "98A6EF44B0B3C33B6F5A0C15A73242D6B8B87F0EAD78ACDD70575F8430A81315"
+    },
+    {
+      "name": "FireStarterSource.cpp",
+      "sha256": "E4E720128BA42854D7BBB93FE353C5D5318F0C75F7A29AF47F7C734EF4CF0157"
+    },
+    {
+      "name": "FireStarterSource.h",
+      "sha256": "6F851054BBAD54151DB358B126F40968871A79E9DD814B064484135EC4D5DEB4"
+    },
+    {
+      "name": "FireStarterState.cpp",
+      "sha256": "515CA79881AA0301A5E6642C2FCEBEFA349430CD05725FF9B7BF00B676BB1EFF"
+    },
+    {
+      "name": "FireStarterState.h",
+      "sha256": "D828F7A8C020BE2317777CD737FB9BA8343BDA956024AD499511A4ED781C9158"
+    },
+    {
+      "name": "FireStarterStream.cpp",
+      "sha256": "0BE2D6ABFD80A7E7961B1FE3C6E63876B5AD97460B50048EBD8DC3B46587B32A"
+    },
+    {
+      "name": "FireStarterStream.h",
+      "sha256": "73FE3F33242E6655FD234088E2EBCF0F1214EDDDC55C8323E9126B1114EC8FB8"
+    },
+    {
+      "name": "FireStarterTarget.h",
+      "sha256": "7809005A04CC7D7491AF9BBBE25398E915074E463B8A113531CCB9AE652AA4E7"
+    },
+    {
+      "name": "FireStarterUtil.h",
+      "sha256": "F8636D0ABD0446326C9BEEC4C4EF0A2EC940FECF4369C0A91B9F761C4E4A8162"
+    },
+    {
+      "name": "FireStarterWindow.h",
+      "sha256": "34D29ABC222F4CA6DFCAB863A8C01D9E66B807B5BE30F0853AF125D6BA20F66E"
+    },
+    {
+      "name": "Format.h",
+      "sha256": "288C447CD75BCD77C288D774988BB986D2F86C3E14F7701D899A2869376101E9"
+    },
+    {
+      "name": "HashRandom.h",
+      "sha256": "ADE2428DBE80E0E5C7347518D5C9C081935BBEEEC9F18A221000FA010129B2DF"
+    },
+    {
+      "name": "MoneyMakerStocks.cpp",
+      "sha256": "44B2057FB75EF0A957B7DFDEF77796A28DDAE3E21A5DEF5055A7B7E0341EAC12"
+    },
+    {
+      "name": "MoneyMakerStocks.h",
+      "sha256": "48B5BDE2D3074D6902F7C88B9BC42DB8B75EC924022C9391C57AA5BC012FD031"
+    },
+    {
+      "name": "PrintF.h",
+      "sha256": "1E4C48B2B0D0B9A212C93465126B66C116D0C7C95DFBB1C23E7117CC19109F58"
+    },
+    {
+      "name": "SerialThread.h",
+      "sha256": "0985D5F018E1F473D749EEF68F56EF3CD5CEE95CB8B2E2008DDC347FB2CB6D75"
+    },
+    {
+      "name": "SimpleTimer.h",
+      "sha256": "255B40DE4C9265A5F46F13A9719F68E94394B357E77FDD6F539E44FCA89BF651"
+    },
+    {
+      "name": "Sin.h",
+      "sha256": "1789A2F30F975D6B81148B363477BF9AE594266E03216089A7E57EE6C3CCD989"
+    }
+  ],
+  "postRunObservationOnly": true
+}

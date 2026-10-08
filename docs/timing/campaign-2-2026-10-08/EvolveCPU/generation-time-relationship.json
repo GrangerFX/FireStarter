@@ -1,0 +1,74 @@
+{
+  "method": "Ordinary least squares with intercept: rounded solution Duration against outer Generation, all tests included. Descriptive association, not a causal model or an isolated per-generation timer.",
+  "runs": [
+    {
+      "run": 1,
+      "tests": 64,
+      "pearson_r": 0.9998902285067393,
+      "r_squared": 0.9997804690632591,
+      "slope_seconds_per_outer_generation": 5.569625407166124,
+      "intercept_seconds": -0.12937703583062188,
+      "quarters": [
+        {
+          "first_test": 0,
+          "last_test": 15,
+          "mean_generations": 3.25,
+          "mean_solution_seconds": 17.53125
+        },
+        {
+          "first_test": 16,
+          "last_test": 31,
+          "mean_generations": 6.25,
+          "mean_solution_seconds": 34.86875
+        },
+        {
+          "first_test": 32,
+          "last_test": 47,
+          "mean_generations": 4.5,
+          "mean_solution_seconds": 25.075
+        },
+        {
+          "first_test": 48,
+          "last_test": 63,
+          "mean_generations": 6,
+          "mean_solution_seconds": 33.4
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "tests": 64,
+      "pearson_r": 0.9999858507027394,
+      "r_squared": 0.9999717016056813,
+      "slope_seconds_per_outer_generation": 5.556107491856676,
+      "intercept_seconds": 0.06477504071661855,
+      "quarters": [
+        {
+          "first_test": 0,
+          "last_test": 15,
+          "mean_generations": 3.25,
+          "mean_solution_seconds": 18.11875
+        },
+        {
+          "first_test": 16,
+          "last_test": 31,
+          "mean_generations": 6.25,
+          "mean_solution_seconds": 34.84375
+        },
+        {
+          "first_test": 32,
+          "last_test": 47,
+          "mean_generations": 4.5,
+          "mean_solution_seconds": 25.04375
+        },
+        {
+          "first_test": 48,
+          "last_test": 63,
+          "mean_generations": 6,
+          "mean_solution_seconds": 33.375
+        }
+      ]
+    }
+  ],
+  "tests_256_observed": false
+}

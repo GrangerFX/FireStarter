@@ -1,0 +1,2 @@
+name, uuid, driver_version, display_active, power.limit [W], power.default_limit [W]
+NVIDIA GeForce RTX 5090, GPU-c0061cd0-d2f7-763f-8a10-47554c209c56, 617.42, Disabled, 575.00 W, 575.00 W

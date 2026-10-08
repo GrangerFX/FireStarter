@@ -1,0 +1,16 @@
+{
+  "target": "EvolveGPU",
+  "run": 1,
+  "expected_tests": 256,
+  "git_commit": "13461b1733a03019eded0745a557ab021613fa17",
+  "summary_stamp": "2026-10-08_12-19-24",
+  "status_stamp": "2026-10-08_12-19-24",
+  "raw_files": 259,
+  "settings_sha256": "a9cfa4733ff86744bb18d0a2a0eb79f24a41f886634b897eefd49481fcd0eaa5",
+  "settings_match_current_source": true,
+  "launch_owner": "User",
+  "launch_method": "Direct desktop launch of existing Release executable",
+  "user_confirmed_protocol": "Reboot then direct local console; ChatGPT, Ollama, LM Studio, Visual Studio closed; no rebuild or settings changes within each pair",
+  "numeric_os_exit_code": null,
+  "whole_process_stopwatch_seconds": null
+}

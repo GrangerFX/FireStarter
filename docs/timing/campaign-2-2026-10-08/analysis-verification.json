@@ -1,0 +1,54 @@
+{
+  "run_checks": [
+    {
+      "target": "EvolveNew",
+      "run": 1,
+      "rows": 256,
+      "decimal_sum_seconds": "42.25",
+      "decimal_mean_seconds": "0.1650390625",
+      "summary_csv_count_and_mean_match": true
+    },
+    {
+      "target": "EvolveNew",
+      "run": 2,
+      "rows": 256,
+      "decimal_sum_seconds": "42.25",
+      "decimal_mean_seconds": "0.1650390625",
+      "summary_csv_count_and_mean_match": true
+    },
+    {
+      "target": "EvolveGPU",
+      "run": 1,
+      "rows": 256,
+      "decimal_sum_seconds": "386.6",
+      "decimal_mean_seconds": "1.51015625",
+      "summary_csv_count_and_mean_match": true
+    },
+    {
+      "target": "EvolveGPU",
+      "run": 2,
+      "rows": 256,
+      "decimal_sum_seconds": "353.5",
+      "decimal_mean_seconds": "1.380859375",
+      "summary_csv_count_and_mean_match": true
+    },
+    {
+      "target": "EvolveCPU",
+      "run": 1,
+      "rows": 64,
+      "decimal_sum_seconds": "1774.0",
+      "decimal_mean_seconds": "27.71875",
+      "summary_csv_count_and_mean_match": true
+    },
+    {
+      "target": "EvolveCPU",
+      "run": 2,
+      "rows": 64,
+      "decimal_sum_seconds": "1782.1",
+      "decimal_mean_seconds": "27.8453125",
+      "summary_csv_count_and_mean_match": true
+    }
+  ],
+  "missing_document_links": [],
+  "postrun_linker_launch_hashes_match": true
+}

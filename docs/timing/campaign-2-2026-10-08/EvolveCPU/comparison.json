@@ -1,0 +1,196 @@
+{
+  "target": "EvolveCPU",
+  "paired_tests": 64,
+  "generation_counts_identical": true,
+  "runtime_headers_identical": true,
+  "settings_source_snapshots_identical": true,
+  "result_difference_tests": [
+    {
+      "test": 2,
+      "fields": {
+        "evolve_result": {
+          "run1": 8.9e-07,
+          "run2": 3.3e-07
+        },
+        "optimize_result": {
+          "run1": 8.9e-07,
+          "run2": 3.3e-07
+        },
+        "best_candidate_generations": {
+          "run1": 5,
+          "run2": 6
+        },
+        "dense_precision_256_samples": {
+          "run1": 7.78e-06,
+          "run2": 2.7e-06
+        }
+      }
+    },
+    {
+      "test": 5,
+      "fields": {
+        "evolve_result": {
+          "run1": 9.5e-07,
+          "run2": 1.2e-07
+        },
+        "optimize_result": {
+          "run1": 9.5e-07,
+          "run2": 1.2e-07
+        },
+        "best_candidate_generations": {
+          "run1": 37,
+          "run2": 45
+        },
+        "dense_precision_256_samples": {
+          "run1": 5.96e-06,
+          "run2": 2.74e-06
+        }
+      }
+    },
+    {
+      "test": 7,
+      "fields": {
+        "evolve_result": {
+          "run1": 6.7e-07,
+          "run2": 2.7e-07
+        },
+        "optimize_result": {
+          "run1": 6.7e-07,
+          "run2": 2.7e-07
+        },
+        "best_candidate_generations": {
+          "run1": 31,
+          "run2": 34
+        },
+        "dense_precision_256_samples": {
+          "run1": 1.84e-06,
+          "run2": 1.033e-05
+        }
+      }
+    },
+    {
+      "test": 10,
+      "fields": {
+        "evolve_result": {
+          "run1": 8.1e-07,
+          "run2": 9.8e-07
+        },
+        "optimize_result": {
+          "run1": 8.1e-07,
+          "run2": 9.8e-07
+        },
+        "best_candidate_generations": {
+          "run1": 31,
+          "run2": 33
+        },
+        "dense_precision_256_samples": {
+          "run1": 2.62e-06,
+          "run2": 5.35e-06
+        }
+      }
+    },
+    {
+      "test": 25,
+      "fields": {
+        "evolve_result": {
+          "run1": 1.4e-07,
+          "run2": 2.3e-07
+        },
+        "optimize_result": {
+          "run1": 1.4e-07,
+          "run2": 2.3e-07
+        },
+        "best_candidate_generations": {
+          "run1": 26,
+          "run2": 28
+        },
+        "dense_precision_256_samples": {
+          "run1": 2.71e-06,
+          "run2": 1.299e-05
+        }
+      }
+    },
+    {
+      "test": 31,
+      "fields": {
+        "evolve_result": {
+          "run1": 2e-07,
+          "run2": 9.5e-07
+        },
+        "optimize_result": {
+          "run1": 2e-07,
+          "run2": 9.5e-07
+        },
+        "best_candidate_generations": {
+          "run1": 23,
+          "run2": 19
+        },
+        "dense_precision_256_samples": {
+          "run1": 3.81e-06,
+          "run2": 2.217e-05
+        }
+      }
+    },
+    {
+      "test": 48,
+      "fields": {
+        "evolve_result": {
+          "run1": 8.4e-07,
+          "run2": 1.2e-07
+        },
+        "optimize_result": {
+          "run1": 8.4e-07,
+          "run2": 1.2e-07
+        },
+        "best_candidate_generations": {
+          "run1": 37,
+          "run2": 31
+        },
+        "dense_precision_256_samples": {
+          "run1": 3.02e-06,
+          "run2": 1e-06
+        }
+      }
+    },
+    {
+      "test": 49,
+      "fields": {
+        "evolve_result": {
+          "run1": 1.1e-07,
+          "run2": 3.7e-07
+        },
+        "optimize_result": {
+          "run1": 1.1e-07,
+          "run2": 3.7e-07
+        },
+        "best_candidate_generations": {
+          "run1": 80,
+          "run2": 86
+        },
+        "dense_precision_256_samples": {
+          "run1": 5.7e-07,
+          "run2": 1.702e-05
+        }
+      }
+    }
+  ],
+  "mean_time_run2_over_run1": 1.00456595264938,
+  "final_snapshot_precision_identical": true,
+  "paired_duration_changes": {
+    "faster_run2": 18,
+    "equal_at_logged_resolution": 28,
+    "slower_run2": 18,
+    "mean_delta_seconds": 0.12656249999999974,
+    "median_delta_seconds": 0.0
+  },
+  "winning_register_array_difference_tests": [
+    2,
+    5,
+    7,
+    10,
+    25,
+    31,
+    48,
+    49
+  ]
+}
