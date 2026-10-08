@@ -42,9 +42,6 @@ void FireStarterStream::RandomStream(void)
         // Compile and execute the random state.
         execute->ExecuteEvolveOptimize(evolveState, bestState, complete);
 
-        // Complete the state and display the results.
-        complete->CompleteState(bestState, evolveState);
-
         // Output the evolve results.
         std::string resultText;
         if (evolveState.Settings().m_states > 1)
@@ -52,7 +49,7 @@ void FireStarterStream::RandomStream(void)
         if (evolveState.Settings().m_tests > 1)
             resultText += Format("Test=%u  ", evolveState.m_test);
         resultText += Format("Random Result=%.8f\n", evolveState.MaxResults());
-        FireStarterSource::AppendSource(resultText, Format("Logs\\%s_RandomResults.txt", streamDate.c_str()));
+        FireStarterSource::AppendSource(resultText, Format("Logs\\%s_Random_Results.txt", streamDate.c_str()));
     }
 
     // Delete the completion unit.
@@ -62,7 +59,7 @@ void FireStarterStream::RandomStream(void)
     delete execute;
 } // RandomStream
 
-void FireStarterStream::SelectStream(void)
+void FireStarterStream::EvolveSelectStream(void)
 {
     // Select is an earlier version of EvolveGPU. It attempts to evolve by changing just two or three instructions when the code fails to evolve afer a number of generations.
     // EvolveGPU's simpler approach of re-randomizing all the instructions with the goal of finding code with maximum evolvability was more efficient in the end.
@@ -163,7 +160,7 @@ void FireStarterStream::SelectStream(void)
             if ((bestEvolveState.MaxResults() <= selectSettings.m_target) || bestEvolveState.Complete())
                 resultText += " *******";
             resultText += "\n";
-            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
+            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveSelect_Results.txt", streamDate.c_str()));
         }
     }
 
@@ -175,7 +172,7 @@ void FireStarterStream::SelectStream(void)
 
     // Delete the selection execution unit.
     delete executeSelect;
-} // SelectStream
+} // EvolveSelectStream
 
 void FireStarterStream::EvolveCPUStream(void)
 {
@@ -188,6 +185,7 @@ void FireStarterStream::EvolveCPUStream(void)
     unsigned int numStates = evolveSettings.m_states;
     std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
     unsigned long long totalGenerations = 0;
+    double totalDuration = 0.0;
 
     // Create the evolution code generator.
     FireStarterExecute* executeEvolve = new FireStarterExecute("EvolveCPU");
@@ -246,10 +244,12 @@ void FireStarterStream::EvolveCPUStream(void)
 
         // Optimize the best state.
         if (!WillTerminate() && !allStates.empty()) {
+            double duration = bestEvolveState.Duration();
+            totalDuration += duration;
             totalGenerations += generation;
 
             // Output the evolve results.
-            std::string resultText = Format("Duration: %6.1f  Average: %6.1f  Seed=%u  Test=%3u  Generation=%3u  Total=%6u  Best Generations=%3u  Evolutions=%3u  Evolve Result=%.8f", bestEvolveState.Duration(), SimpleTimer::RunDuration() / (t + 1), bestEvolveState.Settings().m_evolveSeed, test, generation, totalGenerations, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResults());
+            std::string resultText = Format("Seed=%u  Test=%3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Best Generations=%3u  Evolutions=%3u  Duration: %6.1f  Average: %6.1f", bestEvolveState.Settings().m_evolveSeed, test, generation, totalGenerations, bestEvolveState.MaxResults(), bestEvolveState.m_generation, bestEvolveState.m_evolution, duration, totalDuration / (t + 1));
 
             // Optimize the evolved state.
             if (evolveSettings.m_optimize) {
@@ -283,7 +283,7 @@ void FireStarterStream::EvolveCPUStream(void)
             if (bestEvolveState.MaxResults() <= evolveSettings.m_target)
                 resultText += " *******";
             resultText += "\n";
-            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
+            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveCPU_Results.txt", streamDate.c_str()));
         }
     }
 
@@ -378,7 +378,7 @@ void FireStarterStream::EvolveGPUStream(void)
                 if (bestState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
-                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
+                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveGPU_Results.txt", streamDate.c_str()));
             }
 
             // Save the best state and best solution.
@@ -474,7 +474,7 @@ void FireStarterStream::EvolveNewStream(void)
                 if (bestState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
-                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
+                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveNew_Results.txt", streamDate.c_str()));
             }
 
             // Save the best state and best solution.
@@ -538,7 +538,7 @@ void FireStarterStream::EvolveSinSimStream(void)
             if (bestState.MaxResults() <= evolveSettings.m_target)
                 resultText += " *******";
             resultText += "\n";
-            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
+            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveSinSim_Results.txt", streamDate.c_str()));
 
             // Save the best state and best solution.
             complete->CompleteSaveResults(bestState);
@@ -600,7 +600,7 @@ void FireStarterStream::SinSimStream(void)
         if (bestState.MaxResults() <= sinSimSettings.m_target)
             resultText += " *******";
         resultText += "\n";
-        FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
+        FireStarterSource::AppendSource(resultText, Format("Logs\\%s_SinSim_Results.txt", streamDate.c_str()));
 
         // Save the best state and best solution.
         complete->CompleteSaveResults(bestState);
@@ -633,7 +633,7 @@ void FireStarterStream::MoneyMakerStream(void)
     FireStarterSettings evolveSettings(FIRESTARTER_MONEYMAKER);
     FireStarterSettings optimizeSettings(FIRESTARTER_MONEYOPTIMIZE);
     std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
-    std::string streamResultsPath = Format("Logs\\%s_EvolveResults.txt", streamDate.c_str());
+    std::string streamResultsPath = Format("Logs\\%s_MoneyMaker_Results.txt", streamDate.c_str());
     unsigned long long evolveID = 0;
     unsigned long long optimizeID = 0;
 
@@ -873,7 +873,7 @@ void FireStarterStream::OptimizeStream(void)
                 if (bestState.MaxResults() <= optimizeSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
-                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_OptimizeResults.txt", streamDate.c_str()));
+                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_Optimize_Results.txt", streamDate.c_str()));
             }
         }
     }
@@ -925,7 +925,7 @@ void FireStarterStream::SpeedTestStream(void)
                     if (bestState.MaxResults() <= speedTestSettings.m_target)
                         resultText += " *******";
                     resultText += "\n";
-                    FireStarterSource::AppendSource(resultText, Format("Logs\\%s_SpeedTestResults.txt", streamDate.c_str()));
+                    FireStarterSource::AppendSource(resultText, Format("Logs\\%s_SpeedTest_Results.txt", streamDate.c_str()));
                 }
             } while (!WillTerminate() && (testState.m_generation < testState.Settings().m_generations) && !bestState.Complete());
         }
@@ -948,7 +948,7 @@ FireStarterStream::FireStarterStream(FireStarterWindow& window) : SerialThread("
             RandomStream();
             break;
         case FIRESTARTER_EVOLVE_SELECT:
-            SelectStream();
+            EvolveSelectStream();
             break;
         case FIRESTARTER_EVOLVE_CPU:
             EvolveCPUStream();

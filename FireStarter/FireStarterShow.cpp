@@ -377,7 +377,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
 
     // Create the log file.
     unsigned long long test = state.m_test;
-    std::string logPath = Format("Logs\\%s_%s_%lld.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(), test);
+    std::string logPath = Format("Logs\\%s_%s_%lld.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(FIRESTARTER_MODE), test);
     if (!std::filesystem::exists(logPath))
         Dispatch([logPath, cudaText, settingsText] {
             FireStarterSource::AppendSource(cudaText, logPath);
