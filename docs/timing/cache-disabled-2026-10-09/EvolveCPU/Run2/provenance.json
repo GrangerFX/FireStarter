@@ -1,0 +1,18 @@
+{
+  "target": "EvolveCPU",
+  "run": 2,
+  "expected_tests": 64,
+  "git_commit": "13461b1733a03019eded0745a557ab021613fa17",
+  "summary_stamp": "2026-10-09_10-09-18",
+  "status_stamp": "2026-10-09_10-09-19",
+  "raw_files": 67,
+  "settings_sha256": "a9cfa4733ff86744bb18d0a2a0eb79f24a41f886634b897eefd49481fcd0eaa5",
+  "settings_match_current_source": true,
+  "launch_owner": "User",
+  "launch_method": "Direct local-console execution reported by user; launch mechanism and inherited environment not independently recorded",
+  "cache_disable_user_report": "1",
+  "cache_flag_independently_logged": false,
+  "user_confirmed_protocol": "Directly connected monitor, keyboard and mouse; GPU checked unused; as many applications as possible closed; CUDA_CACHE_DISABLE set to 1; two batches per mode. Reboot and continuous telemetry not asserted.",
+  "numeric_os_exit_code": null,
+  "whole_process_stopwatch_seconds": null
+}

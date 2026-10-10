@@ -1,0 +1,120 @@
+[
+  {
+    "mode": "EvolveNew",
+    "run": 1,
+    "old_mean": 0.1650390625,
+    "new_mean": 0.49546875,
+    "new_over_old": 3.002130177514793,
+    "same_generation_counts": true,
+    "same_evolution_fitness": true,
+    "completion_difference_tests": [],
+    "sample_count_equal": true
+  },
+  {
+    "mode": "EvolveNew",
+    "run": 2,
+    "old_mean": 0.1650390625,
+    "new_mean": 0.4962890625,
+    "new_over_old": 3.007100591715976,
+    "same_generation_counts": true,
+    "same_evolution_fitness": true,
+    "completion_difference_tests": [],
+    "sample_count_equal": true
+  },
+  {
+    "mode": "EvolveGPU",
+    "run": 1,
+    "old_mean": 1.5101562499999999,
+    "new_mean": 1.5121093749999999,
+    "new_over_old": 1.0012933264355923,
+    "same_generation_counts": true,
+    "same_evolution_fitness": true,
+    "completion_difference_tests": [
+      32,
+      45,
+      46,
+      50,
+      109,
+      150,
+      169,
+      179,
+      215,
+      218,
+      222,
+      242
+    ],
+    "sample_count_equal": true
+  },
+  {
+    "mode": "EvolveGPU",
+    "run": 2,
+    "old_mean": 1.380859375,
+    "new_mean": 1.505859375,
+    "new_over_old": 1.0905233380480905,
+    "same_generation_counts": true,
+    "same_evolution_fitness": true,
+    "completion_difference_tests": [
+      12,
+      17,
+      29,
+      36,
+      44,
+      45,
+      46,
+      50,
+      65,
+      84,
+      99,
+      104,
+      150,
+      218,
+      239
+    ],
+    "sample_count_equal": true
+  },
+  {
+    "mode": "EvolveCPU",
+    "run": 1,
+    "old_mean": 27.71875,
+    "new_mean": 27.88125,
+    "new_over_old": 1.0058624577226607,
+    "same_generation_counts": true,
+    "same_evolution_fitness": false,
+    "completion_difference_tests": [
+      2,
+      12,
+      18,
+      20,
+      23,
+      38,
+      39,
+      47,
+      48,
+      58
+    ],
+    "sample_count_equal": true
+  },
+  {
+    "mode": "EvolveCPU",
+    "run": 2,
+    "old_mean": 27.8453125,
+    "new_mean": 27.8484375,
+    "new_over_old": 1.0001122271477472,
+    "same_generation_counts": true,
+    "same_evolution_fitness": false,
+    "completion_difference_tests": [
+      5,
+      12,
+      19,
+      25,
+      29,
+      34,
+      39,
+      49,
+      50,
+      55,
+      58
+    ],
+    "sample_count_equal": true
+  }
+]

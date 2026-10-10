@@ -1,0 +1,10 @@
+{
+  "target": "EvolveNew",
+  "paired_tests": 256,
+  "generation_counts_identical": true,
+  "runtime_headers_identical": true,
+  "settings_source_snapshots_identical": true,
+  "result_difference_tests": [],
+  "mean_time_run2_over_run1": 1.0016556291390728,
+  "final_snapshot_precision_identical": true
+}

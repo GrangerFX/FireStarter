@@ -1,0 +1,2074 @@
+[
+  {
+    "name": "2026-10-09_09-17-02_EvolveNew_Results.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_EvolveNew_Results.txt",
+    "bytes": 47360,
+    "sha256": "051aab17874fb34b566845829dabc30a2e3388ecff5bbf40599b39cb0f2a60b6",
+    "copy_sha256": "051aab17874fb34b566845829dabc30a2e3388ecff5bbf40599b39cb0f2a60b6",
+    "original_last_write_utc": "2026-10-09T16:19:09.909376+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_0.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_0.txt",
+    "bytes": 560,
+    "sha256": "cfa0cf12fd28adc957b6e4c24f53a96941ed0db7ac1ca074f5573c541de41ed5",
+    "copy_sha256": "cfa0cf12fd28adc957b6e4c24f53a96941ed0db7ac1ca074f5573c541de41ed5",
+    "original_last_write_utc": "2026-10-09T16:17:05.868255+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_1.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_1.txt",
+    "bytes": 560,
+    "sha256": "08e329cbdfe293d64f63dcfe3a2102754e001d42bdd232d128d0d274f2c2fb2c",
+    "copy_sha256": "08e329cbdfe293d64f63dcfe3a2102754e001d42bdd232d128d0d274f2c2fb2c",
+    "original_last_write_utc": "2026-10-09T16:17:06.197727+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_10.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_10.txt",
+    "bytes": 560,
+    "sha256": "1c362ebb9a1748bc68dcfad94ef4efb45fd8ce79e88a2a16b0f16fda20778d89",
+    "copy_sha256": "1c362ebb9a1748bc68dcfad94ef4efb45fd8ce79e88a2a16b0f16fda20778d89",
+    "original_last_write_utc": "2026-10-09T16:17:10.569332+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_100.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_100.txt",
+    "bytes": 656,
+    "sha256": "232900b49554f8c2dcfcc231b25c9d7f6a83fb9d54a6ad6ac302189672315f44",
+    "copy_sha256": "232900b49554f8c2dcfcc231b25c9d7f6a83fb9d54a6ad6ac302189672315f44",
+    "original_last_write_utc": "2026-10-09T16:17:53.489239+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_101.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_101.txt",
+    "bytes": 751,
+    "sha256": "d14ed2f2024c7c00bf50f884012064d47b40b87352f03d128ce44350309d2b8c",
+    "copy_sha256": "d14ed2f2024c7c00bf50f884012064d47b40b87352f03d128ce44350309d2b8c",
+    "original_last_write_utc": "2026-10-09T16:17:54.376368+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_102.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_102.txt",
+    "bytes": 656,
+    "sha256": "212b32f40e2fa17b0bef3dc34f956acbf6801d78f165bd27b1132cdc97412167",
+    "copy_sha256": "212b32f40e2fa17b0bef3dc34f956acbf6801d78f165bd27b1132cdc97412167",
+    "original_last_write_utc": "2026-10-09T16:17:54.975543+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_103.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_103.txt",
+    "bytes": 561,
+    "sha256": "c0751b389e63be721b7ae89a9cdf69eae1cad8904ef77d7223a5c32adc3cc622",
+    "copy_sha256": "c0751b389e63be721b7ae89a9cdf69eae1cad8904ef77d7223a5c32adc3cc622",
+    "original_last_write_utc": "2026-10-09T16:17:55.291223+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_104.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_104.txt",
+    "bytes": 656,
+    "sha256": "b882d80ffe9c725452e9f3cae13fe0a177ee5ec734d7058537a7f04b235ca502",
+    "copy_sha256": "b882d80ffe9c725452e9f3cae13fe0a177ee5ec734d7058537a7f04b235ca502",
+    "original_last_write_utc": "2026-10-09T16:17:55.905169+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_105.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_105.txt",
+    "bytes": 561,
+    "sha256": "cc1af5d96cd66d58a123a258c554457ac2e1d3cdc43bdfe786e4092f9cc499d8",
+    "copy_sha256": "cc1af5d96cd66d58a123a258c554457ac2e1d3cdc43bdfe786e4092f9cc499d8",
+    "original_last_write_utc": "2026-10-09T16:17:56.235625+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_106.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_106.txt",
+    "bytes": 656,
+    "sha256": "d130492992d968ad5b0d12ef05580df89a2b9fe889172ac9c54410523f2d3514",
+    "copy_sha256": "d130492992d968ad5b0d12ef05580df89a2b9fe889172ac9c54410523f2d3514",
+    "original_last_write_utc": "2026-10-09T16:17:56.831768+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_107.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_107.txt",
+    "bytes": 751,
+    "sha256": "220894b0833b5c1ffcfb7fe1800ff1522698221fb5bb9e78ad4684e5a0cccee0",
+    "copy_sha256": "220894b0833b5c1ffcfb7fe1800ff1522698221fb5bb9e78ad4684e5a0cccee0",
+    "original_last_write_utc": "2026-10-09T16:17:57.728937+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_108.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_108.txt",
+    "bytes": 561,
+    "sha256": "7d510ac970cec1be28ac851f6bee97c1b42d1e6fe6fb5b096e1842d7f6c6458a",
+    "copy_sha256": "7d510ac970cec1be28ac851f6bee97c1b42d1e6fe6fb5b096e1842d7f6c6458a",
+    "original_last_write_utc": "2026-10-09T16:17:58.044105+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_109.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_109.txt",
+    "bytes": 561,
+    "sha256": "5de088233c681a60c7200043b0c16e4fdf34cc878a4dbaabe03ecc367daaf4d9",
+    "copy_sha256": "5de088233c681a60c7200043b0c16e4fdf34cc878a4dbaabe03ecc367daaf4d9",
+    "original_last_write_utc": "2026-10-09T16:17:58.358788+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_11.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_11.txt",
+    "bytes": 748,
+    "sha256": "27be61013f05f5b38ab860827ce49382f73d896258f63c63e4bcae8a9bcd0916",
+    "copy_sha256": "27be61013f05f5b38ab860827ce49382f73d896258f63c63e4bcae8a9bcd0916",
+    "original_last_write_utc": "2026-10-09T16:17:11.469013+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_110.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_110.txt",
+    "bytes": 561,
+    "sha256": "fe50a3d6297b5edac752f05fb9a772d0ad72987233f4a106058b0ea652b62f1d",
+    "copy_sha256": "fe50a3d6297b5edac752f05fb9a772d0ad72987233f4a106058b0ea652b62f1d",
+    "original_last_write_utc": "2026-10-09T16:17:58.672857+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_111.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_111.txt",
+    "bytes": 656,
+    "sha256": "e1c6cd432ada19b037244ab2048934387515e29c4635d43e2ec8af44cfd512c7",
+    "copy_sha256": "e1c6cd432ada19b037244ab2048934387515e29c4635d43e2ec8af44cfd512c7",
+    "original_last_write_utc": "2026-10-09T16:17:59.287207+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_112.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_112.txt",
+    "bytes": 656,
+    "sha256": "5a674b31d2b7b3085f223dd17214a78dfb930a6196bddef04f0345524fa15491",
+    "copy_sha256": "5a674b31d2b7b3085f223dd17214a78dfb930a6196bddef04f0345524fa15491",
+    "original_last_write_utc": "2026-10-09T16:17:59.887275+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_113.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_113.txt",
+    "bytes": 561,
+    "sha256": "9627d4849fdefa1ecea9e35c4055354ea1a1cfde623deef6ef587fa93e5cbf6b",
+    "copy_sha256": "9627d4849fdefa1ecea9e35c4055354ea1a1cfde623deef6ef587fa93e5cbf6b",
+    "original_last_write_utc": "2026-10-09T16:18:00.207601+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_114.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_114.txt",
+    "bytes": 656,
+    "sha256": "d328a08154e5e14051af50db2929a9253f345d72688b1db8f6aac50c9633537d",
+    "copy_sha256": "d328a08154e5e14051af50db2929a9253f345d72688b1db8f6aac50c9633537d",
+    "original_last_write_utc": "2026-10-09T16:18:00.803179+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_115.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_115.txt",
+    "bytes": 656,
+    "sha256": "0f2403068f22dbcc9b1ad1fef78cb49afa6eb20284293f6d1d054cdf75b9a655",
+    "copy_sha256": "0f2403068f22dbcc9b1ad1fef78cb49afa6eb20284293f6d1d054cdf75b9a655",
+    "original_last_write_utc": "2026-10-09T16:18:01.417124+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_116.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_116.txt",
+    "bytes": 561,
+    "sha256": "8c2eb8f6e8de29e59219643c811c048254e182e210d17f3b0b49b59490debab5",
+    "copy_sha256": "8c2eb8f6e8de29e59219643c811c048254e182e210d17f3b0b49b59490debab5",
+    "original_last_write_utc": "2026-10-09T16:18:01.731447+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_117.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_117.txt",
+    "bytes": 751,
+    "sha256": "ad2bf302ef7c7ec1478b1ff4d0363d22e80d868efd117d192785031778dbc540",
+    "copy_sha256": "ad2bf302ef7c7ec1478b1ff4d0363d22e80d868efd117d192785031778dbc540",
+    "original_last_write_utc": "2026-10-09T16:18:02.614265+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_118.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_118.txt",
+    "bytes": 656,
+    "sha256": "7183b02675d714c4530691ef5f9e1ee61dd4885b1fc062027410ce13ec044f37",
+    "copy_sha256": "7183b02675d714c4530691ef5f9e1ee61dd4885b1fc062027410ce13ec044f37",
+    "original_last_write_utc": "2026-10-09T16:18:03.213095+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_119.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_119.txt",
+    "bytes": 846,
+    "sha256": "23f8e944fd7dbf584312bda1a72376c8e836e4de8b0a47b2908c8e0042a62e01",
+    "copy_sha256": "23f8e944fd7dbf584312bda1a72376c8e836e4de8b0a47b2908c8e0042a62e01",
+    "original_last_write_utc": "2026-10-09T16:18:04.393906+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_12.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_12.txt",
+    "bytes": 560,
+    "sha256": "01ec0a9cddba3140a10fbed5d1b151d6b4007de5127f29f4c7e6a717b234d0fd",
+    "copy_sha256": "01ec0a9cddba3140a10fbed5d1b151d6b4007de5127f29f4c7e6a717b234d0fd",
+    "original_last_write_utc": "2026-10-09T16:17:11.794287+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_120.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_120.txt",
+    "bytes": 941,
+    "sha256": "b712f19396ee15c7c5aca09057f9f940029fd6a3b04752e9756bf442c59dc305",
+    "copy_sha256": "b712f19396ee15c7c5aca09057f9f940029fd6a3b04752e9756bf442c59dc305",
+    "original_last_write_utc": "2026-10-09T16:18:05.854526+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_121.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_121.txt",
+    "bytes": 751,
+    "sha256": "9663f43d472cffc626049c48cd8f220763e7132dacd9902b288a04241969f221",
+    "copy_sha256": "9663f43d472cffc626049c48cd8f220763e7132dacd9902b288a04241969f221",
+    "original_last_write_utc": "2026-10-09T16:18:06.733685+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_122.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_122.txt",
+    "bytes": 656,
+    "sha256": "3107bb1b730ff5338ca058f64c0be5fea0d382f292844c2d167b58f02ad91a02",
+    "copy_sha256": "3107bb1b730ff5338ca058f64c0be5fea0d382f292844c2d167b58f02ad91a02",
+    "original_last_write_utc": "2026-10-09T16:18:07.331461+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_123.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_123.txt",
+    "bytes": 751,
+    "sha256": "b850a3f25101d190c7f63d1331b068c74e3196155e24c225930e8118dec0da88",
+    "copy_sha256": "b850a3f25101d190c7f63d1331b068c74e3196155e24c225930e8118dec0da88",
+    "original_last_write_utc": "2026-10-09T16:18:08.241366+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_124.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_124.txt",
+    "bytes": 656,
+    "sha256": "0fcbbc402c9e4b5376f6c19d4d88b616949d0f00045dbf8f4bf1c98c2dde0420",
+    "copy_sha256": "0fcbbc402c9e4b5376f6c19d4d88b616949d0f00045dbf8f4bf1c98c2dde0420",
+    "original_last_write_utc": "2026-10-09T16:18:08.843066+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_125.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_125.txt",
+    "bytes": 561,
+    "sha256": "3d5b2403b8db93f8377c4264ca3f144287be438c96e91ec064fc3270e9addd0c",
+    "copy_sha256": "3d5b2403b8db93f8377c4264ca3f144287be438c96e91ec064fc3270e9addd0c",
+    "original_last_write_utc": "2026-10-09T16:18:09.159669+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_126.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_126.txt",
+    "bytes": 656,
+    "sha256": "a1563528baf4ac0624124a24f17459457290d97b2678b7052dd7c7e2f10dabef",
+    "copy_sha256": "a1563528baf4ac0624124a24f17459457290d97b2678b7052dd7c7e2f10dabef",
+    "original_last_write_utc": "2026-10-09T16:18:09.766114+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_127.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_127.txt",
+    "bytes": 561,
+    "sha256": "b86ca7e37a1b7464ef7802c692ecef28977a068c7f083d83eecede40b821a180",
+    "copy_sha256": "b86ca7e37a1b7464ef7802c692ecef28977a068c7f083d83eecede40b821a180",
+    "original_last_write_utc": "2026-10-09T16:18:10.073943+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_128.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_128.txt",
+    "bytes": 561,
+    "sha256": "dd81f63b4568b183699cefeb1e89693474939c1a2004b6abd9aa74d45910783a",
+    "copy_sha256": "dd81f63b4568b183699cefeb1e89693474939c1a2004b6abd9aa74d45910783a",
+    "original_last_write_utc": "2026-10-09T16:18:10.402924+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_129.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_129.txt",
+    "bytes": 656,
+    "sha256": "e7e478b72f6388b5434e148a87c9604eb971019ed78a8d6be20aa103f2d790e9",
+    "copy_sha256": "e7e478b72f6388b5434e148a87c9604eb971019ed78a8d6be20aa103f2d790e9",
+    "original_last_write_utc": "2026-10-09T16:18:10.990474+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_13.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_13.txt",
+    "bytes": 654,
+    "sha256": "5326ec057787fb336ec21ffaee249db94679dec30ad5aab4d82100557949f100",
+    "copy_sha256": "5326ec057787fb336ec21ffaee249db94679dec30ad5aab4d82100557949f100",
+    "original_last_write_utc": "2026-10-09T16:17:12.403638+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_130.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_130.txt",
+    "bytes": 656,
+    "sha256": "19d0905cfc4a9cc3c92a1a026139de0d81cedd58c44778045cf0c69acd7f177a",
+    "copy_sha256": "19d0905cfc4a9cc3c92a1a026139de0d81cedd58c44778045cf0c69acd7f177a",
+    "original_last_write_utc": "2026-10-09T16:18:11.588529+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_131.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_131.txt",
+    "bytes": 561,
+    "sha256": "6c82f2969202743c6b977ab02af6b7b1fa5015dc4fce8d0385cf084a80afb697",
+    "copy_sha256": "6c82f2969202743c6b977ab02af6b7b1fa5015dc4fce8d0385cf084a80afb697",
+    "original_last_write_utc": "2026-10-09T16:18:11.919937+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_132.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_132.txt",
+    "bytes": 561,
+    "sha256": "bbf24d044232e2b198d4e2fbcbbd4d42c6d40cc8dd6b8b9d360554b620dc3b10",
+    "copy_sha256": "bbf24d044232e2b198d4e2fbcbbd4d42c6d40cc8dd6b8b9d360554b620dc3b10",
+    "original_last_write_utc": "2026-10-09T16:18:12.235330+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_133.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_133.txt",
+    "bytes": 561,
+    "sha256": "4fc4255ff2ff193e37da6ebe8e61817826dd1bc0c84ce66147b6031da26b9b99",
+    "copy_sha256": "4fc4255ff2ff193e37da6ebe8e61817826dd1bc0c84ce66147b6031da26b9b99",
+    "original_last_write_utc": "2026-10-09T16:18:12.549361+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_134.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_134.txt",
+    "bytes": 656,
+    "sha256": "2956ffdf35b7ab200739ad8f42b6f19cdb7af029dde8a6fedda93e2044b1bb44",
+    "copy_sha256": "2956ffdf35b7ab200739ad8f42b6f19cdb7af029dde8a6fedda93e2044b1bb44",
+    "original_last_write_utc": "2026-10-09T16:18:13.164845+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_135.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_135.txt",
+    "bytes": 561,
+    "sha256": "1c63e0103d2e6d996d73bee8e93bf4514b80e2b5035917114079404290a47d2b",
+    "copy_sha256": "1c63e0103d2e6d996d73bee8e93bf4514b80e2b5035917114079404290a47d2b",
+    "original_last_write_utc": "2026-10-09T16:18:13.478652+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_136.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_136.txt",
+    "bytes": 561,
+    "sha256": "082e4c941bc81a42b6b0357728b608a2709430e1f64b6de1b6e31365e1f742b3",
+    "copy_sha256": "082e4c941bc81a42b6b0357728b608a2709430e1f64b6de1b6e31365e1f742b3",
+    "original_last_write_utc": "2026-10-09T16:18:13.795140+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_137.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_137.txt",
+    "bytes": 561,
+    "sha256": "83874f163b9f7bf4cf96c5c7f2c35199c0c3cfd37da295c29ee02bed86b65b4c",
+    "copy_sha256": "83874f163b9f7bf4cf96c5c7f2c35199c0c3cfd37da295c29ee02bed86b65b4c",
+    "original_last_write_utc": "2026-10-09T16:18:14.109020+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_138.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_138.txt",
+    "bytes": 561,
+    "sha256": "4280fe3d1f25b0bbba847a7390bb8459873e4efc5617f02efc0f1b5df98a21ed",
+    "copy_sha256": "4280fe3d1f25b0bbba847a7390bb8459873e4efc5617f02efc0f1b5df98a21ed",
+    "original_last_write_utc": "2026-10-09T16:18:14.423052+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_139.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_139.txt",
+    "bytes": 656,
+    "sha256": "310e29a6e7f114e2e4b31556fca890aac041e36b5833a69366cda91e3f8dfd93",
+    "copy_sha256": "310e29a6e7f114e2e4b31556fca890aac041e36b5833a69366cda91e3f8dfd93",
+    "original_last_write_utc": "2026-10-09T16:18:15.021225+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_14.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_14.txt",
+    "bytes": 560,
+    "sha256": "0651e60be1a8d7ce1129dc8b0beb90407f30adf562ed4d422063a50c8ba57918",
+    "copy_sha256": "0651e60be1a8d7ce1129dc8b0beb90407f30adf562ed4d422063a50c8ba57918",
+    "original_last_write_utc": "2026-10-09T16:17:12.713671+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_140.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_140.txt",
+    "bytes": 561,
+    "sha256": "059a2387ad193f8ea1b70e99f9acace47c86e91f439ed966e9e98f253d718a25",
+    "copy_sha256": "059a2387ad193f8ea1b70e99f9acace47c86e91f439ed966e9e98f253d718a25",
+    "original_last_write_utc": "2026-10-09T16:18:15.335981+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_141.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_141.txt",
+    "bytes": 656,
+    "sha256": "47c0cd70f6612a99118ffce8866c8960620e093cb47f7a37a764ca8d12d6c309",
+    "copy_sha256": "47c0cd70f6612a99118ffce8866c8960620e093cb47f7a37a764ca8d12d6c309",
+    "original_last_write_utc": "2026-10-09T16:18:15.949722+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_142.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_142.txt",
+    "bytes": 561,
+    "sha256": "71990915e9b398c2914384e84c74a6fb7bedbc9a2d65c5c5f1428aaa2a2c2d37",
+    "copy_sha256": "71990915e9b398c2914384e84c74a6fb7bedbc9a2d65c5c5f1428aaa2a2c2d37",
+    "original_last_write_utc": "2026-10-09T16:18:16.264502+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_143.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_143.txt",
+    "bytes": 561,
+    "sha256": "5ff11851b8f141239c5e76aa10e91683db08253749b2b543be0c972dca4e9d67",
+    "copy_sha256": "5ff11851b8f141239c5e76aa10e91683db08253749b2b543be0c972dca4e9d67",
+    "original_last_write_utc": "2026-10-09T16:18:16.588965+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_144.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_144.txt",
+    "bytes": 656,
+    "sha256": "4fbfb5e7423fd4de03af897ecd96b1c446278c4100bd9bdf858eedfca3b1d8ea",
+    "copy_sha256": "4fbfb5e7423fd4de03af897ecd96b1c446278c4100bd9bdf858eedfca3b1d8ea",
+    "original_last_write_utc": "2026-10-09T16:18:17.188770+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_145.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_145.txt",
+    "bytes": 561,
+    "sha256": "3eb30aaad4bba96d75b53c538d70b4e1846b7dab56bf0a338dd8da3b0fd496f5",
+    "copy_sha256": "3eb30aaad4bba96d75b53c538d70b4e1846b7dab56bf0a338dd8da3b0fd496f5",
+    "original_last_write_utc": "2026-10-09T16:18:17.493512+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_146.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_146.txt",
+    "bytes": 561,
+    "sha256": "2b6aaab1b8205db6d8b704c0e0b4cab807fbebb0631ba6eb430734b0f47fa0bb",
+    "copy_sha256": "2b6aaab1b8205db6d8b704c0e0b4cab807fbebb0631ba6eb430734b0f47fa0bb",
+    "original_last_write_utc": "2026-10-09T16:18:17.809052+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_147.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_147.txt",
+    "bytes": 561,
+    "sha256": "cc8d99233f2598b2adc54fdd1d05aa66c86d784380b9b86fe750b8b783c67e2e",
+    "copy_sha256": "cc8d99233f2598b2adc54fdd1d05aa66c86d784380b9b86fe750b8b783c67e2e",
+    "original_last_write_utc": "2026-10-09T16:18:18.140132+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_148.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_148.txt",
+    "bytes": 561,
+    "sha256": "e6d56aea737c74a980019892587dd03f070f60039fab378dfdc7264bb7a885a6",
+    "copy_sha256": "e6d56aea737c74a980019892587dd03f070f60039fab378dfdc7264bb7a885a6",
+    "original_last_write_utc": "2026-10-09T16:18:18.454041+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_149.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_149.txt",
+    "bytes": 561,
+    "sha256": "5b07b59987e7ba6afa93c63d0553d47b237661f33e560f04aed16a3794c7225e",
+    "copy_sha256": "5b07b59987e7ba6afa93c63d0553d47b237661f33e560f04aed16a3794c7225e",
+    "original_last_write_utc": "2026-10-09T16:18:18.770771+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_15.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_15.txt",
+    "bytes": 654,
+    "sha256": "f79faaba462255a88c7995a33d0e26fc061d363cef8e7b029b6be452f8b85ca1",
+    "copy_sha256": "f79faaba462255a88c7995a33d0e26fc061d363cef8e7b029b6be452f8b85ca1",
+    "original_last_write_utc": "2026-10-09T16:17:13.329379+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_150.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_150.txt",
+    "bytes": 656,
+    "sha256": "0e92b498eecbe2c0f5dc53e8787ade04f80000f814075d18cdc9a88f6950f28b",
+    "copy_sha256": "0e92b498eecbe2c0f5dc53e8787ade04f80000f814075d18cdc9a88f6950f28b",
+    "original_last_write_utc": "2026-10-09T16:18:19.377666+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_151.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_151.txt",
+    "bytes": 561,
+    "sha256": "02108e7abf339b319437817f0c294c971cf8df1f078fb64dd81aa4375db00ed0",
+    "copy_sha256": "02108e7abf339b319437817f0c294c971cf8df1f078fb64dd81aa4375db00ed0",
+    "original_last_write_utc": "2026-10-09T16:18:19.680773+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_152.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_152.txt",
+    "bytes": 561,
+    "sha256": "d513c33800021837849317061425d50f392d9cb726ad522823f58da0ecd3cf38",
+    "copy_sha256": "d513c33800021837849317061425d50f392d9cb726ad522823f58da0ecd3cf38",
+    "original_last_write_utc": "2026-10-09T16:18:20.011817+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_153.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_153.txt",
+    "bytes": 561,
+    "sha256": "b105bbb472185f058e3a2146831c935b70e2c980c4f8e5064ed420b525147e0b",
+    "copy_sha256": "b105bbb472185f058e3a2146831c935b70e2c980c4f8e5064ed420b525147e0b",
+    "original_last_write_utc": "2026-10-09T16:18:20.326447+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_154.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_154.txt",
+    "bytes": 561,
+    "sha256": "6623f9530100761ab59f13eeb1920613e0e6a32e2377196c68041ea268fd7834",
+    "copy_sha256": "6623f9530100761ab59f13eeb1920613e0e6a32e2377196c68041ea268fd7834",
+    "original_last_write_utc": "2026-10-09T16:18:20.641894+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_155.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_155.txt",
+    "bytes": 561,
+    "sha256": "4ee691fad90d20f72684db2cde32f81fd868df30a2f4a87418a30886b747aeed",
+    "copy_sha256": "4ee691fad90d20f72684db2cde32f81fd868df30a2f4a87418a30886b747aeed",
+    "original_last_write_utc": "2026-10-09T16:18:20.957878+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_156.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_156.txt",
+    "bytes": 561,
+    "sha256": "27e812dfa92e7ef1704893b96f438c3037233687b35e163e72953df366eb6b9b",
+    "copy_sha256": "27e812dfa92e7ef1704893b96f438c3037233687b35e163e72953df366eb6b9b",
+    "original_last_write_utc": "2026-10-09T16:18:21.273800+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_157.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_157.txt",
+    "bytes": 561,
+    "sha256": "c3bbb90c8ddd7b25deaed2e15d01ab72cecd33ad3b4790a135887bf3abc8d254",
+    "copy_sha256": "c3bbb90c8ddd7b25deaed2e15d01ab72cecd33ad3b4790a135887bf3abc8d254",
+    "original_last_write_utc": "2026-10-09T16:18:21.589397+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_158.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_158.txt",
+    "bytes": 561,
+    "sha256": "08156c0f69fecb76e32c2749ba0cdf38074e5f508f14041d1af4f8465f8e5406",
+    "copy_sha256": "08156c0f69fecb76e32c2749ba0cdf38074e5f508f14041d1af4f8465f8e5406",
+    "original_last_write_utc": "2026-10-09T16:18:21.904718+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_159.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_159.txt",
+    "bytes": 656,
+    "sha256": "7752328034d79970732cc7723804bb3b94be690f59797a3f6fac078ce021bbfd",
+    "copy_sha256": "7752328034d79970732cc7723804bb3b94be690f59797a3f6fac078ce021bbfd",
+    "original_last_write_utc": "2026-10-09T16:18:22.502954+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_16.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_16.txt",
+    "bytes": 654,
+    "sha256": "b2d2a4aa2705cfc56e486f5b275f657b4a7ed539d6542d0f8222539ab3fd0cd6",
+    "copy_sha256": "b2d2a4aa2705cfc56e486f5b275f657b4a7ed539d6542d0f8222539ab3fd0cd6",
+    "original_last_write_utc": "2026-10-09T16:17:13.933900+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_160.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_160.txt",
+    "bytes": 561,
+    "sha256": "31edbba912de13f3fc127242c4663c04de64e2bd63ea6d0c242cecb5bdfffbea",
+    "copy_sha256": "31edbba912de13f3fc127242c4663c04de64e2bd63ea6d0c242cecb5bdfffbea",
+    "original_last_write_utc": "2026-10-09T16:18:22.834143+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_161.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_161.txt",
+    "bytes": 561,
+    "sha256": "35762932eeaa40a46ee4de4edeb63a76f625e1fa04bda492efe1fff20795057d",
+    "copy_sha256": "35762932eeaa40a46ee4de4edeb63a76f625e1fa04bda492efe1fff20795057d",
+    "original_last_write_utc": "2026-10-09T16:18:23.149371+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_162.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_162.txt",
+    "bytes": 561,
+    "sha256": "b26cbd296ae8a20811f503ff1705b03cfef343bfb7f6a658595018c355358a2d",
+    "copy_sha256": "b26cbd296ae8a20811f503ff1705b03cfef343bfb7f6a658595018c355358a2d",
+    "original_last_write_utc": "2026-10-09T16:18:23.463082+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_163.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_163.txt",
+    "bytes": 656,
+    "sha256": "7997668398bee41d0da4086a8df11043e761c6beded0d2a3e42307297a9700b4",
+    "copy_sha256": "7997668398bee41d0da4086a8df11043e761c6beded0d2a3e42307297a9700b4",
+    "original_last_write_utc": "2026-10-09T16:18:24.070694+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_164.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_164.txt",
+    "bytes": 561,
+    "sha256": "4f31a9532ce5bf4dfa2c9ca01354fda2ae4d551697845290e11a0811f23504cd",
+    "copy_sha256": "4f31a9532ce5bf4dfa2c9ca01354fda2ae4d551697845290e11a0811f23504cd",
+    "original_last_write_utc": "2026-10-09T16:18:24.392082+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_165.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_165.txt",
+    "bytes": 561,
+    "sha256": "84051917442eaf39575ba3d550bc732e8d130b69b9198dd24276911570f1625b",
+    "copy_sha256": "84051917442eaf39575ba3d550bc732e8d130b69b9198dd24276911570f1625b",
+    "original_last_write_utc": "2026-10-09T16:18:24.707915+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_166.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_166.txt",
+    "bytes": 561,
+    "sha256": "ed737094a50a597fff4001499ab76757573c93e0f734d4c80c956e0f64f43894",
+    "copy_sha256": "ed737094a50a597fff4001499ab76757573c93e0f734d4c80c956e0f64f43894",
+    "original_last_write_utc": "2026-10-09T16:18:25.023592+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_167.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_167.txt",
+    "bytes": 656,
+    "sha256": "b120560245216eb93a263501a86f3e9a06340c969df5d1a77747e62294074b6c",
+    "copy_sha256": "b120560245216eb93a263501a86f3e9a06340c969df5d1a77747e62294074b6c",
+    "original_last_write_utc": "2026-10-09T16:18:25.621929+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_168.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_168.txt",
+    "bytes": 561,
+    "sha256": "6538b30e5cae55c75f77cf95e0cf354f515a80682eccab33b6565589889b65eb",
+    "copy_sha256": "6538b30e5cae55c75f77cf95e0cf354f515a80682eccab33b6565589889b65eb",
+    "original_last_write_utc": "2026-10-09T16:18:25.937929+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_169.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_169.txt",
+    "bytes": 561,
+    "sha256": "c61ac17777e8f9cf1b71944c86ff7ab18628531062320ee3d4a826a3890ebc99",
+    "copy_sha256": "c61ac17777e8f9cf1b71944c86ff7ab18628531062320ee3d4a826a3890ebc99",
+    "original_last_write_utc": "2026-10-09T16:18:26.254839+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_17.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_17.txt",
+    "bytes": 560,
+    "sha256": "f7d70ef136d0c52660c3f7e4f1a200a4ef00b53c5134bb82aa75f94a247bd4e9",
+    "copy_sha256": "f7d70ef136d0c52660c3f7e4f1a200a4ef00b53c5134bb82aa75f94a247bd4e9",
+    "original_last_write_utc": "2026-10-09T16:17:14.244483+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_170.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_170.txt",
+    "bytes": 656,
+    "sha256": "9283c93ae88e336c06cb85ea2a3090d0539bd3868d27142bad67dde0a8afedee",
+    "copy_sha256": "9283c93ae88e336c06cb85ea2a3090d0539bd3868d27142bad67dde0a8afedee",
+    "original_last_write_utc": "2026-10-09T16:18:26.853961+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_171.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_171.txt",
+    "bytes": 561,
+    "sha256": "1fed87e671d8c6b1279366cf6d8698af2d184cb201b648f88abaf17a922c1070",
+    "copy_sha256": "1fed87e671d8c6b1279366cf6d8698af2d184cb201b648f88abaf17a922c1070",
+    "original_last_write_utc": "2026-10-09T16:18:27.185194+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_172.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_172.txt",
+    "bytes": 846,
+    "sha256": "84e784e0a762302f619e67aed549d002e36ec1398641e32e2285de0712165b5d",
+    "copy_sha256": "84e784e0a762302f619e67aed549d002e36ec1398641e32e2285de0712165b5d",
+    "original_last_write_utc": "2026-10-09T16:18:28.362686+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_173.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_173.txt",
+    "bytes": 751,
+    "sha256": "6f89f7b5c086e690e5772d88e032c7ec316c2a4d4405b421db5bbbb61e5fceb2",
+    "copy_sha256": "6f89f7b5c086e690e5772d88e032c7ec316c2a4d4405b421db5bbbb61e5fceb2",
+    "original_last_write_utc": "2026-10-09T16:18:29.257763+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_174.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_174.txt",
+    "bytes": 561,
+    "sha256": "9e70b55ef9e2cdf815387a702d68506a1827fc4d339a2b8a5be105feb63ac915",
+    "copy_sha256": "9e70b55ef9e2cdf815387a702d68506a1827fc4d339a2b8a5be105feb63ac915",
+    "original_last_write_utc": "2026-10-09T16:18:29.573145+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_175.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_175.txt",
+    "bytes": 561,
+    "sha256": "53968b4d043e33fa4492474acec37c3502b268a620fe5425f00b05041fc70c36",
+    "copy_sha256": "53968b4d043e33fa4492474acec37c3502b268a620fe5425f00b05041fc70c36",
+    "original_last_write_utc": "2026-10-09T16:18:29.888098+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_176.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_176.txt",
+    "bytes": 656,
+    "sha256": "b2f969a05c54bd343d48647f77ec082aa1b857c461040e7fea7e39e8b5fbfa0c",
+    "copy_sha256": "b2f969a05c54bd343d48647f77ec082aa1b857c461040e7fea7e39e8b5fbfa0c",
+    "original_last_write_utc": "2026-10-09T16:18:30.501770+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_177.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_177.txt",
+    "bytes": 561,
+    "sha256": "504de493227bd22ee1a5ad5a2c3a81f5add9ead936a7796446618f889f17b241",
+    "copy_sha256": "504de493227bd22ee1a5ad5a2c3a81f5add9ead936a7796446618f889f17b241",
+    "original_last_write_utc": "2026-10-09T16:18:30.816021+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_178.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_178.txt",
+    "bytes": 561,
+    "sha256": "e0d5cf7703ba997f5f838696a4abec2fe3d2eaba413d42562920959662f1de52",
+    "copy_sha256": "e0d5cf7703ba997f5f838696a4abec2fe3d2eaba413d42562920959662f1de52",
+    "original_last_write_utc": "2026-10-09T16:18:31.132197+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_179.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_179.txt",
+    "bytes": 561,
+    "sha256": "724e54cc40641a5138b74b9195c1dd28aec4cce0b3edb9d03eb7945c746b425b",
+    "copy_sha256": "724e54cc40641a5138b74b9195c1dd28aec4cce0b3edb9d03eb7945c746b425b",
+    "original_last_write_utc": "2026-10-09T16:18:31.446224+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_18.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_18.txt",
+    "bytes": 560,
+    "sha256": "e87202be0446441e6a12db0ce719946738ae81ce7e46fd229da73cdf418f8572",
+    "copy_sha256": "e87202be0446441e6a12db0ce719946738ae81ce7e46fd229da73cdf418f8572",
+    "original_last_write_utc": "2026-10-09T16:17:14.575340+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_180.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_180.txt",
+    "bytes": 656,
+    "sha256": "926b3733d70af605bb8e2083cf733971f4a5b76c5e2ad6ee1cf11ae39e8f46a5",
+    "copy_sha256": "926b3733d70af605bb8e2083cf733971f4a5b76c5e2ad6ee1cf11ae39e8f46a5",
+    "original_last_write_utc": "2026-10-09T16:18:32.054823+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_181.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_181.txt",
+    "bytes": 561,
+    "sha256": "29c200cf4e5aa0c5fa47b619638c69ba70b917d2ba07788c49d87e973fa88d16",
+    "copy_sha256": "29c200cf4e5aa0c5fa47b619638c69ba70b917d2ba07788c49d87e973fa88d16",
+    "original_last_write_utc": "2026-10-09T16:18:32.368374+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_182.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_182.txt",
+    "bytes": 656,
+    "sha256": "0f1ec4f40e55fe0599930862da9a245d16686fdd5bb9b7e483fd830fa8b80a93",
+    "copy_sha256": "0f1ec4f40e55fe0599930862da9a245d16686fdd5bb9b7e483fd830fa8b80a93",
+    "original_last_write_utc": "2026-10-09T16:18:32.958886+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_183.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_183.txt",
+    "bytes": 561,
+    "sha256": "475ac4ac319a95aa7b29725cd19a66f86b64fc7e5c887dcb8dcb18fe3b4f6de6",
+    "copy_sha256": "475ac4ac319a95aa7b29725cd19a66f86b64fc7e5c887dcb8dcb18fe3b4f6de6",
+    "original_last_write_utc": "2026-10-09T16:18:33.290320+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_184.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_184.txt",
+    "bytes": 561,
+    "sha256": "91e53aca869a7b07d21a684079cd9e4c8e29a99506c3a8e672514327364ac5c3",
+    "copy_sha256": "91e53aca869a7b07d21a684079cd9e4c8e29a99506c3a8e672514327364ac5c3",
+    "original_last_write_utc": "2026-10-09T16:18:33.605352+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_185.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_185.txt",
+    "bytes": 751,
+    "sha256": "38e0f9f536d303446410cf8ef30894537cf349a4114311ca819a9929aec17d01",
+    "copy_sha256": "38e0f9f536d303446410cf8ef30894537cf349a4114311ca819a9929aec17d01",
+    "original_last_write_utc": "2026-10-09T16:18:34.506652+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_186.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_186.txt",
+    "bytes": 561,
+    "sha256": "9301d50e77a1881bb9c3493ccf892f1e456e4bdaeace93991e9176364d6b55c3",
+    "copy_sha256": "9301d50e77a1881bb9c3493ccf892f1e456e4bdaeace93991e9176364d6b55c3",
+    "original_last_write_utc": "2026-10-09T16:18:34.826590+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_187.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_187.txt",
+    "bytes": 561,
+    "sha256": "0e3bebfb481f911d9119679c1d7655e39ef5283526eed825e8c4c849fd40f38d",
+    "copy_sha256": "0e3bebfb481f911d9119679c1d7655e39ef5283526eed825e8c4c849fd40f38d",
+    "original_last_write_utc": "2026-10-09T16:18:35.132387+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_188.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_188.txt",
+    "bytes": 561,
+    "sha256": "d638b1034f0452fb652d83c3fcf46ffc29343d4d763377ac1f71710b6a9fd52d",
+    "copy_sha256": "d638b1034f0452fb652d83c3fcf46ffc29343d4d763377ac1f71710b6a9fd52d",
+    "original_last_write_utc": "2026-10-09T16:18:35.447051+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_189.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_189.txt",
+    "bytes": 561,
+    "sha256": "03c71b3117c872148b08e7ba19f6b49caba86a83b4dca376a9f6a27e86118c45",
+    "copy_sha256": "03c71b3117c872148b08e7ba19f6b49caba86a83b4dca376a9f6a27e86118c45",
+    "original_last_write_utc": "2026-10-09T16:18:35.770652+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_19.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_19.txt",
+    "bytes": 654,
+    "sha256": "16bcc093e985fa87ae1c66e5fd315391568ec4be3b83d9e63bd91fb7da4566e9",
+    "copy_sha256": "16bcc093e985fa87ae1c66e5fd315391568ec4be3b83d9e63bd91fb7da4566e9",
+    "original_last_write_utc": "2026-10-09T16:17:15.173446+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_190.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_190.txt",
+    "bytes": 656,
+    "sha256": "fffd393d1b8e92ca192c7bed0ccea9bf1afdfc7e4f53b25146c8905f4cf5eed7",
+    "copy_sha256": "fffd393d1b8e92ca192c7bed0ccea9bf1afdfc7e4f53b25146c8905f4cf5eed7",
+    "original_last_write_utc": "2026-10-09T16:18:36.374429+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_191.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_191.txt",
+    "bytes": 561,
+    "sha256": "2003498284bba611bd3862ed705504766c01128c507ff335a756e0e7c841d95c",
+    "copy_sha256": "2003498284bba611bd3862ed705504766c01128c507ff335a756e0e7c841d95c",
+    "original_last_write_utc": "2026-10-09T16:18:36.688981+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_192.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_192.txt",
+    "bytes": 561,
+    "sha256": "46bde16fb15c523be4f21430f4260397322b66bf9edfce40ffbb1d362ce83d0c",
+    "copy_sha256": "46bde16fb15c523be4f21430f4260397322b66bf9edfce40ffbb1d362ce83d0c",
+    "original_last_write_utc": "2026-10-09T16:18:37.004132+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_193.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_193.txt",
+    "bytes": 656,
+    "sha256": "eead3116b6adf6c0a741d4c1a84fe209a38168fe93611570db7bfeb23692eae8",
+    "copy_sha256": "eead3116b6adf6c0a741d4c1a84fe209a38168fe93611570db7bfeb23692eae8",
+    "original_last_write_utc": "2026-10-09T16:18:37.602740+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_194.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_194.txt",
+    "bytes": 561,
+    "sha256": "968b9b9be451a560e34e178ef8d26a99b6c2f8456bfdd14135939f96c5aa6488",
+    "copy_sha256": "968b9b9be451a560e34e178ef8d26a99b6c2f8456bfdd14135939f96c5aa6488",
+    "original_last_write_utc": "2026-10-09T16:18:37.918057+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_195.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_195.txt",
+    "bytes": 561,
+    "sha256": "0e6f19122d5cedcabe6724279f1c1f29083b7bf458af09376401f1d854ef199b",
+    "copy_sha256": "0e6f19122d5cedcabe6724279f1c1f29083b7bf458af09376401f1d854ef199b",
+    "original_last_write_utc": "2026-10-09T16:18:38.232949+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_196.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_196.txt",
+    "bytes": 656,
+    "sha256": "11c583b8d8741013edfde25bef5ed88b9dda3752425f8a432d4a1d8a4592c75a",
+    "copy_sha256": "11c583b8d8741013edfde25bef5ed88b9dda3752425f8a432d4a1d8a4592c75a",
+    "original_last_write_utc": "2026-10-09T16:18:38.847619+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_197.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_197.txt",
+    "bytes": 656,
+    "sha256": "314772a4f524a93f402752023c3a78fd60d944b4aa1f276584a4bb9e627be19c",
+    "copy_sha256": "314772a4f524a93f402752023c3a78fd60d944b4aa1f276584a4bb9e627be19c",
+    "original_last_write_utc": "2026-10-09T16:18:39.446744+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_198.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_198.txt",
+    "bytes": 561,
+    "sha256": "b3b8f11e5289ac986317ccc1ba7d23d1be985b94d850fbb3a8bce3d9a91fdaee",
+    "copy_sha256": "b3b8f11e5289ac986317ccc1ba7d23d1be985b94d850fbb3a8bce3d9a91fdaee",
+    "original_last_write_utc": "2026-10-09T16:18:39.762037+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_199.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_199.txt",
+    "bytes": 561,
+    "sha256": "5d535a91e14a6dc4472bbd042d5efb2d17e061a0370fbbeaee1f3a4e4c4980ff",
+    "copy_sha256": "5d535a91e14a6dc4472bbd042d5efb2d17e061a0370fbbeaee1f3a4e4c4980ff",
+    "original_last_write_utc": "2026-10-09T16:18:40.077311+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_2.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_2.txt",
+    "bytes": 748,
+    "sha256": "474658bc8c50e165682f8f481f6642cbc9e8e1def034cd79285e0aa1af676b33",
+    "copy_sha256": "474658bc8c50e165682f8f481f6642cbc9e8e1def034cd79285e0aa1af676b33",
+    "original_last_write_utc": "2026-10-09T16:17:07.111078+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_20.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_20.txt",
+    "bytes": 748,
+    "sha256": "aa9797a67f2a30a68fa70dfdaeaba6678444e345af1e34564da3c3980b2d3267",
+    "copy_sha256": "aa9797a67f2a30a68fa70dfdaeaba6678444e345af1e34564da3c3980b2d3267",
+    "original_last_write_utc": "2026-10-09T16:17:16.070491+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_200.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_200.txt",
+    "bytes": 751,
+    "sha256": "10ba5c9c27bc790e819c0ad2413ebccea3dfe05ce0170e77affb768b22c30620",
+    "copy_sha256": "10ba5c9c27bc790e819c0ad2413ebccea3dfe05ce0170e77affb768b22c30620",
+    "original_last_write_utc": "2026-10-09T16:18:40.959601+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_201.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_201.txt",
+    "bytes": 656,
+    "sha256": "a2ece1a10c954ae27c0f1df72874f81f5224d0e9ea6fcf5b63db569605933135",
+    "copy_sha256": "a2ece1a10c954ae27c0f1df72874f81f5224d0e9ea6fcf5b63db569605933135",
+    "original_last_write_utc": "2026-10-09T16:18:41.573104+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_202.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_202.txt",
+    "bytes": 656,
+    "sha256": "aa73ab5c27bdb8607e6dac54ae7ab6c3953f1d90c50923be9bf6714469e86b0d",
+    "copy_sha256": "aa73ab5c27bdb8607e6dac54ae7ab6c3953f1d90c50923be9bf6714469e86b0d",
+    "original_last_write_utc": "2026-10-09T16:18:42.189260+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_203.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_203.txt",
+    "bytes": 561,
+    "sha256": "15fda690971734611e9f343aa792121e724abee2621d0680fab863769534fd25",
+    "copy_sha256": "15fda690971734611e9f343aa792121e724abee2621d0680fab863769534fd25",
+    "original_last_write_utc": "2026-10-09T16:18:42.504348+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_204.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_204.txt",
+    "bytes": 561,
+    "sha256": "7b694179caa0e949a72f6366581ede8641091f2da150d040d69067ea9fdc152f",
+    "copy_sha256": "7b694179caa0e949a72f6366581ede8641091f2da150d040d69067ea9fdc152f",
+    "original_last_write_utc": "2026-10-09T16:18:42.818417+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_205.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_205.txt",
+    "bytes": 656,
+    "sha256": "c785ccbb07e9dac589eccc43de4d2d03a1531fab9f8f088bb4ed0eddbd0e06f3",
+    "copy_sha256": "c785ccbb07e9dac589eccc43de4d2d03a1531fab9f8f088bb4ed0eddbd0e06f3",
+    "original_last_write_utc": "2026-10-09T16:18:43.417307+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_206.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_206.txt",
+    "bytes": 561,
+    "sha256": "a7ce3b27ab9ffd693777249e2ea0e8486611a0c2a12a110cb0aedbb85017c0de",
+    "copy_sha256": "a7ce3b27ab9ffd693777249e2ea0e8486611a0c2a12a110cb0aedbb85017c0de",
+    "original_last_write_utc": "2026-10-09T16:18:43.732719+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_207.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_207.txt",
+    "bytes": 561,
+    "sha256": "25dc409f5034437ca50b3a8690b4e2e3420508e9333cb973609059887070cc59",
+    "copy_sha256": "25dc409f5034437ca50b3a8690b4e2e3420508e9333cb973609059887070cc59",
+    "original_last_write_utc": "2026-10-09T16:18:44.058416+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_208.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_208.txt",
+    "bytes": 656,
+    "sha256": "317a58031162c55a0369b6dab5687c5ace3d33f69cccbf6f54ef495f1487e7c6",
+    "copy_sha256": "317a58031162c55a0369b6dab5687c5ace3d33f69cccbf6f54ef495f1487e7c6",
+    "original_last_write_utc": "2026-10-09T16:18:44.664527+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_209.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_209.txt",
+    "bytes": 561,
+    "sha256": "11b529ee94a8e32bde7bce8915dc48d06bf5e7cb004a890c486d86a9cb0f77db",
+    "copy_sha256": "11b529ee94a8e32bde7bce8915dc48d06bf5e7cb004a890c486d86a9cb0f77db",
+    "original_last_write_utc": "2026-10-09T16:18:44.988050+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_21.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_21.txt",
+    "bytes": 560,
+    "sha256": "763676a9ec937d80d37df5fa5dce0572ff0043f6b2660c34182fc5a50c75408a",
+    "copy_sha256": "763676a9ec937d80d37df5fa5dce0572ff0043f6b2660c34182fc5a50c75408a",
+    "original_last_write_utc": "2026-10-09T16:17:16.386118+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_210.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_210.txt",
+    "bytes": 561,
+    "sha256": "47012f4cee9cb45c43a3c488cf4faef7e1651bf766cf4372155eb81f6db7afa2",
+    "copy_sha256": "47012f4cee9cb45c43a3c488cf4faef7e1651bf766cf4372155eb81f6db7afa2",
+    "original_last_write_utc": "2026-10-09T16:18:45.303238+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_211.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_211.txt",
+    "bytes": 561,
+    "sha256": "c66b344a1803940e61c71010bb38bfe3addd8fe3cffd83c1aef14c2edb8b8258",
+    "copy_sha256": "c66b344a1803940e61c71010bb38bfe3addd8fe3cffd83c1aef14c2edb8b8258",
+    "original_last_write_utc": "2026-10-09T16:18:45.617957+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_212.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_212.txt",
+    "bytes": 561,
+    "sha256": "54c66513c47c22cd6248b0edc98fb739b624a99f2f73c3af01b44acd4b4c2670",
+    "copy_sha256": "54c66513c47c22cd6248b0edc98fb739b624a99f2f73c3af01b44acd4b4c2670",
+    "original_last_write_utc": "2026-10-09T16:18:45.933195+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_213.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_213.txt",
+    "bytes": 751,
+    "sha256": "fb62ffc94a1c532e1c2c7a36bb29d6b50901a827f1838d640dd87e72ebaef8a0",
+    "copy_sha256": "fb62ffc94a1c532e1c2c7a36bb29d6b50901a827f1838d640dd87e72ebaef8a0",
+    "original_last_write_utc": "2026-10-09T16:18:46.813711+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_214.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_214.txt",
+    "bytes": 561,
+    "sha256": "a52a290f5af5416f34c07428830dc630e4a62085c634284c04a6c7add5f817fd",
+    "copy_sha256": "a52a290f5af5416f34c07428830dc630e4a62085c634284c04a6c7add5f817fd",
+    "original_last_write_utc": "2026-10-09T16:18:47.128570+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_215.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_215.txt",
+    "bytes": 656,
+    "sha256": "97e4df0a9d44ec73b1679f80b05f636a7b728f374ef5109335a9a5c0a40104c9",
+    "copy_sha256": "97e4df0a9d44ec73b1679f80b05f636a7b728f374ef5109335a9a5c0a40104c9",
+    "original_last_write_utc": "2026-10-09T16:18:47.740227+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_216.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_216.txt",
+    "bytes": 751,
+    "sha256": "b38e52dfe5cd4531cf8f75f421103f376f9931571086627d4aef29d74d33d7b5",
+    "copy_sha256": "b38e52dfe5cd4531cf8f75f421103f376f9931571086627d4aef29d74d33d7b5",
+    "original_last_write_utc": "2026-10-09T16:18:48.647458+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_217.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_217.txt",
+    "bytes": 656,
+    "sha256": "7f46e218b549fa8ef22985f07d69cda8c520f677e132156fc6500e5ef0a1e656",
+    "copy_sha256": "7f46e218b549fa8ef22985f07d69cda8c520f677e132156fc6500e5ef0a1e656",
+    "original_last_write_utc": "2026-10-09T16:18:49.251435+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_218.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_218.txt",
+    "bytes": 561,
+    "sha256": "f28d700fb18b5ef5857a701aa9590ca1bf46a1e52d62f0d3d49d52d1f173a67c",
+    "copy_sha256": "f28d700fb18b5ef5857a701aa9590ca1bf46a1e52d62f0d3d49d52d1f173a67c",
+    "original_last_write_utc": "2026-10-09T16:18:49.572206+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_219.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_219.txt",
+    "bytes": 751,
+    "sha256": "5eb46e252ae0b199e73e4dbd2e8d68e0e50d569b4425700e4b7f13ca5fe4c267",
+    "copy_sha256": "5eb46e252ae0b199e73e4dbd2e8d68e0e50d569b4425700e4b7f13ca5fe4c267",
+    "original_last_write_utc": "2026-10-09T16:18:50.463905+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_22.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_22.txt",
+    "bytes": 560,
+    "sha256": "5c5e590e74a74cdffd8a3e04ae1dabdd969e414d8834bf6daa487093f0b0c1e0",
+    "copy_sha256": "5c5e590e74a74cdffd8a3e04ae1dabdd969e414d8834bf6daa487093f0b0c1e0",
+    "original_last_write_utc": "2026-10-09T16:17:16.700678+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_220.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_220.txt",
+    "bytes": 561,
+    "sha256": "15274c31e64289812deb313b4093ac33ff15482acab79cc865be0bfaa69c1205",
+    "copy_sha256": "15274c31e64289812deb313b4093ac33ff15482acab79cc865be0bfaa69c1205",
+    "original_last_write_utc": "2026-10-09T16:18:50.784300+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_221.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_221.txt",
+    "bytes": 1131,
+    "sha256": "fc41de3df1387c15c6c1df7be726d3226e683c27ee4c6d7e83c2450c81165503",
+    "copy_sha256": "fc41de3df1387c15c6c1df7be726d3226e683c27ee4c6d7e83c2450c81165503",
+    "original_last_write_utc": "2026-10-09T16:18:52.822409+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_222.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_222.txt",
+    "bytes": 561,
+    "sha256": "ef8bfc1957d84b12888b6a8b66a7a817d62a9e328de93880f3b8300e08e08c63",
+    "copy_sha256": "ef8bfc1957d84b12888b6a8b66a7a817d62a9e328de93880f3b8300e08e08c63",
+    "original_last_write_utc": "2026-10-09T16:18:53.137302+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_223.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_223.txt",
+    "bytes": 561,
+    "sha256": "e076a455af62e027be52f4fbc69db536f6552db3fac77edc4e782feeff552234",
+    "copy_sha256": "e076a455af62e027be52f4fbc69db536f6552db3fac77edc4e782feeff552234",
+    "original_last_write_utc": "2026-10-09T16:18:53.466715+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_224.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_224.txt",
+    "bytes": 561,
+    "sha256": "7f2f77401b2b21aaf320fdb9d46a26f7cc4ba0eb668ad5573be2a7a27f2f59cb",
+    "copy_sha256": "7f2f77401b2b21aaf320fdb9d46a26f7cc4ba0eb668ad5573be2a7a27f2f59cb",
+    "original_last_write_utc": "2026-10-09T16:18:53.781784+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_225.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_225.txt",
+    "bytes": 656,
+    "sha256": "7578243d6453fdf5b47e77fa2215fc04bf274968ce7d8f6b432e289961a67ffd",
+    "copy_sha256": "7578243d6453fdf5b47e77fa2215fc04bf274968ce7d8f6b432e289961a67ffd",
+    "original_last_write_utc": "2026-10-09T16:18:54.377995+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_226.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_226.txt",
+    "bytes": 561,
+    "sha256": "1994104710fceabffee65635122e5f33f788467f6a4d4a5a00d6acdcf1244af2",
+    "copy_sha256": "1994104710fceabffee65635122e5f33f788467f6a4d4a5a00d6acdcf1244af2",
+    "original_last_write_utc": "2026-10-09T16:18:54.692796+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_227.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_227.txt",
+    "bytes": 561,
+    "sha256": "132d64d4636e6c48f46e2252b670ad7aefd7388332a28c85b0b3b249d62cc0d1",
+    "copy_sha256": "132d64d4636e6c48f46e2252b670ad7aefd7388332a28c85b0b3b249d62cc0d1",
+    "original_last_write_utc": "2026-10-09T16:18:55.023899+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_228.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_228.txt",
+    "bytes": 561,
+    "sha256": "6e29dce992adfede1d6ac59c0e97a1b0a0891b74194f0c42187f7bc9b33bfefb",
+    "copy_sha256": "6e29dce992adfede1d6ac59c0e97a1b0a0891b74194f0c42187f7bc9b33bfefb",
+    "original_last_write_utc": "2026-10-09T16:18:55.338544+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_229.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_229.txt",
+    "bytes": 561,
+    "sha256": "49d0b0c7963526e06a3ed7467e5fc6ad1d7559dc05a750b1e551ffa1c89ccfb5",
+    "copy_sha256": "49d0b0c7963526e06a3ed7467e5fc6ad1d7559dc05a750b1e551ffa1c89ccfb5",
+    "original_last_write_utc": "2026-10-09T16:18:55.653670+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_23.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_23.txt",
+    "bytes": 560,
+    "sha256": "ca2708c017772682aeeb7c333871c1faead8171d8d7239bdb56beb99e6c66b2f",
+    "copy_sha256": "ca2708c017772682aeeb7c333871c1faead8171d8d7239bdb56beb99e6c66b2f",
+    "original_last_write_utc": "2026-10-09T16:17:17.015679+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_230.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_230.txt",
+    "bytes": 941,
+    "sha256": "b253395e4e3010d5f34fc2eab654829cc00067953471d08a91d5f75bb85a0ae7",
+    "copy_sha256": "b253395e4e3010d5f34fc2eab654829cc00067953471d08a91d5f75bb85a0ae7",
+    "original_last_write_utc": "2026-10-09T16:18:57.117035+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_231.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_231.txt",
+    "bytes": 561,
+    "sha256": "3f61989d5966d9da5c80a09c11ff70dbd7e7568de25e31b6d143b881266619ec",
+    "copy_sha256": "3f61989d5966d9da5c80a09c11ff70dbd7e7568de25e31b6d143b881266619ec",
+    "original_last_write_utc": "2026-10-09T16:18:57.432204+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_232.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_232.txt",
+    "bytes": 561,
+    "sha256": "dc76b897777fce6776559bdd5780fe49b81b46710a47cbd8172b4dfae2919351",
+    "copy_sha256": "dc76b897777fce6776559bdd5780fe49b81b46710a47cbd8172b4dfae2919351",
+    "original_last_write_utc": "2026-10-09T16:18:57.747400+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_233.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_233.txt",
+    "bytes": 656,
+    "sha256": "c01d5b67d6a9596177ec8f9b80256fe7285c36bf1f90d52c6f4a108a36086b36",
+    "copy_sha256": "c01d5b67d6a9596177ec8f9b80256fe7285c36bf1f90d52c6f4a108a36086b36",
+    "original_last_write_utc": "2026-10-09T16:18:58.346996+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_234.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_234.txt",
+    "bytes": 561,
+    "sha256": "1d6a313dc037ec1868f3d2ff28151fbd4414f292b2e1465c931bb426017d1f0f",
+    "copy_sha256": "1d6a313dc037ec1868f3d2ff28151fbd4414f292b2e1465c931bb426017d1f0f",
+    "original_last_write_utc": "2026-10-09T16:18:58.668059+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_235.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_235.txt",
+    "bytes": 751,
+    "sha256": "f581b4317328e4b76b0cdffe9aad3134e49ed34f5fc79b82695b84a2dc433e59",
+    "copy_sha256": "f581b4317328e4b76b0cdffe9aad3134e49ed34f5fc79b82695b84a2dc433e59",
+    "original_last_write_utc": "2026-10-09T16:18:59.546587+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_236.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_236.txt",
+    "bytes": 656,
+    "sha256": "f27930ced7eafd0dbfd7ed3e222bbc6b603bf97b016417681c8daafb0607e48c",
+    "copy_sha256": "f27930ced7eafd0dbfd7ed3e222bbc6b603bf97b016417681c8daafb0607e48c",
+    "original_last_write_utc": "2026-10-09T16:19:00.163779+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_237.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_237.txt",
+    "bytes": 751,
+    "sha256": "b12e8e4cf1036ee64254ffe441bec37fb26e15bc6d886fe76bfd3770c99da500",
+    "copy_sha256": "b12e8e4cf1036ee64254ffe441bec37fb26e15bc6d886fe76bfd3770c99da500",
+    "original_last_write_utc": "2026-10-09T16:19:01.039433+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_238.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_238.txt",
+    "bytes": 656,
+    "sha256": "dded7ffe41608875e82f2d1ccfee3254e0050631324bc9dc4606574b14746565",
+    "copy_sha256": "dded7ffe41608875e82f2d1ccfee3254e0050631324bc9dc4606574b14746565",
+    "original_last_write_utc": "2026-10-09T16:19:01.651682+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_239.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_239.txt",
+    "bytes": 561,
+    "sha256": "686594006514ff34a403e68e994d9c9df18edd71b4fc4cecd418c8eea1296176",
+    "copy_sha256": "686594006514ff34a403e68e994d9c9df18edd71b4fc4cecd418c8eea1296176",
+    "original_last_write_utc": "2026-10-09T16:19:01.968917+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_24.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_24.txt",
+    "bytes": 560,
+    "sha256": "ffea284ffc561b14157209e5ed5db8d39a1bb03fc085d16ed9fdbe42ef411511",
+    "copy_sha256": "ffea284ffc561b14157209e5ed5db8d39a1bb03fc085d16ed9fdbe42ef411511",
+    "original_last_write_utc": "2026-10-09T16:17:17.346001+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_240.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_240.txt",
+    "bytes": 561,
+    "sha256": "beb7ab763c1d6c4c7846c8b6fb49f74c221fe7856ba8d42601f1bb63696ab6da",
+    "copy_sha256": "beb7ab763c1d6c4c7846c8b6fb49f74c221fe7856ba8d42601f1bb63696ab6da",
+    "original_last_write_utc": "2026-10-09T16:19:02.282961+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_241.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_241.txt",
+    "bytes": 656,
+    "sha256": "4e3ef02d4f3e8423c51de3b582c5bfaeb9ee66413f1d783005f7d3656ce131f6",
+    "copy_sha256": "4e3ef02d4f3e8423c51de3b582c5bfaeb9ee66413f1d783005f7d3656ce131f6",
+    "original_last_write_utc": "2026-10-09T16:19:02.882474+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_242.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_242.txt",
+    "bytes": 941,
+    "sha256": "8036646e55a98a25b1f1a6d15d5a7fed1199011e75d28c11b5c1986263145ef1",
+    "copy_sha256": "8036646e55a98a25b1f1a6d15d5a7fed1199011e75d28c11b5c1986263145ef1",
+    "original_last_write_utc": "2026-10-09T16:19:04.345643+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_243.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_243.txt",
+    "bytes": 561,
+    "sha256": "3b76a0e2edd7048bfeb939ba2fccf928a43eb48944e0422130d5aec5638027b7",
+    "copy_sha256": "3b76a0e2edd7048bfeb939ba2fccf928a43eb48944e0422130d5aec5638027b7",
+    "original_last_write_utc": "2026-10-09T16:19:04.671254+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_244.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_244.txt",
+    "bytes": 751,
+    "sha256": "65a50fb50d3fac1291961d78a9579899f534a90ebb3eb95271b21892c4e4b7b5",
+    "copy_sha256": "65a50fb50d3fac1291961d78a9579899f534a90ebb3eb95271b21892c4e4b7b5",
+    "original_last_write_utc": "2026-10-09T16:19:05.559058+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_245.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_245.txt",
+    "bytes": 561,
+    "sha256": "a57b9bf959f66286984bf353cc1960f082529ffb9a02a589f359a01239e6534c",
+    "copy_sha256": "a57b9bf959f66286984bf353cc1960f082529ffb9a02a589f359a01239e6534c",
+    "original_last_write_utc": "2026-10-09T16:19:05.874714+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_246.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_246.txt",
+    "bytes": 561,
+    "sha256": "c30e8c7c79c84b32d829292fb710005849b2ac3a463a628fa8b413af0617fac5",
+    "copy_sha256": "c30e8c7c79c84b32d829292fb710005849b2ac3a463a628fa8b413af0617fac5",
+    "original_last_write_utc": "2026-10-09T16:19:06.191020+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_247.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_247.txt",
+    "bytes": 656,
+    "sha256": "b8cf48beaa56b414ad7b067dc8c9c35cf90cc21d7db1ae36af1df6f85b587b2d",
+    "copy_sha256": "b8cf48beaa56b414ad7b067dc8c9c35cf90cc21d7db1ae36af1df6f85b587b2d",
+    "original_last_write_utc": "2026-10-09T16:19:06.787237+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_248.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_248.txt",
+    "bytes": 561,
+    "sha256": "50fa661c04dcf64f7e7c5d66fb5e41f8f6a4d55ca1e83491740a558e0ccabc4f",
+    "copy_sha256": "50fa661c04dcf64f7e7c5d66fb5e41f8f6a4d55ca1e83491740a558e0ccabc4f",
+    "original_last_write_utc": "2026-10-09T16:19:07.116346+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_249.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_249.txt",
+    "bytes": 751,
+    "sha256": "00449c894440fc54ed0ab074938499dd26addc8f97360ac9ce3a54733cd838a5",
+    "copy_sha256": "00449c894440fc54ed0ab074938499dd26addc8f97360ac9ce3a54733cd838a5",
+    "original_last_write_utc": "2026-10-09T16:19:08.017015+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_25.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_25.txt",
+    "bytes": 748,
+    "sha256": "c9f02f3f5351bf3ce297b9c49f3e6fecbfbd16dc2add3c2dd13eb136e4db9340",
+    "copy_sha256": "c9f02f3f5351bf3ce297b9c49f3e6fecbfbd16dc2add3c2dd13eb136e4db9340",
+    "original_last_write_utc": "2026-10-09T16:17:18.226740+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_250.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_250.txt",
+    "bytes": 561,
+    "sha256": "9be14885e9c5ce77745627c18080367c02b8887fbb429e2cab24fe336d792580",
+    "copy_sha256": "9be14885e9c5ce77745627c18080367c02b8887fbb429e2cab24fe336d792580",
+    "original_last_write_utc": "2026-10-09T16:19:08.332132+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_251.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_251.txt",
+    "bytes": 561,
+    "sha256": "abc5943bf4240560ccc0d5c8ce9b7d4773e702de1b3e4701207e21bc0e60da68",
+    "copy_sha256": "abc5943bf4240560ccc0d5c8ce9b7d4773e702de1b3e4701207e21bc0e60da68",
+    "original_last_write_utc": "2026-10-09T16:19:08.646374+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_252.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_252.txt",
+    "bytes": 561,
+    "sha256": "5da44151611a199884aade878f959b7ed6f100294fba585005f72272fb529990",
+    "copy_sha256": "5da44151611a199884aade878f959b7ed6f100294fba585005f72272fb529990",
+    "original_last_write_utc": "2026-10-09T16:19:08.976527+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_253.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_253.txt",
+    "bytes": 561,
+    "sha256": "0fb11b7471e72cf2b9a80a5601029ad3bab801959bce26f349d9fd3bfc6222f3",
+    "copy_sha256": "0fb11b7471e72cf2b9a80a5601029ad3bab801959bce26f349d9fd3bfc6222f3",
+    "original_last_write_utc": "2026-10-09T16:19:09.293283+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_254.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_254.txt",
+    "bytes": 561,
+    "sha256": "7539f46ff097612bc9162e423c9292ef022a27f4ab236c9026782ea58391ebea",
+    "copy_sha256": "7539f46ff097612bc9162e423c9292ef022a27f4ab236c9026782ea58391ebea",
+    "original_last_write_utc": "2026-10-09T16:19:09.609323+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_255.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_255.txt",
+    "bytes": 561,
+    "sha256": "766b1104e6c5a0d4911f891ef19c3d6934fbb2f13d55828018cb12b488b4a31a",
+    "copy_sha256": "766b1104e6c5a0d4911f891ef19c3d6934fbb2f13d55828018cb12b488b4a31a",
+    "original_last_write_utc": "2026-10-09T16:19:09.909376+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_26.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_26.txt",
+    "bytes": 654,
+    "sha256": "eddd47bb134017af02f437b799156da300f0ccbf3ca8cbfe6bbf7c0f0343b2c7",
+    "copy_sha256": "eddd47bb134017af02f437b799156da300f0ccbf3ca8cbfe6bbf7c0f0343b2c7",
+    "original_last_write_utc": "2026-10-09T16:17:18.841485+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_27.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_27.txt",
+    "bytes": 842,
+    "sha256": "5e5ade46daa306dcd45655c904db5c68005864094d6a2d81443f91e2559c9de6",
+    "copy_sha256": "5e5ade46daa306dcd45655c904db5c68005864094d6a2d81443f91e2559c9de6",
+    "original_last_write_utc": "2026-10-09T16:17:20.011177+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_28.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_28.txt",
+    "bytes": 654,
+    "sha256": "2ae5dccccbf21fe315a38f47fdba56b65867863b2e4d300750289df35434928a",
+    "copy_sha256": "2ae5dccccbf21fe315a38f47fdba56b65867863b2e4d300750289df35434928a",
+    "original_last_write_utc": "2026-10-09T16:17:20.620158+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_29.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_29.txt",
+    "bytes": 748,
+    "sha256": "9c483132df7e9107a57fc597ba752e958527716a09a2fb6cfc19e20acb9a1635",
+    "copy_sha256": "9c483132df7e9107a57fc597ba752e958527716a09a2fb6cfc19e20acb9a1635",
+    "original_last_write_utc": "2026-10-09T16:17:21.519021+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_3.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_3.txt",
+    "bytes": 560,
+    "sha256": "421a7bd1129862424dbebb5455ba8ef9d0e74232bbdbbfe42faca88bb744e91e",
+    "copy_sha256": "421a7bd1129862424dbebb5455ba8ef9d0e74232bbdbbfe42faca88bb744e91e",
+    "original_last_write_utc": "2026-10-09T16:17:07.442153+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_30.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_30.txt",
+    "bytes": 560,
+    "sha256": "a82b8ab1eed55032bf2f8c41bcee08aa20dcc7a114143f3da433038ec0a829bf",
+    "copy_sha256": "a82b8ab1eed55032bf2f8c41bcee08aa20dcc7a114143f3da433038ec0a829bf",
+    "original_last_write_utc": "2026-10-09T16:17:21.831719+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_31.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_31.txt",
+    "bytes": 560,
+    "sha256": "0e84fd8c8d5a758bc4facb4b1d26a226c48817e8b8d5a0ab7ff6ba017c3844d7",
+    "copy_sha256": "0e84fd8c8d5a758bc4facb4b1d26a226c48817e8b8d5a0ab7ff6ba017c3844d7",
+    "original_last_write_utc": "2026-10-09T16:17:22.145258+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_32.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_32.txt",
+    "bytes": 560,
+    "sha256": "c5f3841eedc9b4ebfe52c1ea4f48b316fbfa2a21e6ed126f4a98fc4a90a40e81",
+    "copy_sha256": "c5f3841eedc9b4ebfe52c1ea4f48b316fbfa2a21e6ed126f4a98fc4a90a40e81",
+    "original_last_write_utc": "2026-10-09T16:17:22.474704+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_33.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_33.txt",
+    "bytes": 560,
+    "sha256": "c067aaab8b622f9bdb7996fee82239876437b3f00d6fc0506d266ece4620e4a2",
+    "copy_sha256": "c067aaab8b622f9bdb7996fee82239876437b3f00d6fc0506d266ece4620e4a2",
+    "original_last_write_utc": "2026-10-09T16:17:22.788105+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_34.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_34.txt",
+    "bytes": 560,
+    "sha256": "8ec66be048733894fd3a5972e9afbf60ca4f6a9e4d2705ae5af748f779b867ef",
+    "copy_sha256": "8ec66be048733894fd3a5972e9afbf60ca4f6a9e4d2705ae5af748f779b867ef",
+    "original_last_write_utc": "2026-10-09T16:17:23.101962+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_35.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_35.txt",
+    "bytes": 654,
+    "sha256": "a746526257849b499ccfbe7a03240d0166179f6bad551dda70c3697be9bd2cf9",
+    "copy_sha256": "a746526257849b499ccfbe7a03240d0166179f6bad551dda70c3697be9bd2cf9",
+    "original_last_write_utc": "2026-10-09T16:17:23.713625+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_36.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_36.txt",
+    "bytes": 654,
+    "sha256": "5715c230266712ac45faf875fa577fa7d99f303137947ca135444208dc37244b",
+    "copy_sha256": "5715c230266712ac45faf875fa577fa7d99f303137947ca135444208dc37244b",
+    "original_last_write_utc": "2026-10-09T16:17:24.310222+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_37.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_37.txt",
+    "bytes": 560,
+    "sha256": "6f2f8ca220f111439aa9898f8100d644ca7559586658c25d6e7b1fc062af685b",
+    "copy_sha256": "6f2f8ca220f111439aa9898f8100d644ca7559586658c25d6e7b1fc062af685b",
+    "original_last_write_utc": "2026-10-09T16:17:24.625833+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_38.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_38.txt",
+    "bytes": 560,
+    "sha256": "6d8054d5f7c6e6e71e94823178bd4f1e11f7e401e69c8ceab4b0647cc361523e",
+    "copy_sha256": "6d8054d5f7c6e6e71e94823178bd4f1e11f7e401e69c8ceab4b0647cc361523e",
+    "original_last_write_utc": "2026-10-09T16:17:24.941422+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_39.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_39.txt",
+    "bytes": 560,
+    "sha256": "8123da39ccfb255efa05c8414fa556bf71837368064e4bdfa7e14164b3707b6d",
+    "copy_sha256": "8123da39ccfb255efa05c8414fa556bf71837368064e4bdfa7e14164b3707b6d",
+    "original_last_write_utc": "2026-10-09T16:17:25.271389+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_4.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_4.txt",
+    "bytes": 654,
+    "sha256": "1f5bbc2f76b67fae789f2cfbbd9db6ace335b8a2ca55527b5e39e36287303b2d",
+    "copy_sha256": "1f5bbc2f76b67fae789f2cfbbd9db6ace335b8a2ca55527b5e39e36287303b2d",
+    "original_last_write_utc": "2026-10-09T16:17:08.054181+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_40.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_40.txt",
+    "bytes": 560,
+    "sha256": "50601c2b3c9bf7923bcd12ae31948a87dac2b64b38e17b76c1f8c89a78338c16",
+    "copy_sha256": "50601c2b3c9bf7923bcd12ae31948a87dac2b64b38e17b76c1f8c89a78338c16",
+    "original_last_write_utc": "2026-10-09T16:17:25.586172+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_41.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_41.txt",
+    "bytes": 560,
+    "sha256": "f30fc7181a559b2c98f25637653e5d1c5bf1dc56b8a4708c045355d7800c35ac",
+    "copy_sha256": "f30fc7181a559b2c98f25637653e5d1c5bf1dc56b8a4708c045355d7800c35ac",
+    "original_last_write_utc": "2026-10-09T16:17:25.900343+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_42.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_42.txt",
+    "bytes": 654,
+    "sha256": "a9d710dbb719d2bc1d42651e4062ba4e950d228fe9356fa94649179e8cd433c8",
+    "copy_sha256": "a9d710dbb719d2bc1d42651e4062ba4e950d228fe9356fa94649179e8cd433c8",
+    "original_last_write_utc": "2026-10-09T16:17:26.499139+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_43.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_43.txt",
+    "bytes": 654,
+    "sha256": "41a7dec108c2888833196582e30036eca1d3a94c86a31f9285d5232fff6cdde5",
+    "copy_sha256": "41a7dec108c2888833196582e30036eca1d3a94c86a31f9285d5232fff6cdde5",
+    "original_last_write_utc": "2026-10-09T16:17:27.113140+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_44.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_44.txt",
+    "bytes": 560,
+    "sha256": "e424910c14a83ef7c7249b565fbf53ab748d3ad73c96a0a50dc304ad965d1153",
+    "copy_sha256": "e424910c14a83ef7c7249b565fbf53ab748d3ad73c96a0a50dc304ad965d1153",
+    "original_last_write_utc": "2026-10-09T16:17:27.429501+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_45.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_45.txt",
+    "bytes": 654,
+    "sha256": "370e4ea30f931eedd05e37738ea56a5e8ab5c39a2f63ae1523c93f9aa3771733",
+    "copy_sha256": "370e4ea30f931eedd05e37738ea56a5e8ab5c39a2f63ae1523c93f9aa3771733",
+    "original_last_write_utc": "2026-10-09T16:17:28.038451+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_46.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_46.txt",
+    "bytes": 560,
+    "sha256": "ed1efaa743bfbfc8f3f96a1e51c400d1a0fd14a9afbd826ec0c384b3f97cf55f",
+    "copy_sha256": "ed1efaa743bfbfc8f3f96a1e51c400d1a0fd14a9afbd826ec0c384b3f97cf55f",
+    "original_last_write_utc": "2026-10-09T16:17:28.343279+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_47.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_47.txt",
+    "bytes": 654,
+    "sha256": "470d8810a5ef16d976d7ee384dc1f088e32ed97988ce2ad69954b4f4993b1125",
+    "copy_sha256": "470d8810a5ef16d976d7ee384dc1f088e32ed97988ce2ad69954b4f4993b1125",
+    "original_last_write_utc": "2026-10-09T16:17:28.941866+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_48.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_48.txt",
+    "bytes": 560,
+    "sha256": "2c80b24b4bbb2f1bfd39758c21ca048a908b3a50ad2156841133387b0c0fde45",
+    "copy_sha256": "2c80b24b4bbb2f1bfd39758c21ca048a908b3a50ad2156841133387b0c0fde45",
+    "original_last_write_utc": "2026-10-09T16:17:29.272727+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_49.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_49.txt",
+    "bytes": 560,
+    "sha256": "f677c6afbd3b64927fbb7f7db51f382d8fc2d054401947707850e99d2b25edd7",
+    "copy_sha256": "f677c6afbd3b64927fbb7f7db51f382d8fc2d054401947707850e99d2b25edd7",
+    "original_last_write_utc": "2026-10-09T16:17:29.589158+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_5.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_5.txt",
+    "bytes": 654,
+    "sha256": "b2cdfbe24efc75e9cbee12c9af7dd9c1d080e955672929ca169769d3c31da271",
+    "copy_sha256": "b2cdfbe24efc75e9cbee12c9af7dd9c1d080e955672929ca169769d3c31da271",
+    "original_last_write_utc": "2026-10-09T16:17:08.668932+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_50.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_50.txt",
+    "bytes": 654,
+    "sha256": "5c4945905460204d67ba49c7fded2c843566f1b5cebebdefcdb689262c91f3b8",
+    "copy_sha256": "5c4945905460204d67ba49c7fded2c843566f1b5cebebdefcdb689262c91f3b8",
+    "original_last_write_utc": "2026-10-09T16:17:30.189145+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_51.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_51.txt",
+    "bytes": 560,
+    "sha256": "8f3e11f0914ccad636dfdab5795ed0f1ab1d1bfe9f172034ee02032059bc12fc",
+    "copy_sha256": "8f3e11f0914ccad636dfdab5795ed0f1ab1d1bfe9f172034ee02032059bc12fc",
+    "original_last_write_utc": "2026-10-09T16:17:30.499455+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_52.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_52.txt",
+    "bytes": 654,
+    "sha256": "ba4ba5b784880b7e9f91d7554f66ff875899147a11bca22015434535bc73f49b",
+    "copy_sha256": "ba4ba5b784880b7e9f91d7554f66ff875899147a11bca22015434535bc73f49b",
+    "original_last_write_utc": "2026-10-09T16:17:31.114641+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_53.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_53.txt",
+    "bytes": 654,
+    "sha256": "a54e10ae87cfe69533567c212d2f9396b0fd0c518b2be3305bb2d3922de22d98",
+    "copy_sha256": "a54e10ae87cfe69533567c212d2f9396b0fd0c518b2be3305bb2d3922de22d98",
+    "original_last_write_utc": "2026-10-09T16:17:31.712860+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_54.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_54.txt",
+    "bytes": 560,
+    "sha256": "cc58754a20e81f49717dc6325b9d00b719540260c038fdac7797b1dadd9aaad6",
+    "copy_sha256": "cc58754a20e81f49717dc6325b9d00b719540260c038fdac7797b1dadd9aaad6",
+    "original_last_write_utc": "2026-10-09T16:17:32.043900+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_55.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_55.txt",
+    "bytes": 560,
+    "sha256": "a37eabee2e0ebbc5f220abdcbe87d65de08dcc00e0108afd65dcc1faf9a7066c",
+    "copy_sha256": "a37eabee2e0ebbc5f220abdcbe87d65de08dcc00e0108afd65dcc1faf9a7066c",
+    "original_last_write_utc": "2026-10-09T16:17:32.359821+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_56.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_56.txt",
+    "bytes": 560,
+    "sha256": "0a9b43a64dda8121bda8b8fdbeea2c83899b84e7b3232654e44d95d964070c7e",
+    "copy_sha256": "0a9b43a64dda8121bda8b8fdbeea2c83899b84e7b3232654e44d95d964070c7e",
+    "original_last_write_utc": "2026-10-09T16:17:32.658899+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_57.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_57.txt",
+    "bytes": 748,
+    "sha256": "7307cca76efad7b2f5abdfad5439304169d8218949fb124eeb559fa44b09e1f5",
+    "copy_sha256": "7307cca76efad7b2f5abdfad5439304169d8218949fb124eeb559fa44b09e1f5",
+    "original_last_write_utc": "2026-10-09T16:17:33.556978+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_58.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_58.txt",
+    "bytes": 560,
+    "sha256": "8b9787bb7691310bd9976bc675c4029bd1fb0e5ec714a939b3865fda6d3e8811",
+    "copy_sha256": "8b9787bb7691310bd9976bc675c4029bd1fb0e5ec714a939b3865fda6d3e8811",
+    "original_last_write_utc": "2026-10-09T16:17:33.872435+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_59.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_59.txt",
+    "bytes": 560,
+    "sha256": "5b00447b4a9b663197d7fd340fa70afddfad4b960ddd6e3a477b497db3ca5655",
+    "copy_sha256": "5b00447b4a9b663197d7fd340fa70afddfad4b960ddd6e3a477b497db3ca5655",
+    "original_last_write_utc": "2026-10-09T16:17:34.187679+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_6.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_6.txt",
+    "bytes": 654,
+    "sha256": "48208accce5636cb15ce796d81d85daea3a3f2122cb17a78914c2f82dbc6fae1",
+    "copy_sha256": "48208accce5636cb15ce796d81d85daea3a3f2122cb17a78914c2f82dbc6fae1",
+    "original_last_write_utc": "2026-10-09T16:17:09.280371+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_60.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_60.txt",
+    "bytes": 654,
+    "sha256": "b63e1031f9e4bb172ec44c465c26de702532e41084ddb3e24eef7183b3645f0e",
+    "copy_sha256": "b63e1031f9e4bb172ec44c465c26de702532e41084ddb3e24eef7183b3645f0e",
+    "original_last_write_utc": "2026-10-09T16:17:34.793899+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_61.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_61.txt",
+    "bytes": 560,
+    "sha256": "a4b6edf5392fe9d5ae3ba0841727c1b494a4cc711c141c9f34113a7a715181db",
+    "copy_sha256": "a4b6edf5392fe9d5ae3ba0841727c1b494a4cc711c141c9f34113a7a715181db",
+    "original_last_write_utc": "2026-10-09T16:17:35.099164+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_62.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_62.txt",
+    "bytes": 560,
+    "sha256": "ccd47316287ebc88e8181b78133eea735516920279b95785ac441fe04040a3ce",
+    "copy_sha256": "ccd47316287ebc88e8181b78133eea735516920279b95785ac441fe04040a3ce",
+    "original_last_write_utc": "2026-10-09T16:17:35.412821+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_63.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_63.txt",
+    "bytes": 560,
+    "sha256": "af1d29c221d8f6d72974581d066ee607b3a5788863f8fdf920a54b80c850c762",
+    "copy_sha256": "af1d29c221d8f6d72974581d066ee607b3a5788863f8fdf920a54b80c850c762",
+    "original_last_write_utc": "2026-10-09T16:17:35.728265+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_64.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_64.txt",
+    "bytes": 654,
+    "sha256": "635c758deec1acf2132be49838b861448e2be65aa722fd675b058d53de117a55",
+    "copy_sha256": "635c758deec1acf2132be49838b861448e2be65aa722fd675b058d53de117a55",
+    "original_last_write_utc": "2026-10-09T16:17:36.342130+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_65.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_65.txt",
+    "bytes": 654,
+    "sha256": "3c364ac47a7cda1ff729161df724f55ecb4905b25e068b7b2cad7ecdc171744a",
+    "copy_sha256": "3c364ac47a7cda1ff729161df724f55ecb4905b25e068b7b2cad7ecdc171744a",
+    "original_last_write_utc": "2026-10-09T16:17:36.945958+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_66.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_66.txt",
+    "bytes": 560,
+    "sha256": "b58dcbd0f059068ba2bff66e5074d731df38a412f5e973559c63399c22561fa6",
+    "copy_sha256": "b58dcbd0f059068ba2bff66e5074d731df38a412f5e973559c63399c22561fa6",
+    "original_last_write_utc": "2026-10-09T16:17:37.255888+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_67.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_67.txt",
+    "bytes": 654,
+    "sha256": "9b65e24b52950232583b6b57b1ef16b71d458c3df8ea1c2aa39d878ac23c05dd",
+    "copy_sha256": "9b65e24b52950232583b6b57b1ef16b71d458c3df8ea1c2aa39d878ac23c05dd",
+    "original_last_write_utc": "2026-10-09T16:17:37.869820+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_68.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_68.txt",
+    "bytes": 560,
+    "sha256": "4f6cae85e5d90fbc7a232c0a7c9480b5098582f763f0e322517edc823502ed68",
+    "copy_sha256": "4f6cae85e5d90fbc7a232c0a7c9480b5098582f763f0e322517edc823502ed68",
+    "original_last_write_utc": "2026-10-09T16:17:38.185291+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_69.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_69.txt",
+    "bytes": 560,
+    "sha256": "2f01dbe951ce98ecb1edb7cb19c3ee52298a0379c17f903fd72164cfd5f8daa6",
+    "copy_sha256": "2f01dbe951ce98ecb1edb7cb19c3ee52298a0379c17f903fd72164cfd5f8daa6",
+    "original_last_write_utc": "2026-10-09T16:17:38.500751+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_7.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_7.txt",
+    "bytes": 560,
+    "sha256": "0774d6f2220f625293a16f31072e05e23df77c67257d913048162640258a4bae",
+    "copy_sha256": "0774d6f2220f625293a16f31072e05e23df77c67257d913048162640258a4bae",
+    "original_last_write_utc": "2026-10-09T16:17:09.609495+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_70.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_70.txt",
+    "bytes": 560,
+    "sha256": "6c9a99ce29aec6db193db106fc73f9604f593002cbd44cef08b6a62b6fca9c70",
+    "copy_sha256": "6c9a99ce29aec6db193db106fc73f9604f593002cbd44cef08b6a62b6fca9c70",
+    "original_last_write_utc": "2026-10-09T16:17:38.815651+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_71.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_71.txt",
+    "bytes": 560,
+    "sha256": "b5048d4447275aad8079bd56f019ba5900c44282d0fae0e69a0b25144a360cc5",
+    "copy_sha256": "b5048d4447275aad8079bd56f019ba5900c44282d0fae0e69a0b25144a360cc5",
+    "original_last_write_utc": "2026-10-09T16:17:39.129499+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_72.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_72.txt",
+    "bytes": 842,
+    "sha256": "4c48ad83dad43c412c08d37a9f31fc2b6d9207f90802c733f318bf007978d4c9",
+    "copy_sha256": "4c48ad83dad43c412c08d37a9f31fc2b6d9207f90802c733f318bf007978d4c9",
+    "original_last_write_utc": "2026-10-09T16:17:40.307487+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_73.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_73.txt",
+    "bytes": 560,
+    "sha256": "1ff121e2dc199689c1f6a2a333fb22138c0433dc181ff4c7c14d3a8a0712d416",
+    "copy_sha256": "1ff121e2dc199689c1f6a2a333fb22138c0433dc181ff4c7c14d3a8a0712d416",
+    "original_last_write_utc": "2026-10-09T16:17:40.621000+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_74.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_74.txt",
+    "bytes": 560,
+    "sha256": "190d28180e1e24fe612913fabd1cae1ac47a55c9b7aecf84baf3c2cf7374b9c6",
+    "copy_sha256": "190d28180e1e24fe612913fabd1cae1ac47a55c9b7aecf84baf3c2cf7374b9c6",
+    "original_last_write_utc": "2026-10-09T16:17:40.950870+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_75.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_75.txt",
+    "bytes": 560,
+    "sha256": "2f501df71d1d9d8a7120ff34f2c10e6091cec82584c61b7053a62582cba53c69",
+    "copy_sha256": "2f501df71d1d9d8a7120ff34f2c10e6091cec82584c61b7053a62582cba53c69",
+    "original_last_write_utc": "2026-10-09T16:17:41.266661+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_76.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_76.txt",
+    "bytes": 654,
+    "sha256": "552327b03c6d847d407bae5c0888912486ac18716cf46756278dbb99dbe0e6dd",
+    "copy_sha256": "552327b03c6d847d407bae5c0888912486ac18716cf46756278dbb99dbe0e6dd",
+    "original_last_write_utc": "2026-10-09T16:17:41.864478+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_77.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_77.txt",
+    "bytes": 560,
+    "sha256": "40d8ad5c8331b22cf31912591a2583a7c402b592d6d516d69b9b579bc7a12348",
+    "copy_sha256": "40d8ad5c8331b22cf31912591a2583a7c402b592d6d516d69b9b579bc7a12348",
+    "original_last_write_utc": "2026-10-09T16:17:42.178719+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_78.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_78.txt",
+    "bytes": 654,
+    "sha256": "8226b1437cfcecdb3d9d1a61bfff453f693b872f0eb848f33e4e71e563b9a9e8",
+    "copy_sha256": "8226b1437cfcecdb3d9d1a61bfff453f693b872f0eb848f33e4e71e563b9a9e8",
+    "original_last_write_utc": "2026-10-09T16:17:42.776186+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_79.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_79.txt",
+    "bytes": 560,
+    "sha256": "69f8ff39cfc0fc89af7ba48bde780d144a6a3866a38842f6400070c17f138e66",
+    "copy_sha256": "69f8ff39cfc0fc89af7ba48bde780d144a6a3866a38842f6400070c17f138e66",
+    "original_last_write_utc": "2026-10-09T16:17:43.099578+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_8.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_8.txt",
+    "bytes": 560,
+    "sha256": "acebe232f5fbd085d82e5d22236944f566a9c184686813c2f5fcc66faeaf71fe",
+    "copy_sha256": "acebe232f5fbd085d82e5d22236944f566a9c184686813c2f5fcc66faeaf71fe",
+    "original_last_write_utc": "2026-10-09T16:17:09.929637+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_80.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_80.txt",
+    "bytes": 560,
+    "sha256": "962a02ae00b754501c0a096c8f5924b3282e3117ada1d00983dad4c9ec5b7800",
+    "copy_sha256": "962a02ae00b754501c0a096c8f5924b3282e3117ada1d00983dad4c9ec5b7800",
+    "original_last_write_utc": "2026-10-09T16:17:43.423652+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_81.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_81.txt",
+    "bytes": 748,
+    "sha256": "5282d3ef51b60c8a644e018ce098d5bcb531aa6514ca86922be43c0bd94d4c2e",
+    "copy_sha256": "5282d3ef51b60c8a644e018ce098d5bcb531aa6514ca86922be43c0bd94d4c2e",
+    "original_last_write_utc": "2026-10-09T16:17:44.311629+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_82.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_82.txt",
+    "bytes": 560,
+    "sha256": "19804eadff540a1d59a6393e6a3e77f72bd1e5557e035d8cab14630810bb4b8d",
+    "copy_sha256": "19804eadff540a1d59a6393e6a3e77f72bd1e5557e035d8cab14630810bb4b8d",
+    "original_last_write_utc": "2026-10-09T16:17:44.617016+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_83.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_83.txt",
+    "bytes": 560,
+    "sha256": "d0f22173b2b600ae27036174127a305f12b7ee06d5f40e15b72e99c2af3ef71d",
+    "copy_sha256": "d0f22173b2b600ae27036174127a305f12b7ee06d5f40e15b72e99c2af3ef71d",
+    "original_last_write_utc": "2026-10-09T16:17:44.947186+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_84.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_84.txt",
+    "bytes": 654,
+    "sha256": "287310b27c57139b141c1d8127f753557d5ebbfbfbf751235233f70be79eb5e3",
+    "copy_sha256": "287310b27c57139b141c1d8127f753557d5ebbfbfbf751235233f70be79eb5e3",
+    "original_last_write_utc": "2026-10-09T16:17:45.549945+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_85.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_85.txt",
+    "bytes": 560,
+    "sha256": "ad6d74108d88f7e4e53b31592bebcef1f7002c054450f8cc1d66b455a654aed6",
+    "copy_sha256": "ad6d74108d88f7e4e53b31592bebcef1f7002c054450f8cc1d66b455a654aed6",
+    "original_last_write_utc": "2026-10-09T16:17:45.862996+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_86.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_86.txt",
+    "bytes": 560,
+    "sha256": "c17f89440e34abf40c24d138f5df2f5354129d48d833b8f4d8cfdf3bd26b36c8",
+    "copy_sha256": "c17f89440e34abf40c24d138f5df2f5354129d48d833b8f4d8cfdf3bd26b36c8",
+    "original_last_write_utc": "2026-10-09T16:17:46.194473+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_87.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_87.txt",
+    "bytes": 654,
+    "sha256": "14d9593dd523af094d224801869f6bf17f742cb74572c59708c01783f6401e07",
+    "copy_sha256": "14d9593dd523af094d224801869f6bf17f742cb74572c59708c01783f6401e07",
+    "original_last_write_utc": "2026-10-09T16:17:46.792934+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_88.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_88.txt",
+    "bytes": 560,
+    "sha256": "977bfbd6006b2b8f72cd952e2f124ed88732032cb0cac6060be42b9fa1afc849",
+    "copy_sha256": "977bfbd6006b2b8f72cd952e2f124ed88732032cb0cac6060be42b9fa1afc849",
+    "original_last_write_utc": "2026-10-09T16:17:47.108647+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_89.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_89.txt",
+    "bytes": 560,
+    "sha256": "172ccfce6810214d9a5ee07c01a18e267a5fe3757e04cc144d47d251ecbbfe0b",
+    "copy_sha256": "172ccfce6810214d9a5ee07c01a18e267a5fe3757e04cc144d47d251ecbbfe0b",
+    "original_last_write_utc": "2026-10-09T16:17:47.408787+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_9.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_9.txt",
+    "bytes": 560,
+    "sha256": "960d09ae92204aae67b0ef59a4d3a7cf1eb8435845f88d99651248f03efea495",
+    "copy_sha256": "960d09ae92204aae67b0ef59a4d3a7cf1eb8435845f88d99651248f03efea495",
+    "original_last_write_utc": "2026-10-09T16:17:10.239689+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_90.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_90.txt",
+    "bytes": 560,
+    "sha256": "486f1573a6934d9e149e241c2423b1a12fe92b2fbd46bfd9a5f11ddf65a41aaf",
+    "copy_sha256": "486f1573a6934d9e149e241c2423b1a12fe92b2fbd46bfd9a5f11ddf65a41aaf",
+    "original_last_write_utc": "2026-10-09T16:17:47.739727+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_91.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_91.txt",
+    "bytes": 842,
+    "sha256": "1ca7e5dd05a96c74a5c2b5304e6513c258fbf555eb100e3195e4b383384db752",
+    "copy_sha256": "1ca7e5dd05a96c74a5c2b5304e6513c258fbf555eb100e3195e4b383384db752",
+    "original_last_write_utc": "2026-10-09T16:17:48.915766+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_92.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_92.txt",
+    "bytes": 842,
+    "sha256": "f41b89287e50dce43962ee42dfbbc7b1fe25836d23c3d97a9be131ab547c11da",
+    "copy_sha256": "f41b89287e50dce43962ee42dfbbc7b1fe25836d23c3d97a9be131ab547c11da",
+    "original_last_write_utc": "2026-10-09T16:17:50.094324+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_93.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_93.txt",
+    "bytes": 560,
+    "sha256": "1a0851044f7303030b419033304f18129b3776c809d8166913de5bc64a4b1371",
+    "copy_sha256": "1a0851044f7303030b419033304f18129b3776c809d8166913de5bc64a4b1371",
+    "original_last_write_utc": "2026-10-09T16:17:50.410574+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_94.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_94.txt",
+    "bytes": 560,
+    "sha256": "84f09249799ee3828dfbbab984540fdcc4c7f9cf150987f651988b98853c4dd7",
+    "copy_sha256": "84f09249799ee3828dfbbab984540fdcc4c7f9cf150987f651988b98853c4dd7",
+    "original_last_write_utc": "2026-10-09T16:17:50.724809+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_95.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_95.txt",
+    "bytes": 654,
+    "sha256": "770262cce7d52eab2ac3c22cdab40759fb340078da58441a061d48af378f5bc9",
+    "copy_sha256": "770262cce7d52eab2ac3c22cdab40759fb340078da58441a061d48af378f5bc9",
+    "original_last_write_utc": "2026-10-09T16:17:51.340194+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_96.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_96.txt",
+    "bytes": 560,
+    "sha256": "97ec7bec2b0542f0379c7d6639c2d35b97e5d661fd526567aa5299392ceb3857",
+    "copy_sha256": "97ec7bec2b0542f0379c7d6639c2d35b97e5d661fd526567aa5299392ceb3857",
+    "original_last_write_utc": "2026-10-09T16:17:51.659758+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_97.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_97.txt",
+    "bytes": 654,
+    "sha256": "acbea8de61df5168ba8a147bf3bfd83025662f47ccdb0fbbfb5d9d385f6d9eca",
+    "copy_sha256": "acbea8de61df5168ba8a147bf3bfd83025662f47ccdb0fbbfb5d9d385f6d9eca",
+    "original_last_write_utc": "2026-10-09T16:17:52.251452+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_98.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_98.txt",
+    "bytes": 560,
+    "sha256": "aa9ae59abe58d33f3216d4ab7bc8b5edb879f8ad2dcc7a1fa1b1eec216dd708c",
+    "copy_sha256": "aa9ae59abe58d33f3216d4ab7bc8b5edb879f8ad2dcc7a1fa1b1eec216dd708c",
+    "original_last_write_utc": "2026-10-09T16:17:52.566843+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_99.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FIRESTARTER_EVOLVE_NEW_99.txt",
+    "bytes": 560,
+    "sha256": "639c479b940167a9fa41dce6bd2f27ddc484f3def2780c6a27f41fb4a8eb95f1",
+    "copy_sha256": "639c479b940167a9fa41dce6bd2f27ddc484f3def2780c6a27f41fb4a8eb95f1",
+    "original_last_write_utc": "2026-10-09T16:17:52.881596+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FireStarter_LoadState.h",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FireStarter_LoadState.h",
+    "bytes": 5427,
+    "sha256": "3e8f467697481280b732f7751036e57d21fe70a7193e8351bfac60b46bfa6ffc",
+    "copy_sha256": "3e8f467697481280b732f7751036e57d21fe70a7193e8351bfac60b46bfa6ffc",
+    "original_last_write_utc": "2026-10-09T16:19:09.925427+00:00"
+  },
+  {
+    "name": "2026-10-09_09-17-02_FireStarterSettings.h",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-17-02_FireStarterSettings.h",
+    "bytes": 31852,
+    "sha256": "a9cfa4733ff86744bb18d0a2a0eb79f24a41f886634b897eefd49481fcd0eaa5",
+    "copy_sha256": "a9cfa4733ff86744bb18d0a2a0eb79f24a41f886634b897eefd49481fcd0eaa5",
+    "original_last_write_utc": "2026-10-09T16:17:05.868255+00:00"
+  }
+]

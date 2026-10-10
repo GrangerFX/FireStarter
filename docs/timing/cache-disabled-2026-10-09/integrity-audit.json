@@ -1,0 +1,36 @@
+{
+  "observations": [
+    {
+      "observation": "EvolveCPU\\Run1",
+      "files": 67,
+      "hash_mismatches": []
+    },
+    {
+      "observation": "EvolveCPU\\Run2",
+      "files": 67,
+      "hash_mismatches": []
+    },
+    {
+      "observation": "EvolveGPU\\Run1",
+      "files": 259,
+      "hash_mismatches": []
+    },
+    {
+      "observation": "EvolveGPU\\Run2",
+      "files": 259,
+      "hash_mismatches": []
+    },
+    {
+      "observation": "EvolveNew\\Run1",
+      "files": 259,
+      "hash_mismatches": []
+    },
+    {
+      "observation": "EvolveNew\\Run2",
+      "files": 259,
+      "hash_mismatches": []
+    }
+  ],
+  "total_raw_files": 1170,
+  "original_and_copy_checks": 2340
+}

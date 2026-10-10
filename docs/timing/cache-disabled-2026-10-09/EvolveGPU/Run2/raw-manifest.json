@@ -1,0 +1,2074 @@
+[
+  {
+    "name": "2026-10-09_09-28-05_EvolveGPU_Results.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_EvolveGPU_Results.txt",
+    "bytes": 47360,
+    "sha256": "baa05658115ff6c0bc914948d1916657402fd2d71114c45f1829585ee617a31a",
+    "copy_sha256": "baa05658115ff6c0bc914948d1916657402fd2d71114c45f1829585ee617a31a",
+    "original_last_write_utc": "2026-10-09T16:34:31.823178+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_0.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_0.txt",
+    "bytes": 1688,
+    "sha256": "30e1f9522c47af5761f03e81c499d10a5a0226ac3633334b8b1c595850d959fd",
+    "copy_sha256": "30e1f9522c47af5761f03e81c499d10a5a0226ac3633334b8b1c595850d959fd",
+    "original_last_write_utc": "2026-10-09T16:28:12.464078+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_1.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_1.txt",
+    "bytes": 1594,
+    "sha256": "1421a19297930fb28de9d125af87d1aac005211de5153a4b8116df9c17491aae",
+    "copy_sha256": "1421a19297930fb28de9d125af87d1aac005211de5153a4b8116df9c17491aae",
+    "original_last_write_utc": "2026-10-09T16:28:14.301030+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_10.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_10.txt",
+    "bytes": 936,
+    "sha256": "e55c53144627745707f130168836270bb023c90473219d5152f8ff2254493c5e",
+    "copy_sha256": "e55c53144627745707f130168836270bb023c90473219d5152f8ff2254493c5e",
+    "original_last_write_utc": "2026-10-09T16:28:23.176730+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_100.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_100.txt",
+    "bytes": 941,
+    "sha256": "0e3584071aaf8da305f3f33c12b39b2ebb955b75a022d4e32ea9b829d7346d60",
+    "copy_sha256": "0e3584071aaf8da305f3f33c12b39b2ebb955b75a022d4e32ea9b829d7346d60",
+    "original_last_write_utc": "2026-10-09T16:30:35.210382+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_101.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_101.txt",
+    "bytes": 1701,
+    "sha256": "42349b36dd380318f3b6e8ec4df450596dac1905811ccb3dd1bba2810ae46613",
+    "copy_sha256": "42349b36dd380318f3b6e8ec4df450596dac1905811ccb3dd1bba2810ae46613",
+    "original_last_write_utc": "2026-10-09T16:30:37.448509+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_102.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_102.txt",
+    "bytes": 1321,
+    "sha256": "b02ddb3daa2828f7ca8c47b223cfe5787fb1794c3f5ab358264926ccd3e18927",
+    "copy_sha256": "b02ddb3daa2828f7ca8c47b223cfe5787fb1794c3f5ab358264926ccd3e18927",
+    "original_last_write_utc": "2026-10-09T16:30:39.172766+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_103.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_103.txt",
+    "bytes": 751,
+    "sha256": "028bec5cabbe5d83646b72bda1bf3dc0ab6f264cbc310c2d37ba423ee5c0496f",
+    "copy_sha256": "028bec5cabbe5d83646b72bda1bf3dc0ab6f264cbc310c2d37ba423ee5c0496f",
+    "original_last_write_utc": "2026-10-09T16:30:39.903866+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_104.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_104.txt",
+    "bytes": 1416,
+    "sha256": "21f469e0d911276e7f0c7e027518fb9ca09e8f7aa1bb44fd8fd2d6fa1e1a5323",
+    "copy_sha256": "21f469e0d911276e7f0c7e027518fb9ca09e8f7aa1bb44fd8fd2d6fa1e1a5323",
+    "original_last_write_utc": "2026-10-09T16:30:41.630840+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_105.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_105.txt",
+    "bytes": 751,
+    "sha256": "941742a65ad7f5420c75d991e59e4cb25c23091f391b29577444df4cc5a8eb23",
+    "copy_sha256": "941742a65ad7f5420c75d991e59e4cb25c23091f391b29577444df4cc5a8eb23",
+    "original_last_write_utc": "2026-10-09T16:30:42.398077+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_106.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_106.txt",
+    "bytes": 561,
+    "sha256": "8461572ee051114457b2625a52c8c19e921c164241dd9e3ea832910c6c6c98b2",
+    "copy_sha256": "8461572ee051114457b2625a52c8c19e921c164241dd9e3ea832910c6c6c98b2",
+    "original_last_write_utc": "2026-10-09T16:30:43.025697+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_107.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_107.txt",
+    "bytes": 846,
+    "sha256": "2e518f2669a16de727f2e0ed999d9a4e2847bf09a3ee74b27e2a9c95df183597",
+    "copy_sha256": "2e518f2669a16de727f2e0ed999d9a4e2847bf09a3ee74b27e2a9c95df183597",
+    "original_last_write_utc": "2026-10-09T16:30:43.764108+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_108.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_108.txt",
+    "bytes": 561,
+    "sha256": "d7d0b1f260344e43879e18897f0885fd102f13a0651d6d6061c42be65dfe5bfd",
+    "copy_sha256": "d7d0b1f260344e43879e18897f0885fd102f13a0651d6d6061c42be65dfe5bfd",
+    "original_last_write_utc": "2026-10-09T16:30:44.380214+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_109.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_109.txt",
+    "bytes": 561,
+    "sha256": "01c019be37614d2acc8346b19ca02aa37b5390195efea5ef5d7b68da0de9961b",
+    "copy_sha256": "01c019be37614d2acc8346b19ca02aa37b5390195efea5ef5d7b68da0de9961b",
+    "original_last_write_utc": "2026-10-09T16:30:45.086554+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_11.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_11.txt",
+    "bytes": 560,
+    "sha256": "6dedf9ab1b72c1e2d007fdfce9791a2c58f44f0e3d19d42a74ec7deb115945ba",
+    "copy_sha256": "6dedf9ab1b72c1e2d007fdfce9791a2c58f44f0e3d19d42a74ec7deb115945ba",
+    "original_last_write_utc": "2026-10-09T16:28:23.843618+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_110.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_110.txt",
+    "bytes": 561,
+    "sha256": "82f1bd931482f7cb9197c70885a15fa21cc367e64b209384d42a9c8a2ace4771",
+    "copy_sha256": "82f1bd931482f7cb9197c70885a15fa21cc367e64b209384d42a9c8a2ace4771",
+    "original_last_write_utc": "2026-10-09T16:30:45.752679+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_111.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_111.txt",
+    "bytes": 941,
+    "sha256": "86ce21eb8d9b6ae498d2f9b4734366895268c968f95647648d642dca770a66e7",
+    "copy_sha256": "86ce21eb8d9b6ae498d2f9b4734366895268c968f95647648d642dca770a66e7",
+    "original_last_write_utc": "2026-10-09T16:30:46.969223+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_112.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_112.txt",
+    "bytes": 561,
+    "sha256": "62a5bc6f94d836a3d69935611b58e69e1043fd8782f82cd6a86b2322e2cef8da",
+    "copy_sha256": "62a5bc6f94d836a3d69935611b58e69e1043fd8782f82cd6a86b2322e2cef8da",
+    "original_last_write_utc": "2026-10-09T16:30:47.623690+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_113.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_113.txt",
+    "bytes": 561,
+    "sha256": "378ae9c3d3da3788460b6c7229a19f5b42f69f34098862bf9741f02d2689db55",
+    "copy_sha256": "378ae9c3d3da3788460b6c7229a19f5b42f69f34098862bf9741f02d2689db55",
+    "original_last_write_utc": "2026-10-09T16:30:48.347529+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_114.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_114.txt",
+    "bytes": 1321,
+    "sha256": "b2812d3bc5c816438d749b676e0b72681166df04324f1483115b6be627316b67",
+    "copy_sha256": "b2812d3bc5c816438d749b676e0b72681166df04324f1483115b6be627316b67",
+    "original_last_write_utc": "2026-10-09T16:30:50.266705+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_115.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_115.txt",
+    "bytes": 941,
+    "sha256": "3ac0dc0cbdd6ed2d00b3a86e4e3f6bed20ceef3c0999665263e8862774942f5d",
+    "copy_sha256": "3ac0dc0cbdd6ed2d00b3a86e4e3f6bed20ceef3c0999665263e8862774942f5d",
+    "original_last_write_utc": "2026-10-09T16:30:51.507980+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_116.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_116.txt",
+    "bytes": 656,
+    "sha256": "851eb39526097fc7eacfa2da77a689f417d0afb6fd66488807e6b64bc23b3a53",
+    "copy_sha256": "851eb39526097fc7eacfa2da77a689f417d0afb6fd66488807e6b64bc23b3a53",
+    "original_last_write_utc": "2026-10-09T16:30:52.231441+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_117.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_117.txt",
+    "bytes": 561,
+    "sha256": "d52a9ea33550da25a452981f2e4b1ff1ebfdc7b744542ea91534d98085c8d25e",
+    "copy_sha256": "d52a9ea33550da25a452981f2e4b1ff1ebfdc7b744542ea91534d98085c8d25e",
+    "original_last_write_utc": "2026-10-09T16:30:52.876865+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_118.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_118.txt",
+    "bytes": 4741,
+    "sha256": "8de960833c85d856eace86ca00f79cd1476ef43647e2277a503eb8e186b5b14b",
+    "copy_sha256": "8de960833c85d856eace86ca00f79cd1476ef43647e2277a503eb8e186b5b14b",
+    "original_last_write_utc": "2026-10-09T16:30:59.238867+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_119.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_119.txt",
+    "bytes": 656,
+    "sha256": "8a9722a98cfb61155f037742a1c8f6b9da6fe4797d62191d9ab1244ee7d79237",
+    "copy_sha256": "8a9722a98cfb61155f037742a1c8f6b9da6fe4797d62191d9ab1244ee7d79237",
+    "original_last_write_utc": "2026-10-09T16:30:59.976194+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_12.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_12.txt",
+    "bytes": 560,
+    "sha256": "6b542bf83c69d92fbdaff43655aaa9cfec1f0f777ffa050ff30ea20c4d3f06d5",
+    "copy_sha256": "6b542bf83c69d92fbdaff43655aaa9cfec1f0f777ffa050ff30ea20c4d3f06d5",
+    "original_last_write_utc": "2026-10-09T16:28:24.554990+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_120.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_120.txt",
+    "bytes": 1321,
+    "sha256": "64037a1eff1bf4dc72251a281cec802c08781cae65213203088055ca9843fe2d",
+    "copy_sha256": "64037a1eff1bf4dc72251a281cec802c08781cae65213203088055ca9843fe2d",
+    "original_last_write_utc": "2026-10-09T16:31:01.606839+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_121.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_121.txt",
+    "bytes": 846,
+    "sha256": "a31dbfc66c47724cf1577786710f1a53a5f34ca3cf37f6db015ce3f052e93c7b",
+    "copy_sha256": "a31dbfc66c47724cf1577786710f1a53a5f34ca3cf37f6db015ce3f052e93c7b",
+    "original_last_write_utc": "2026-10-09T16:31:02.391061+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_122.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_122.txt",
+    "bytes": 3791,
+    "sha256": "5bdd4fbf31d91d57239e9a6aa889e3a9eed69fcb41292f4a92af692e974f01d5",
+    "copy_sha256": "5bdd4fbf31d91d57239e9a6aa889e3a9eed69fcb41292f4a92af692e974f01d5",
+    "original_last_write_utc": "2026-10-09T16:31:07.220061+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_123.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_123.txt",
+    "bytes": 1606,
+    "sha256": "d1514fddeab87ef78dd5268f41ac7380220a54f32f7153680f94eecec388d214",
+    "copy_sha256": "d1514fddeab87ef78dd5268f41ac7380220a54f32f7153680f94eecec388d214",
+    "original_last_write_utc": "2026-10-09T16:31:08.955034+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_124.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_124.txt",
+    "bytes": 1036,
+    "sha256": "9cd82a097f42330d5725260ba0d2341bd66b15abac82adbd73293a2f3566a12a",
+    "copy_sha256": "9cd82a097f42330d5725260ba0d2341bd66b15abac82adbd73293a2f3566a12a",
+    "original_last_write_utc": "2026-10-09T16:31:10.132639+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_125.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_125.txt",
+    "bytes": 751,
+    "sha256": "ba12078a59e8a2bb39312f7ae53c5278647c7f4998274bd36ccdbd1270d4491e",
+    "copy_sha256": "ba12078a59e8a2bb39312f7ae53c5278647c7f4998274bd36ccdbd1270d4491e",
+    "original_last_write_utc": "2026-10-09T16:31:10.949167+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_126.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_126.txt",
+    "bytes": 656,
+    "sha256": "40938e6aef6c9635dc6e5225c2b91fbbdc00aed78617ea3a89ae90b04ce44a8c",
+    "copy_sha256": "40938e6aef6c9635dc6e5225c2b91fbbdc00aed78617ea3a89ae90b04ce44a8c",
+    "original_last_write_utc": "2026-10-09T16:31:11.623412+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_127.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_127.txt",
+    "bytes": 561,
+    "sha256": "03c1708eb52fdb13e09f375dc99b93f44bb18bb8bea1b12f22ffdc00fde773ec",
+    "copy_sha256": "03c1708eb52fdb13e09f375dc99b93f44bb18bb8bea1b12f22ffdc00fde773ec",
+    "original_last_write_utc": "2026-10-09T16:31:12.236463+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_128.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_128.txt",
+    "bytes": 751,
+    "sha256": "980933509d93709faf1d5837b4eea936e671b2f824288aad3f3bbf840b102356",
+    "copy_sha256": "980933509d93709faf1d5837b4eea936e671b2f824288aad3f3bbf840b102356",
+    "original_last_write_utc": "2026-10-09T16:31:13.149558+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_129.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_129.txt",
+    "bytes": 1131,
+    "sha256": "5768d87df8c208af050bb085e14b9850df8dd41ee83f9d06811a2f07423e3f43",
+    "copy_sha256": "5768d87df8c208af050bb085e14b9850df8dd41ee83f9d06811a2f07423e3f43",
+    "original_last_write_utc": "2026-10-09T16:31:14.468499+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_13.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_13.txt",
+    "bytes": 1030,
+    "sha256": "491e3caa9bcfc21e481bfd11291d910416c60d7382f0c2e1ca7de10bc526c5ef",
+    "copy_sha256": "491e3caa9bcfc21e481bfd11291d910416c60d7382f0c2e1ca7de10bc526c5ef",
+    "original_last_write_utc": "2026-10-09T16:28:25.942487+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_130.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_130.txt",
+    "bytes": 656,
+    "sha256": "cc6ea381cc956ceb709627c40de8e9be545e9e72fe1c3c06b80236168950f5f8",
+    "copy_sha256": "cc6ea381cc956ceb709627c40de8e9be545e9e72fe1c3c06b80236168950f5f8",
+    "original_last_write_utc": "2026-10-09T16:31:15.152351+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_131.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_131.txt",
+    "bytes": 3221,
+    "sha256": "fb10b12269cb996c634984862b3b118814cbf6e5bf59e49b381a78482763d626",
+    "copy_sha256": "fb10b12269cb996c634984862b3b118814cbf6e5bf59e49b381a78482763d626",
+    "original_last_write_utc": "2026-10-09T16:31:19.354506+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_132.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_132.txt",
+    "bytes": 941,
+    "sha256": "5ab7996eb84a955048ab5e3ed95741078522c728c962af061cfd6c7d0bbf1639",
+    "copy_sha256": "5ab7996eb84a955048ab5e3ed95741078522c728c962af061cfd6c7d0bbf1639",
+    "original_last_write_utc": "2026-10-09T16:31:20.625094+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_133.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_133.txt",
+    "bytes": 1131,
+    "sha256": "d66e8366bf0d5d0473ff62377f2b9f0d3acb21f66ac08d7fde3682814e2b4029",
+    "copy_sha256": "d66e8366bf0d5d0473ff62377f2b9f0d3acb21f66ac08d7fde3682814e2b4029",
+    "original_last_write_utc": "2026-10-09T16:31:22.037196+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_134.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_134.txt",
+    "bytes": 1606,
+    "sha256": "41d05ffd064509a82cd791c74442371c9e4a5e6998d2736a970f518030a020bd",
+    "copy_sha256": "41d05ffd064509a82cd791c74442371c9e4a5e6998d2736a970f518030a020bd",
+    "original_last_write_utc": "2026-10-09T16:31:23.793926+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_135.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_135.txt",
+    "bytes": 1416,
+    "sha256": "cd6b9d09a28f01ebf29a46224b824ae714ca6cea2d596324d4a8e4162ecdee99",
+    "copy_sha256": "cd6b9d09a28f01ebf29a46224b824ae714ca6cea2d596324d4a8e4162ecdee99",
+    "original_last_write_utc": "2026-10-09T16:31:25.508513+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_136.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_136.txt",
+    "bytes": 941,
+    "sha256": "23a03b10ee3b228f0f29fd4ec35d2ba3c155b1b3eefa7ab804e65b1ebc6ff165",
+    "copy_sha256": "23a03b10ee3b228f0f29fd4ec35d2ba3c155b1b3eefa7ab804e65b1ebc6ff165",
+    "original_last_write_utc": "2026-10-09T16:31:26.758164+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_137.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_137.txt",
+    "bytes": 751,
+    "sha256": "81d8c0b7d2d920713f575b31f85d4f47a10257c4a4f3ce93e47480dd1ee793cd",
+    "copy_sha256": "81d8c0b7d2d920713f575b31f85d4f47a10257c4a4f3ce93e47480dd1ee793cd",
+    "original_last_write_utc": "2026-10-09T16:31:27.636172+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_138.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_138.txt",
+    "bytes": 1416,
+    "sha256": "cc4a10fe5c0dde68d944528ef4081b73fa100e7fc4be2f8b8d2cddffc3c9fd04",
+    "copy_sha256": "cc4a10fe5c0dde68d944528ef4081b73fa100e7fc4be2f8b8d2cddffc3c9fd04",
+    "original_last_write_utc": "2026-10-09T16:31:29.345314+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_139.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_139.txt",
+    "bytes": 1131,
+    "sha256": "ef07ce365f472cb939cad7b0b9de63dec18f464e990fe6734c620b51357c3219",
+    "copy_sha256": "ef07ce365f472cb939cad7b0b9de63dec18f464e990fe6734c620b51357c3219",
+    "original_last_write_utc": "2026-10-09T16:31:30.559504+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_14.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_14.txt",
+    "bytes": 1970,
+    "sha256": "6c4d1c086c75d88ceeadb4cffd5b9f244bc651716184d350bf678c42c7d46c15",
+    "copy_sha256": "6c4d1c086c75d88ceeadb4cffd5b9f244bc651716184d350bf678c42c7d46c15",
+    "original_last_write_utc": "2026-10-09T16:28:28.186824+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_140.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_140.txt",
+    "bytes": 1416,
+    "sha256": "03548051d6f7cd2f3801151774d4f50b30e806b6e7d2b1edde30075686b0776a",
+    "copy_sha256": "03548051d6f7cd2f3801151774d4f50b30e806b6e7d2b1edde30075686b0776a",
+    "original_last_write_utc": "2026-10-09T16:31:32.279195+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_141.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_141.txt",
+    "bytes": 1226,
+    "sha256": "5e13af4671db89d6a652a18b8a5fe454086ab18fe926677b607a1e8e44bce913",
+    "copy_sha256": "5e13af4671db89d6a652a18b8a5fe454086ab18fe926677b607a1e8e44bce913",
+    "original_last_write_utc": "2026-10-09T16:31:33.520574+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_142.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_142.txt",
+    "bytes": 561,
+    "sha256": "2b2727bd8893573847fe713fedb815fe29d4a565c0f06dec703a8a8d611514f8",
+    "copy_sha256": "2b2727bd8893573847fe713fedb815fe29d4a565c0f06dec703a8a8d611514f8",
+    "original_last_write_utc": "2026-10-09T16:31:34.117570+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_143.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_143.txt",
+    "bytes": 1226,
+    "sha256": "8dc12b6f9973550f704452103108cf5f3ef6ee6de1909ae27132ef3f74ae414b",
+    "copy_sha256": "8dc12b6f9973550f704452103108cf5f3ef6ee6de1909ae27132ef3f74ae414b",
+    "original_last_write_utc": "2026-10-09T16:31:35.412641+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_144.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_144.txt",
+    "bytes": 2461,
+    "sha256": "4db18d28b7df916c54b73f5a5d271ec3d07ae1f84a87c86ee363b287cd4e2d6d",
+    "copy_sha256": "4db18d28b7df916c54b73f5a5d271ec3d07ae1f84a87c86ee363b287cd4e2d6d",
+    "original_last_write_utc": "2026-10-09T16:31:38.635333+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_145.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_145.txt",
+    "bytes": 1321,
+    "sha256": "66a17a403737f48661aefcfb3c24ed98b5c355f71f15e51d7692b6d07dac8c23",
+    "copy_sha256": "66a17a403737f48661aefcfb3c24ed98b5c355f71f15e51d7692b6d07dac8c23",
+    "original_last_write_utc": "2026-10-09T16:31:40.566872+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_146.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_146.txt",
+    "bytes": 1321,
+    "sha256": "4ad8c301c81d9f9e52d7c6cc0472b7ce4bd095d30ad10cff43d222c3b13ceeec",
+    "copy_sha256": "4ad8c301c81d9f9e52d7c6cc0472b7ce4bd095d30ad10cff43d222c3b13ceeec",
+    "original_last_write_utc": "2026-10-09T16:31:42.291867+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_147.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_147.txt",
+    "bytes": 1226,
+    "sha256": "6c4e056f34a6ef9d1e1b63c17b22d8bb9ab843bb65e76c57331c6079351ed557",
+    "copy_sha256": "6c4e056f34a6ef9d1e1b63c17b22d8bb9ab843bb65e76c57331c6079351ed557",
+    "original_last_write_utc": "2026-10-09T16:31:43.600479+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_148.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_148.txt",
+    "bytes": 1131,
+    "sha256": "4b77c5e7ba27ccc10d93a866d143e217786bb832a7276fa7f1e9ec4c861dab62",
+    "copy_sha256": "4b77c5e7ba27ccc10d93a866d143e217786bb832a7276fa7f1e9ec4c861dab62",
+    "original_last_write_utc": "2026-10-09T16:31:44.844054+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_149.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_149.txt",
+    "bytes": 941,
+    "sha256": "cf1a9a8ed7e793702f755eb459378aaf76ae6e370f63e1159de4192e43540dc6",
+    "copy_sha256": "cf1a9a8ed7e793702f755eb459378aaf76ae6e370f63e1159de4192e43540dc6",
+    "original_last_write_utc": "2026-10-09T16:31:46.200267+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_15.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_15.txt",
+    "bytes": 1124,
+    "sha256": "8c3edce7584f68cb521c173136e6a0374c63b8fbde5da08e101a8c41f8a9d192",
+    "copy_sha256": "8c3edce7584f68cb521c173136e6a0374c63b8fbde5da08e101a8c41f8a9d192",
+    "original_last_write_utc": "2026-10-09T16:28:29.521909+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_150.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_150.txt",
+    "bytes": 1416,
+    "sha256": "1979982b79e8ed730d99c71be019cb53c5da0f30323fc3941f6d20d19105b11c",
+    "copy_sha256": "1979982b79e8ed730d99c71be019cb53c5da0f30323fc3941f6d20d19105b11c",
+    "original_last_write_utc": "2026-10-09T16:31:47.946951+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_151.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_151.txt",
+    "bytes": 1606,
+    "sha256": "53d80d59d81567fbe43492bb56051d2e353ae165cb1722a541365709a4f94aa2",
+    "copy_sha256": "53d80d59d81567fbe43492bb56051d2e353ae165cb1722a541365709a4f94aa2",
+    "original_last_write_utc": "2026-10-09T16:31:49.685797+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_152.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_152.txt",
+    "bytes": 941,
+    "sha256": "5ce1858be3a3ab2955e67353c11d164ba5fcdf89237950eae3497f6a41ce1f5b",
+    "copy_sha256": "5ce1858be3a3ab2955e67353c11d164ba5fcdf89237950eae3497f6a41ce1f5b",
+    "original_last_write_utc": "2026-10-09T16:31:50.815146+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_153.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_153.txt",
+    "bytes": 846,
+    "sha256": "94943734bf46607d54b34cd3e98934c663f4c5fd6e2ba896c04b1bf4f29dc75f",
+    "copy_sha256": "94943734bf46607d54b34cd3e98934c663f4c5fd6e2ba896c04b1bf4f29dc75f",
+    "original_last_write_utc": "2026-10-09T16:31:51.572896+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_154.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_154.txt",
+    "bytes": 941,
+    "sha256": "9e8632861d02028ba2f84066084b89a53f157581200e312cae0a49d20765d8bd",
+    "copy_sha256": "9e8632861d02028ba2f84066084b89a53f157581200e312cae0a49d20765d8bd",
+    "original_last_write_utc": "2026-10-09T16:31:52.700335+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_155.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_155.txt",
+    "bytes": 846,
+    "sha256": "f9629252b14e2cfb4be1ac96cc4d21fd79ac45df7b9b2b43484910c981996cff",
+    "copy_sha256": "f9629252b14e2cfb4be1ac96cc4d21fd79ac45df7b9b2b43484910c981996cff",
+    "original_last_write_utc": "2026-10-09T16:31:53.468912+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_156.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_156.txt",
+    "bytes": 1986,
+    "sha256": "871ff749f145e14c5231eb770ea105cc4e56b923b4173c6802e30023eeddb56a",
+    "copy_sha256": "871ff749f145e14c5231eb770ea105cc4e56b923b4173c6802e30023eeddb56a",
+    "original_last_write_utc": "2026-10-09T16:31:55.808114+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_157.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_157.txt",
+    "bytes": 3696,
+    "sha256": "f3a3acddeeb9534d089683a082cbf9165fe010959fdbfca53509cd7f2fe3cd78",
+    "copy_sha256": "f3a3acddeeb9534d089683a082cbf9165fe010959fdbfca53509cd7f2fe3cd78",
+    "original_last_write_utc": "2026-10-09T16:32:00.584068+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_158.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_158.txt",
+    "bytes": 656,
+    "sha256": "08a5df88a5a4c57f49fe5594feac4582334335592a150592543719a90d76db98",
+    "copy_sha256": "08a5df88a5a4c57f49fe5594feac4582334335592a150592543719a90d76db98",
+    "original_last_write_utc": "2026-10-09T16:32:01.336853+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_159.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_159.txt",
+    "bytes": 1416,
+    "sha256": "fa1de1ac61095844ce53afda02e5ca9bda69ceb81b55a73165154ac935245e2f",
+    "copy_sha256": "fa1de1ac61095844ce53afda02e5ca9bda69ceb81b55a73165154ac935245e2f",
+    "original_last_write_utc": "2026-10-09T16:32:03.039318+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_16.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_16.txt",
+    "bytes": 4226,
+    "sha256": "0a1bc47d413049f8b6b5753dfa5d6f20fc7fe01c6b89025a2dfe8ab225b25560",
+    "copy_sha256": "0a1bc47d413049f8b6b5753dfa5d6f20fc7fe01c6b89025a2dfe8ab225b25560",
+    "original_last_write_utc": "2026-10-09T16:28:34.838931+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_160.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_160.txt",
+    "bytes": 846,
+    "sha256": "d2dcd774c464d4371bc1b555d01ae4fb69ae7f1de48877f3fdaa23a1c1593f81",
+    "copy_sha256": "d2dcd774c464d4371bc1b555d01ae4fb69ae7f1de48877f3fdaa23a1c1593f81",
+    "original_last_write_utc": "2026-10-09T16:32:03.759086+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_161.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_161.txt",
+    "bytes": 1606,
+    "sha256": "94a723dc2a1081b226a881f18642f61348f3917a4464e249fd0ff819735105e3",
+    "copy_sha256": "94a723dc2a1081b226a881f18642f61348f3917a4464e249fd0ff819735105e3",
+    "original_last_write_utc": "2026-10-09T16:32:05.490805+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_162.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_162.txt",
+    "bytes": 656,
+    "sha256": "f5dc37359b397c127f46af5789c39e74ce32e6b5923c9a69472d427be08288a0",
+    "copy_sha256": "f5dc37359b397c127f46af5789c39e74ce32e6b5923c9a69472d427be08288a0",
+    "original_last_write_utc": "2026-10-09T16:32:06.184255+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_163.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_163.txt",
+    "bytes": 1321,
+    "sha256": "5984efe6b9beb61bbab0d1cd1f8b642ceffd5e9d9edbb4b42e2096c2ca8be317",
+    "copy_sha256": "5984efe6b9beb61bbab0d1cd1f8b642ceffd5e9d9edbb4b42e2096c2ca8be317",
+    "original_last_write_utc": "2026-10-09T16:32:08.117981+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_164.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_164.txt",
+    "bytes": 941,
+    "sha256": "b5735d5f013855207801695021ad200ac079b16287391ee1cc0f9cd28183f84a",
+    "copy_sha256": "b5735d5f013855207801695021ad200ac079b16287391ee1cc0f9cd28183f84a",
+    "original_last_write_utc": "2026-10-09T16:32:09.314461+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_165.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_165.txt",
+    "bytes": 561,
+    "sha256": "07a9fa466c82667784f2f1638ee7750d963bfeaa840632eed9e1666335dc082b",
+    "copy_sha256": "07a9fa466c82667784f2f1638ee7750d963bfeaa840632eed9e1666335dc082b",
+    "original_last_write_utc": "2026-10-09T16:32:10.026783+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_166.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_166.txt",
+    "bytes": 656,
+    "sha256": "b12a780e5cd94608e0c24b5c3f0cf659c47547235755bc03e7545d9af4a30453",
+    "copy_sha256": "b12a780e5cd94608e0c24b5c3f0cf659c47547235755bc03e7545d9af4a30453",
+    "original_last_write_utc": "2026-10-09T16:32:10.782529+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_167.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_167.txt",
+    "bytes": 561,
+    "sha256": "4d62ee9d44938152ba4780bca5d38acf6d922986eba0dfaf00931d646ab9109a",
+    "copy_sha256": "4d62ee9d44938152ba4780bca5d38acf6d922986eba0dfaf00931d646ab9109a",
+    "original_last_write_utc": "2026-10-09T16:32:11.442744+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_168.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_168.txt",
+    "bytes": 1416,
+    "sha256": "240fb5885982c662dd569edda0ae74714324cc352b17642a58364422d3abf4db",
+    "copy_sha256": "240fb5885982c662dd569edda0ae74714324cc352b17642a58364422d3abf4db",
+    "original_last_write_utc": "2026-10-09T16:32:13.216384+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_169.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_169.txt",
+    "bytes": 941,
+    "sha256": "44d56e335d83df73097a7fbfd45fffd58d0bc5e5de6eb5537513ae373a9917c0",
+    "copy_sha256": "44d56e335d83df73097a7fbfd45fffd58d0bc5e5de6eb5537513ae373a9917c0",
+    "original_last_write_utc": "2026-10-09T16:32:14.410102+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_17.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_17.txt",
+    "bytes": 560,
+    "sha256": "5b5da5f0eb864267ffead4b79596cfe6b049ea65f7563cc1101c6cd785727168",
+    "copy_sha256": "5b5da5f0eb864267ffead4b79596cfe6b049ea65f7563cc1101c6cd785727168",
+    "original_last_write_utc": "2026-10-09T16:28:35.465849+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_170.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_170.txt",
+    "bytes": 1131,
+    "sha256": "1892767e95e152e5ea6b456ce563c6c311c80bc328f49919f96801a435e6177c",
+    "copy_sha256": "1892767e95e152e5ea6b456ce563c6c311c80bc328f49919f96801a435e6177c",
+    "original_last_write_utc": "2026-10-09T16:32:15.671854+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_171.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_171.txt",
+    "bytes": 1416,
+    "sha256": "df63de2cc80a4a77bf98ef259fc2abc0527287820b44078a083231ad7cc7174a",
+    "copy_sha256": "df63de2cc80a4a77bf98ef259fc2abc0527287820b44078a083231ad7cc7174a",
+    "original_last_write_utc": "2026-10-09T16:32:17.628796+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_172.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_172.txt",
+    "bytes": 3696,
+    "sha256": "65d114ec6de3a766e8a2f6399d1174b23fab6ee61dd9c7fdfbb7e4ffd84d7814",
+    "copy_sha256": "65d114ec6de3a766e8a2f6399d1174b23fab6ee61dd9c7fdfbb7e4ffd84d7814",
+    "original_last_write_utc": "2026-10-09T16:32:22.468579+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_173.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_173.txt",
+    "bytes": 2556,
+    "sha256": "1fbb2b7e8f9190643bbfacadcf198438241a529a53979f1e51d044266e6e4927",
+    "copy_sha256": "1fbb2b7e8f9190643bbfacadcf198438241a529a53979f1e51d044266e6e4927",
+    "original_last_write_utc": "2026-10-09T16:32:25.905440+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_174.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_174.txt",
+    "bytes": 656,
+    "sha256": "44987d0b4d353cf68c727213d288da6c5aae230e57bd1eb6bafcfd1e1887204e",
+    "copy_sha256": "44987d0b4d353cf68c727213d288da6c5aae230e57bd1eb6bafcfd1e1887204e",
+    "original_last_write_utc": "2026-10-09T16:32:26.598752+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_175.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_175.txt",
+    "bytes": 846,
+    "sha256": "d81f3cc90591a13b2f93ca5c906fcd1ed90ce6dc95e7b1cfc7533289c0163bec",
+    "copy_sha256": "d81f3cc90591a13b2f93ca5c906fcd1ed90ce6dc95e7b1cfc7533289c0163bec",
+    "original_last_write_utc": "2026-10-09T16:32:27.367897+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_176.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_176.txt",
+    "bytes": 1226,
+    "sha256": "5058f147202375e228648dfbea8e4048ba03c941d2d1434249879d2dab43316a",
+    "copy_sha256": "5058f147202375e228648dfbea8e4048ba03c941d2d1434249879d2dab43316a",
+    "original_last_write_utc": "2026-10-09T16:32:28.577354+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_177.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_177.txt",
+    "bytes": 1416,
+    "sha256": "46a3a3f10e72d1582f551add719c851aab7e0ac6b2902d1f308413ba4fe56f07",
+    "copy_sha256": "46a3a3f10e72d1582f551add719c851aab7e0ac6b2902d1f308413ba4fe56f07",
+    "original_last_write_utc": "2026-10-09T16:32:30.347284+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_178.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_178.txt",
+    "bytes": 561,
+    "sha256": "d7f68865fae946799b4000904cf7c486db7f26b41c575f8c19c03ee8edd0b121",
+    "copy_sha256": "d7f68865fae946799b4000904cf7c486db7f26b41c575f8c19c03ee8edd0b121",
+    "original_last_write_utc": "2026-10-09T16:32:31.009156+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_179.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_179.txt",
+    "bytes": 1321,
+    "sha256": "6fedd81c46455e9ecc32f284848d37afe65ac36acea98f51eb1215218cbbfcfe",
+    "copy_sha256": "6fedd81c46455e9ecc32f284848d37afe65ac36acea98f51eb1215218cbbfcfe",
+    "original_last_write_utc": "2026-10-09T16:32:32.722665+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_18.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_18.txt",
+    "bytes": 1406,
+    "sha256": "2c9d482b847cf9fe983bb3ff2ba64c27695d28c6136f25850a2c3155c1f63e13",
+    "copy_sha256": "2c9d482b847cf9fe983bb3ff2ba64c27695d28c6136f25850a2c3155c1f63e13",
+    "original_last_write_utc": "2026-10-09T16:28:37.235591+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_180.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_180.txt",
+    "bytes": 2081,
+    "sha256": "57e9129e78df4aa8f9e229bd240e020a353e1122dd2a1e8a09941476f761cd70",
+    "copy_sha256": "57e9129e78df4aa8f9e229bd240e020a353e1122dd2a1e8a09941476f761cd70",
+    "original_last_write_utc": "2026-10-09T16:32:35.492626+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_181.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_181.txt",
+    "bytes": 561,
+    "sha256": "2cc8dc8234f6b376446a598e3602c8496ad0d799f55b2a19b9a74ef5b5ced15f",
+    "copy_sha256": "2cc8dc8234f6b376446a598e3602c8496ad0d799f55b2a19b9a74ef5b5ced15f",
+    "original_last_write_utc": "2026-10-09T16:32:36.184600+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_182.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_182.txt",
+    "bytes": 1511,
+    "sha256": "6e63c92402f53719450fcf4beb0306865e60c10a87a28d6dbb3775c52111f26f",
+    "copy_sha256": "6e63c92402f53719450fcf4beb0306865e60c10a87a28d6dbb3775c52111f26f",
+    "original_last_write_utc": "2026-10-09T16:32:37.954744+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_183.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_183.txt",
+    "bytes": 656,
+    "sha256": "13ceac043a344ed3fa11079dcc0cc85a46095b93f94cf7bb5d8f8c20b8cecc9c",
+    "copy_sha256": "13ceac043a344ed3fa11079dcc0cc85a46095b93f94cf7bb5d8f8c20b8cecc9c",
+    "original_last_write_utc": "2026-10-09T16:32:38.675122+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_184.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_184.txt",
+    "bytes": 941,
+    "sha256": "20af0965abfd1d1227f2dcb2c7546654852e09a877c257a3a034307e65aa923c",
+    "copy_sha256": "20af0965abfd1d1227f2dcb2c7546654852e09a877c257a3a034307e65aa923c",
+    "original_last_write_utc": "2026-10-09T16:32:39.817575+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_185.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_185.txt",
+    "bytes": 1511,
+    "sha256": "12e503be56a96d1e43d4b9edba372727367ae0a24280ebf96bc472bf857acd89",
+    "copy_sha256": "12e503be56a96d1e43d4b9edba372727367ae0a24280ebf96bc472bf857acd89",
+    "original_last_write_utc": "2026-10-09T16:32:41.631805+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_186.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_186.txt",
+    "bytes": 656,
+    "sha256": "e0acc7e113ae90e2c5326cbc0bab4d36b735769e0f765a355453319ad869de40",
+    "copy_sha256": "e0acc7e113ae90e2c5326cbc0bab4d36b735769e0f765a355453319ad869de40",
+    "original_last_write_utc": "2026-10-09T16:32:42.314535+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_187.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_187.txt",
+    "bytes": 1131,
+    "sha256": "2b9d515b4bd14422a48d69cd19a034e508d95bc9a4c7f1a06e73e1be88e0396c",
+    "copy_sha256": "2b9d515b4bd14422a48d69cd19a034e508d95bc9a4c7f1a06e73e1be88e0396c",
+    "original_last_write_utc": "2026-10-09T16:32:43.561993+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_188.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_188.txt",
+    "bytes": 1606,
+    "sha256": "d14d9009fb107f5ab243a52f8a0340fd792ded24996143fdfe0a786c26442850",
+    "copy_sha256": "d14d9009fb107f5ab243a52f8a0340fd792ded24996143fdfe0a786c26442850",
+    "original_last_write_utc": "2026-10-09T16:32:45.290684+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_189.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_189.txt",
+    "bytes": 1036,
+    "sha256": "aa0713f50927cc8ea97f9ad16070631958ad339941d3c734020ebde6eede9d96",
+    "copy_sha256": "aa0713f50927cc8ea97f9ad16070631958ad339941d3c734020ebde6eede9d96",
+    "original_last_write_utc": "2026-10-09T16:32:46.637991+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_19.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_19.txt",
+    "bytes": 560,
+    "sha256": "837d57af516048686dc20100de88804190169ef32e959542b906845f6052fde1",
+    "copy_sha256": "837d57af516048686dc20100de88804190169ef32e959542b906845f6052fde1",
+    "original_last_write_utc": "2026-10-09T16:28:37.850935+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_190.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_190.txt",
+    "bytes": 561,
+    "sha256": "45ae6593f0f8955e66034013dceb90518f4eb5e8740004d5affd3b0260dd61db",
+    "copy_sha256": "45ae6593f0f8955e66034013dceb90518f4eb5e8740004d5affd3b0260dd61db",
+    "original_last_write_utc": "2026-10-09T16:32:47.282881+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_191.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_191.txt",
+    "bytes": 2936,
+    "sha256": "3d72533143bb8480a788134b73b99b77d5f03bf13502400588b90543c3488f54",
+    "copy_sha256": "3d72533143bb8480a788134b73b99b77d5f03bf13502400588b90543c3488f54",
+    "original_last_write_utc": "2026-10-09T16:32:51.110542+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_192.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_192.txt",
+    "bytes": 1321,
+    "sha256": "4fc75ffdc41222dad9c4f95bb835703b9df68d3b17d625f535d2f06145cefb4b",
+    "copy_sha256": "4fc75ffdc41222dad9c4f95bb835703b9df68d3b17d625f535d2f06145cefb4b",
+    "original_last_write_utc": "2026-10-09T16:32:52.925792+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_193.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_193.txt",
+    "bytes": 1226,
+    "sha256": "f2999c013a1786e309d161f0f34dc17c4bc6161ba23f68d3d518ecf471828875",
+    "copy_sha256": "f2999c013a1786e309d161f0f34dc17c4bc6161ba23f68d3d518ecf471828875",
+    "original_last_write_utc": "2026-10-09T16:32:54.185686+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_194.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_194.txt",
+    "bytes": 1131,
+    "sha256": "c3a3e0272159d93aa8b5890d6ab1505f50d76dd97aa665e864c9a4b177bfcc68",
+    "copy_sha256": "c3a3e0272159d93aa8b5890d6ab1505f50d76dd97aa665e864c9a4b177bfcc68",
+    "original_last_write_utc": "2026-10-09T16:32:55.378413+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_195.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_195.txt",
+    "bytes": 656,
+    "sha256": "d8a719db27e013f3517a7ed892b562e38ef1dad01fb90dbedd3c3e0563fff1ca",
+    "copy_sha256": "d8a719db27e013f3517a7ed892b562e38ef1dad01fb90dbedd3c3e0563fff1ca",
+    "original_last_write_utc": "2026-10-09T16:32:56.069838+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_196.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_196.txt",
+    "bytes": 1226,
+    "sha256": "e922a9b485068574649d75084874c849bd300ee79b5cbc3cb48f7498dfc8f7fd",
+    "copy_sha256": "e922a9b485068574649d75084874c849bd300ee79b5cbc3cb48f7498dfc8f7fd",
+    "original_last_write_utc": "2026-10-09T16:32:57.416077+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_197.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_197.txt",
+    "bytes": 1131,
+    "sha256": "d90102500174e0280d6b7387947be7c3bd46f80357c6c1ba95163c53cfd144b6",
+    "copy_sha256": "d90102500174e0280d6b7387947be7c3bd46f80357c6c1ba95163c53cfd144b6",
+    "original_last_write_utc": "2026-10-09T16:32:58.621861+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_198.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_198.txt",
+    "bytes": 1701,
+    "sha256": "b109a2f15bd47256c7899603c4cc5a785207b9a6ed4e6581b6bae9906aae1e1b",
+    "copy_sha256": "b109a2f15bd47256c7899603c4cc5a785207b9a6ed4e6581b6bae9906aae1e1b",
+    "original_last_write_utc": "2026-10-09T16:33:00.873778+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_199.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_199.txt",
+    "bytes": 941,
+    "sha256": "e0a1b2d2e061640d333a5ec1aef85c46b9470a9f9a6532671e3a919a022d207b",
+    "copy_sha256": "e0a1b2d2e061640d333a5ec1aef85c46b9470a9f9a6532671e3a919a022d207b",
+    "original_last_write_utc": "2026-10-09T16:33:02.119915+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_2.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_2.txt",
+    "bytes": 842,
+    "sha256": "cfb8250abf30c095a6080d15856a69309229404d95f8ee9007baa1090cb1dffa",
+    "copy_sha256": "cfb8250abf30c095a6080d15856a69309229404d95f8ee9007baa1090cb1dffa",
+    "original_last_write_utc": "2026-10-09T16:28:15.070425+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_20.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_20.txt",
+    "bytes": 842,
+    "sha256": "6c1ba09b43e40d38cba7754cd36337454975270da15566629a5cb6450bf32d7e",
+    "copy_sha256": "6c1ba09b43e40d38cba7754cd36337454975270da15566629a5cb6450bf32d7e",
+    "original_last_write_utc": "2026-10-09T16:28:38.683631+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_200.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_200.txt",
+    "bytes": 561,
+    "sha256": "67ecc8b4cf3b7f75771e01ea3104c4e8ba3e60e785b50667de4b417ab651d68b",
+    "copy_sha256": "67ecc8b4cf3b7f75771e01ea3104c4e8ba3e60e785b50667de4b417ab651d68b",
+    "original_last_write_utc": "2026-10-09T16:33:02.807036+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_201.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_201.txt",
+    "bytes": 3221,
+    "sha256": "3cc9a99092a6482dede5d7ea97b4e2c7bc9886b4fc87ada2448d356e3138e5ed",
+    "copy_sha256": "3cc9a99092a6482dede5d7ea97b4e2c7bc9886b4fc87ada2448d356e3138e5ed",
+    "original_last_write_utc": "2026-10-09T16:33:07.201777+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_202.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_202.txt",
+    "bytes": 1891,
+    "sha256": "866ef64f2f8a4fba9515366786e87ac86ca2300b233ebeb9f73df33378e1f080",
+    "copy_sha256": "866ef64f2f8a4fba9515366786e87ac86ca2300b233ebeb9f73df33378e1f080",
+    "original_last_write_utc": "2026-10-09T16:33:09.525945+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_203.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_203.txt",
+    "bytes": 751,
+    "sha256": "d497e46676187b9ed5bb09254f24f60426f1ea0147a1b1ace2a00f9a7c31ee92",
+    "copy_sha256": "d497e46676187b9ed5bb09254f24f60426f1ea0147a1b1ace2a00f9a7c31ee92",
+    "original_last_write_utc": "2026-10-09T16:33:10.287909+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_204.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_204.txt",
+    "bytes": 751,
+    "sha256": "19b3752cf55c7a59405617c3b81f59612c7815ac66bd3cc0e918edcd11380eba",
+    "copy_sha256": "19b3752cf55c7a59405617c3b81f59612c7815ac66bd3cc0e918edcd11380eba",
+    "original_last_write_utc": "2026-10-09T16:33:11.058735+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_205.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_205.txt",
+    "bytes": 2176,
+    "sha256": "0e0c2f0f407ddc64efb7635dc39104d274c84a7965f6435821d24132bdff291b",
+    "copy_sha256": "0e0c2f0f407ddc64efb7635dc39104d274c84a7965f6435821d24132bdff291b",
+    "original_last_write_utc": "2026-10-09T16:33:13.892684+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_206.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_206.txt",
+    "bytes": 1131,
+    "sha256": "486f159305912efbbedb5b3d185f7b292a1f43f7929aff61ac00e5b5308074da",
+    "copy_sha256": "486f159305912efbbedb5b3d185f7b292a1f43f7929aff61ac00e5b5308074da",
+    "original_last_write_utc": "2026-10-09T16:33:15.121036+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_207.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_207.txt",
+    "bytes": 1131,
+    "sha256": "ab3da4d72ef1ec5456c48461df3e489a393249c075150fa246d05b5be4283528",
+    "copy_sha256": "ab3da4d72ef1ec5456c48461df3e489a393249c075150fa246d05b5be4283528",
+    "original_last_write_utc": "2026-10-09T16:33:16.442604+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_208.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_208.txt",
+    "bytes": 1131,
+    "sha256": "830c19795048892bf668257e9b89d03bd04337b864cd5ef6aeaba1e959793c5a",
+    "copy_sha256": "830c19795048892bf668257e9b89d03bd04337b864cd5ef6aeaba1e959793c5a",
+    "original_last_write_utc": "2026-10-09T16:33:17.648586+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_209.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_209.txt",
+    "bytes": 941,
+    "sha256": "d4252b0fdd1e4f090bf57a2d6d4186a4de379118f28b71dd14c6fe99b0c10217",
+    "copy_sha256": "d4252b0fdd1e4f090bf57a2d6d4186a4de379118f28b71dd14c6fe99b0c10217",
+    "original_last_write_utc": "2026-10-09T16:33:18.805463+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_21.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_21.txt",
+    "bytes": 3850,
+    "sha256": "249f89b2ff5dcee548745ad31cc260287982e54669b0f9a27373499823877412",
+    "copy_sha256": "249f89b2ff5dcee548745ad31cc260287982e54669b0f9a27373499823877412",
+    "original_last_write_utc": "2026-10-09T16:28:43.504353+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_210.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_210.txt",
+    "bytes": 656,
+    "sha256": "078f66448ebbe730f98cb47b9b5ebad03538406894e950b033894c161494fd03",
+    "copy_sha256": "078f66448ebbe730f98cb47b9b5ebad03538406894e950b033894c161494fd03",
+    "original_last_write_utc": "2026-10-09T16:33:19.552043+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_211.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_211.txt",
+    "bytes": 751,
+    "sha256": "5e7fdf385556f4d85bdcf9e990c8e3d428e0d4fcf9968e594bf9494e5f35319e",
+    "copy_sha256": "5e7fdf385556f4d85bdcf9e990c8e3d428e0d4fcf9968e594bf9494e5f35319e",
+    "original_last_write_utc": "2026-10-09T16:33:20.391244+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_212.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_212.txt",
+    "bytes": 561,
+    "sha256": "c51386fcf24cda37ee2ac13f5e0ee0b4df69952dc78726ee28d638b709c17912",
+    "copy_sha256": "c51386fcf24cda37ee2ac13f5e0ee0b4df69952dc78726ee28d638b709c17912",
+    "original_last_write_utc": "2026-10-09T16:33:21.034293+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_213.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_213.txt",
+    "bytes": 2746,
+    "sha256": "d8154e4115bc4279ae62ba9e31405776d9cf318266af2ee518e2844b67b4d10d",
+    "copy_sha256": "d8154e4115bc4279ae62ba9e31405776d9cf318266af2ee518e2844b67b4d10d",
+    "original_last_write_utc": "2026-10-09T16:33:24.412611+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_214.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_214.txt",
+    "bytes": 561,
+    "sha256": "7de9cca1aa93908fe34a137d0c98a419ec14cf50763e6896dbdda37276c4f8c4",
+    "copy_sha256": "7de9cca1aa93908fe34a137d0c98a419ec14cf50763e6896dbdda37276c4f8c4",
+    "original_last_write_utc": "2026-10-09T16:33:25.085871+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_215.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_215.txt",
+    "bytes": 1796,
+    "sha256": "afec3307855bed3bf7c81d66ec9dc5865857b59c2ebf0ce1d50a9beb658b4e76",
+    "copy_sha256": "afec3307855bed3bf7c81d66ec9dc5865857b59c2ebf0ce1d50a9beb658b4e76",
+    "original_last_write_utc": "2026-10-09T16:33:27.373612+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_216.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_216.txt",
+    "bytes": 1226,
+    "sha256": "78699a35eda3702ddb9c07ad936f8249e8de147fdc7e904a4201a8234edc13ec",
+    "copy_sha256": "78699a35eda3702ddb9c07ad936f8249e8de147fdc7e904a4201a8234edc13ec",
+    "original_last_write_utc": "2026-10-09T16:33:28.737630+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_217.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_217.txt",
+    "bytes": 2746,
+    "sha256": "7d867fbe6a4389aff9a9d4f2cd03e419e3e3a9c359f5d2cd0e763272d85a2394",
+    "copy_sha256": "7d867fbe6a4389aff9a9d4f2cd03e419e3e3a9c359f5d2cd0e763272d85a2394",
+    "original_last_write_utc": "2026-10-09T16:33:32.331651+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_218.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_218.txt",
+    "bytes": 2271,
+    "sha256": "dff407ccc063e45aff649a6e51e6b6a017adf0bac2d02c45bfd74d6d5aa9ac25",
+    "copy_sha256": "dff407ccc063e45aff649a6e51e6b6a017adf0bac2d02c45bfd74d6d5aa9ac25",
+    "original_last_write_utc": "2026-10-09T16:33:35.094343+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_219.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_219.txt",
+    "bytes": 1226,
+    "sha256": "ef0d27ad483888b066ad121ea01b5d5971e681697d1544c64bd494d84b35df20",
+    "copy_sha256": "ef0d27ad483888b066ad121ea01b5d5971e681697d1544c64bd494d84b35df20",
+    "original_last_write_utc": "2026-10-09T16:33:36.319483+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_22.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_22.txt",
+    "bytes": 1030,
+    "sha256": "2f984bebf9e9b7a490751cc47bea9117b2b08210ff9a60a4f9cb50b155abc044",
+    "copy_sha256": "2f984bebf9e9b7a490751cc47bea9117b2b08210ff9a60a4f9cb50b155abc044",
+    "original_last_write_utc": "2026-10-09T16:28:44.710331+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_220.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_220.txt",
+    "bytes": 1891,
+    "sha256": "1422967dea38952f195dc4e1402d0d33b0467022409e3e78541b4fc6b0935a2f",
+    "copy_sha256": "1422967dea38952f195dc4e1402d0d33b0467022409e3e78541b4fc6b0935a2f",
+    "original_last_write_utc": "2026-10-09T16:33:38.558743+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_221.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_221.txt",
+    "bytes": 561,
+    "sha256": "ce0c58f4f67705e55b775cc19685f5ee7289f6a3354466a071dd1373a14d619c",
+    "copy_sha256": "ce0c58f4f67705e55b775cc19685f5ee7289f6a3354466a071dd1373a14d619c",
+    "original_last_write_utc": "2026-10-09T16:33:39.203376+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_222.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_222.txt",
+    "bytes": 1701,
+    "sha256": "55daee9993d6e88ced655fab8ddcc281eaf0edd7a11a45561fb58e20ed45481e",
+    "copy_sha256": "55daee9993d6e88ced655fab8ddcc281eaf0edd7a11a45561fb58e20ed45481e",
+    "original_last_write_utc": "2026-10-09T16:33:41.588585+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_223.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_223.txt",
+    "bytes": 846,
+    "sha256": "dfa90aafab150e11cfa9e06b916d0352463105925488337f86aa706682b57a7a",
+    "copy_sha256": "dfa90aafab150e11cfa9e06b916d0352463105925488337f86aa706682b57a7a",
+    "original_last_write_utc": "2026-10-09T16:33:42.293147+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_224.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_224.txt",
+    "bytes": 2176,
+    "sha256": "1a5a3c2ab73546ca9278c906d24bb16ffaf1f5253a08e53f20c935b7aa37e3e7",
+    "copy_sha256": "1a5a3c2ab73546ca9278c906d24bb16ffaf1f5253a08e53f20c935b7aa37e3e7",
+    "original_last_write_utc": "2026-10-09T16:33:45.043830+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_225.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_225.txt",
+    "bytes": 846,
+    "sha256": "632ef64da760108257039bd1aeed18b5c6a7913d4ce6860c67afbb216424f9e2",
+    "copy_sha256": "632ef64da760108257039bd1aeed18b5c6a7913d4ce6860c67afbb216424f9e2",
+    "original_last_write_utc": "2026-10-09T16:33:45.758813+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_226.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_226.txt",
+    "bytes": 1891,
+    "sha256": "a43a657346d79abd93fd5b2434e3c78e3195900efdcdcbf3f5857c62644631c9",
+    "copy_sha256": "a43a657346d79abd93fd5b2434e3c78e3195900efdcdcbf3f5857c62644631c9",
+    "original_last_write_utc": "2026-10-09T16:33:48.005732+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_227.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_227.txt",
+    "bytes": 1036,
+    "sha256": "dc985d82999f7a3cc1041fefbe078db5c918a937f485d258200af5d1532c18a0",
+    "copy_sha256": "dc985d82999f7a3cc1041fefbe078db5c918a937f485d258200af5d1532c18a0",
+    "original_last_write_utc": "2026-10-09T16:33:49.322902+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_228.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_228.txt",
+    "bytes": 846,
+    "sha256": "4ac2819382bdaa2d6f802fe9425889779c92d7eaafc3daf872aa4604a8ff1a31",
+    "copy_sha256": "4ac2819382bdaa2d6f802fe9425889779c92d7eaafc3daf872aa4604a8ff1a31",
+    "original_last_write_utc": "2026-10-09T16:33:50.142402+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_229.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_229.txt",
+    "bytes": 1036,
+    "sha256": "cb8244361a28239145eb60506c30736ff6f57f746ee8ed3f645ee970669d4358",
+    "copy_sha256": "cb8244361a28239145eb60506c30736ff6f57f746ee8ed3f645ee970669d4358",
+    "original_last_write_utc": "2026-10-09T16:33:51.321104+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_23.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_23.txt",
+    "bytes": 936,
+    "sha256": "bcd80ea56e17eaebc373641616624286488ecc1c3e2165bf920ec045d7c83f2f",
+    "copy_sha256": "bcd80ea56e17eaebc373641616624286488ecc1c3e2165bf920ec045d7c83f2f",
+    "original_last_write_utc": "2026-10-09T16:28:45.839806+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_230.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_230.txt",
+    "bytes": 1036,
+    "sha256": "efa60b80cbccc4968853812e51fa49ff0b319a9de5a290b53d085b93ec5e17fe",
+    "copy_sha256": "efa60b80cbccc4968853812e51fa49ff0b319a9de5a290b53d085b93ec5e17fe",
+    "original_last_write_utc": "2026-10-09T16:33:52.538044+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_231.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_231.txt",
+    "bytes": 4361,
+    "sha256": "f6e0e9dc2898299cd46c4f830d591bee6c7e9f30a65f056b67bb0b4acf325ac6",
+    "copy_sha256": "f6e0e9dc2898299cd46c4f830d591bee6c7e9f30a65f056b67bb0b4acf325ac6",
+    "original_last_write_utc": "2026-10-09T16:33:58.336704+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_232.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_232.txt",
+    "bytes": 561,
+    "sha256": "b871ec9c7c9122a8aaec88c84c10ee7153387bb5a1007575b126428d98072d02",
+    "copy_sha256": "b871ec9c7c9122a8aaec88c84c10ee7153387bb5a1007575b126428d98072d02",
+    "original_last_write_utc": "2026-10-09T16:33:59.040456+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_233.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_233.txt",
+    "bytes": 1986,
+    "sha256": "fca6a10d4468906a86793ad6e132e75a3df6014bd5843ac58676796e121454b4",
+    "copy_sha256": "fca6a10d4468906a86793ad6e132e75a3df6014bd5843ac58676796e121454b4",
+    "original_last_write_utc": "2026-10-09T16:34:01.449480+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_234.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_234.txt",
+    "bytes": 2081,
+    "sha256": "9fbe2d309c8f7bcf02ca0861cb68d7cc56c9edb63b143257c211397e3c885a32",
+    "copy_sha256": "9fbe2d309c8f7bcf02ca0861cb68d7cc56c9edb63b143257c211397e3c885a32",
+    "original_last_write_utc": "2026-10-09T16:34:04.251000+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_235.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_235.txt",
+    "bytes": 751,
+    "sha256": "a06a04b53e9861fbadf0ce4384e29dc951991097f1f0f3dd1140e4857545b6af",
+    "copy_sha256": "a06a04b53e9861fbadf0ce4384e29dc951991097f1f0f3dd1140e4857545b6af",
+    "original_last_write_utc": "2026-10-09T16:34:04.978083+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_236.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_236.txt",
+    "bytes": 561,
+    "sha256": "276237085b087191c6ac8482bb9a74b14f257a1bf324959e5868ee50ac7db11d",
+    "copy_sha256": "276237085b087191c6ac8482bb9a74b14f257a1bf324959e5868ee50ac7db11d",
+    "original_last_write_utc": "2026-10-09T16:34:05.606687+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_237.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_237.txt",
+    "bytes": 1416,
+    "sha256": "cd25c87923b46241a114e85fd32175cb77e8d46139a7794048f391f6634ab4c7",
+    "copy_sha256": "cd25c87923b46241a114e85fd32175cb77e8d46139a7794048f391f6634ab4c7",
+    "original_last_write_utc": "2026-10-09T16:34:07.397749+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_238.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_238.txt",
+    "bytes": 656,
+    "sha256": "12c8a4ad9bdfc50cc46e986353c9bec23761909ff555e74833e83f52f5553019",
+    "copy_sha256": "12c8a4ad9bdfc50cc46e986353c9bec23761909ff555e74833e83f52f5553019",
+    "original_last_write_utc": "2026-10-09T16:34:08.150835+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_239.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_239.txt",
+    "bytes": 1131,
+    "sha256": "8e5e52174cd3a645d41754b96f3da5392a188034dec94b1d512b3d0f15e352d1",
+    "copy_sha256": "8e5e52174cd3a645d41754b96f3da5392a188034dec94b1d512b3d0f15e352d1",
+    "original_last_write_utc": "2026-10-09T16:34:09.360523+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_24.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_24.txt",
+    "bytes": 1218,
+    "sha256": "b100d7e00f79a32f89b740dba4215e25b9f9a7da00b20d4bd5f18d548246641d",
+    "copy_sha256": "b100d7e00f79a32f89b740dba4215e25b9f9a7da00b20d4bd5f18d548246641d",
+    "original_last_write_utc": "2026-10-09T16:28:47.109982+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_240.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_240.txt",
+    "bytes": 1606,
+    "sha256": "e152e30c796c61fec4dd2e451572ff497e263efab0e7d5b1a62a000124fc81c4",
+    "copy_sha256": "e152e30c796c61fec4dd2e451572ff497e263efab0e7d5b1a62a000124fc81c4",
+    "original_last_write_utc": "2026-10-09T16:34:11.115457+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_241.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_241.txt",
+    "bytes": 1226,
+    "sha256": "8dabd84c02ffebcc870ef616b87b07c0cd9d5f3b797619be4ada3aa546fdc2f3",
+    "copy_sha256": "8dabd84c02ffebcc870ef616b87b07c0cd9d5f3b797619be4ada3aa546fdc2f3",
+    "original_last_write_utc": "2026-10-09T16:34:12.323303+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_242.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_242.txt",
+    "bytes": 1321,
+    "sha256": "e0076f063c5b1b1cb171d2f3cb0dea339f2ed1110f06eb50188a0dbdb2714ac8",
+    "copy_sha256": "e0076f063c5b1b1cb171d2f3cb0dea339f2ed1110f06eb50188a0dbdb2714ac8",
+    "original_last_write_utc": "2026-10-09T16:34:14.175586+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_243.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_243.txt",
+    "bytes": 751,
+    "sha256": "d59bce182e0d4a655836eb5f7b53c99ba2cd6dbd7cc0e0b168dfe4392aa1de61",
+    "copy_sha256": "d59bce182e0d4a655836eb5f7b53c99ba2cd6dbd7cc0e0b168dfe4392aa1de61",
+    "original_last_write_utc": "2026-10-09T16:34:15.068125+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_244.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_244.txt",
+    "bytes": 751,
+    "sha256": "ce8a80ff24b7b9cb83597c8926e68e84af15742eda7264dee2705a6320426428",
+    "copy_sha256": "ce8a80ff24b7b9cb83597c8926e68e84af15742eda7264dee2705a6320426428",
+    "original_last_write_utc": "2026-10-09T16:34:15.742262+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_245.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_245.txt",
+    "bytes": 656,
+    "sha256": "c8413d1a49dec980ba0d4df0aacb99d82274c58fab1fc12632f5afb706f37315",
+    "copy_sha256": "c8413d1a49dec980ba0d4df0aacb99d82274c58fab1fc12632f5afb706f37315",
+    "original_last_write_utc": "2026-10-09T16:34:16.433944+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_246.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_246.txt",
+    "bytes": 1416,
+    "sha256": "747161d50656d083677dc1ae7a5336937ad8dfc326e3480823fd9690b4ddffcb",
+    "copy_sha256": "747161d50656d083677dc1ae7a5336937ad8dfc326e3480823fd9690b4ddffcb",
+    "original_last_write_utc": "2026-10-09T16:34:18.153877+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_247.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_247.txt",
+    "bytes": 2176,
+    "sha256": "9461c76409b9a036cb2bca4c410bc7acc0c6e1fad1dcf7eead5783cdf247f9b9",
+    "copy_sha256": "9461c76409b9a036cb2bca4c410bc7acc0c6e1fad1dcf7eead5783cdf247f9b9",
+    "original_last_write_utc": "2026-10-09T16:34:20.930656+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_248.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_248.txt",
+    "bytes": 751,
+    "sha256": "3e0fc39609cb8766da0294cc040d51c9c572414eab4389099ca073778e88742a",
+    "copy_sha256": "3e0fc39609cb8766da0294cc040d51c9c572414eab4389099ca073778e88742a",
+    "original_last_write_utc": "2026-10-09T16:34:21.648482+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_249.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_249.txt",
+    "bytes": 1606,
+    "sha256": "79c0c75db7d98276e42b3e9be4be18642ae27bfd1a81fffb328f280bf034dbe0",
+    "copy_sha256": "79c0c75db7d98276e42b3e9be4be18642ae27bfd1a81fffb328f280bf034dbe0",
+    "original_last_write_utc": "2026-10-09T16:34:23.377637+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_25.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_25.txt",
+    "bytes": 936,
+    "sha256": "902fef54683e4d8ba25eed507b743fffffa273c30c69928cfc6fc8aa273bab7e",
+    "copy_sha256": "902fef54683e4d8ba25eed507b743fffffa273c30c69928cfc6fc8aa273bab7e",
+    "original_last_write_utc": "2026-10-09T16:28:48.255053+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_250.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_250.txt",
+    "bytes": 1321,
+    "sha256": "e591014fbdb2c205d31ca5544b90113d5d24126af52b69dcf807ea8e108ad339",
+    "copy_sha256": "e591014fbdb2c205d31ca5544b90113d5d24126af52b69dcf807ea8e108ad339",
+    "original_last_write_utc": "2026-10-09T16:34:25.081617+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_251.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_251.txt",
+    "bytes": 1986,
+    "sha256": "92cb881288a230e31c314b2dc3746ba6c8a75171265d771694118c3d61f3d8af",
+    "copy_sha256": "92cb881288a230e31c314b2dc3746ba6c8a75171265d771694118c3d61f3d8af",
+    "original_last_write_utc": "2026-10-09T16:34:27.351383+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_252.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_252.txt",
+    "bytes": 751,
+    "sha256": "39464e591679ab40564dc963adcdfa90da236343e4ce285e5a004594ac8a6218",
+    "copy_sha256": "39464e591679ab40564dc963adcdfa90da236343e4ce285e5a004594ac8a6218",
+    "original_last_write_utc": "2026-10-09T16:34:28.033831+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_253.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_253.txt",
+    "bytes": 656,
+    "sha256": "b52b5e37d325eaca98ffa4e394d1801b1b6757703b434012a7e9d8e85a038fc0",
+    "copy_sha256": "b52b5e37d325eaca98ffa4e394d1801b1b6757703b434012a7e9d8e85a038fc0",
+    "original_last_write_utc": "2026-10-09T16:34:28.729036+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_254.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_254.txt",
+    "bytes": 1511,
+    "sha256": "2b7c5bafdc565302b136f91ada70af21243fa0e994e9c4c13ddf84220b25d982",
+    "copy_sha256": "2b7c5bafdc565302b136f91ada70af21243fa0e994e9c4c13ddf84220b25d982",
+    "original_last_write_utc": "2026-10-09T16:34:30.568390+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_255.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_255.txt",
+    "bytes": 1131,
+    "sha256": "0c4993b3f3e054450a4322add13a2f91f45c394d10feebe79526b9f28ebbb222",
+    "copy_sha256": "0c4993b3f3e054450a4322add13a2f91f45c394d10feebe79526b9f28ebbb222",
+    "original_last_write_utc": "2026-10-09T16:34:31.823178+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_26.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_26.txt",
+    "bytes": 748,
+    "sha256": "582fe7c8dd1174479d3f91d49b90402083b3dba91bb3ee079dd11fb3bacd680a",
+    "copy_sha256": "582fe7c8dd1174479d3f91d49b90402083b3dba91bb3ee079dd11fb3bacd680a",
+    "original_last_write_utc": "2026-10-09T16:28:48.990664+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_27.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_27.txt",
+    "bytes": 1218,
+    "sha256": "8875d5979c7952a39267112df6a6d6f85f1711fa4a1c2280421491b4d13a493d",
+    "copy_sha256": "8875d5979c7952a39267112df6a6d6f85f1711fa4a1c2280421491b4d13a493d",
+    "original_last_write_utc": "2026-10-09T16:28:50.274450+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_28.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_28.txt",
+    "bytes": 748,
+    "sha256": "52efe56ac5c63bcb371de0ef32965695698ddbf58e7b2ca6349363ea1587263c",
+    "copy_sha256": "52efe56ac5c63bcb371de0ef32965695698ddbf58e7b2ca6349363ea1587263c",
+    "original_last_write_utc": "2026-10-09T16:28:51.077984+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_29.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_29.txt",
+    "bytes": 1876,
+    "sha256": "731328de2d6a27609f44ef25d0e47e9db7765e15ee8bf280f193d05a56ef51ab",
+    "copy_sha256": "731328de2d6a27609f44ef25d0e47e9db7765e15ee8bf280f193d05a56ef51ab",
+    "original_last_write_utc": "2026-10-09T16:28:53.384713+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_3.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_3.txt",
+    "bytes": 560,
+    "sha256": "57b9103b9a22d04c15da2e07a1cf3eace7102088ef50010fdc53baa2b3c3dc5d",
+    "copy_sha256": "57b9103b9a22d04c15da2e07a1cf3eace7102088ef50010fdc53baa2b3c3dc5d",
+    "original_last_write_utc": "2026-10-09T16:28:15.719382+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_30.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_30.txt",
+    "bytes": 560,
+    "sha256": "2b21a438029302f0ad10ccdd7e28a122dd15e69661eecc32049f0a084392d0e0",
+    "copy_sha256": "2b21a438029302f0ad10ccdd7e28a122dd15e69661eecc32049f0a084392d0e0",
+    "original_last_write_utc": "2026-10-09T16:28:53.959473+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_31.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_31.txt",
+    "bytes": 748,
+    "sha256": "4080adcce6413a917305efdec329bbf038f46efb5279383bf70b2a8b91e29a8c",
+    "copy_sha256": "4080adcce6413a917305efdec329bbf038f46efb5279383bf70b2a8b91e29a8c",
+    "original_last_write_utc": "2026-10-09T16:28:54.816113+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_32.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_32.txt",
+    "bytes": 560,
+    "sha256": "ff57d2aa0ba1621380242738202f023fb1542e38545c89eb8e88be00a188e771",
+    "copy_sha256": "ff57d2aa0ba1621380242738202f023fb1542e38545c89eb8e88be00a188e771",
+    "original_last_write_utc": "2026-10-09T16:28:55.429769+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_33.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_33.txt",
+    "bytes": 936,
+    "sha256": "f0831bfb348bd175acd5ffc30b383198be23dbdd61cf5504ee29d47f719d9985",
+    "copy_sha256": "f0831bfb348bd175acd5ffc30b383198be23dbdd61cf5504ee29d47f719d9985",
+    "original_last_write_utc": "2026-10-09T16:28:56.718848+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_34.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_34.txt",
+    "bytes": 654,
+    "sha256": "4c3ef94f509afc05d759bf655efa3e6c6a536f90555dfbff5066df36465b0ffd",
+    "copy_sha256": "4c3ef94f509afc05d759bf655efa3e6c6a536f90555dfbff5066df36465b0ffd",
+    "original_last_write_utc": "2026-10-09T16:28:57.456950+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_35.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_35.txt",
+    "bytes": 1218,
+    "sha256": "291d72b9fba90266e9c9165fa6c719f856e2be5bbe8b762248e254991f79dba7",
+    "copy_sha256": "291d72b9fba90266e9c9165fa6c719f856e2be5bbe8b762248e254991f79dba7",
+    "original_last_write_utc": "2026-10-09T16:28:58.665179+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_36.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_36.txt",
+    "bytes": 654,
+    "sha256": "59b22487ff831688ea0b776d7a804ca314a5e6c8458274f0d6b28ef1749f0d99",
+    "copy_sha256": "59b22487ff831688ea0b776d7a804ca314a5e6c8458274f0d6b28ef1749f0d99",
+    "original_last_write_utc": "2026-10-09T16:28:59.354708+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_37.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_37.txt",
+    "bytes": 842,
+    "sha256": "fee4f6c3924686af3c7b9e0e77796cf3096594134b8bca8e3395b3b1f6008dfd",
+    "copy_sha256": "fee4f6c3924686af3c7b9e0e77796cf3096594134b8bca8e3395b3b1f6008dfd",
+    "original_last_write_utc": "2026-10-09T16:29:00.208808+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_38.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_38.txt",
+    "bytes": 842,
+    "sha256": "00f589c20d99e8088bc368ed5a46cd4e2e2288c58874ab8ed96589c91bbaa5f2",
+    "copy_sha256": "00f589c20d99e8088bc368ed5a46cd4e2e2288c58874ab8ed96589c91bbaa5f2",
+    "original_last_write_utc": "2026-10-09T16:29:00.980216+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_39.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_39.txt",
+    "bytes": 1594,
+    "sha256": "c34ba175eb06560454a092ca8e513f753e1add7a4209c934312a7005497ee9cd",
+    "copy_sha256": "c34ba175eb06560454a092ca8e513f753e1add7a4209c934312a7005497ee9cd",
+    "original_last_write_utc": "2026-10-09T16:29:02.692935+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_4.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_4.txt",
+    "bytes": 936,
+    "sha256": "b13b60a93a97c49e2cbc8644bd7876e2c44330bd168a8e5c6902763cad09cc6a",
+    "copy_sha256": "b13b60a93a97c49e2cbc8644bd7876e2c44330bd168a8e5c6902763cad09cc6a",
+    "original_last_write_utc": "2026-10-09T16:28:16.876696+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_40.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_40.txt",
+    "bytes": 560,
+    "sha256": "cc1bbebc77d1fe5112a291fcbf8cb3ba644ef64ecd0ff6c258509964845b2fe7",
+    "copy_sha256": "cc1bbebc77d1fe5112a291fcbf8cb3ba644ef64ecd0ff6c258509964845b2fe7",
+    "original_last_write_utc": "2026-10-09T16:29:03.323876+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_41.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_41.txt",
+    "bytes": 1970,
+    "sha256": "a4066a8cb65e6afad322c10fda1f6d3861665c213a9fabe18604e7c0084719bf",
+    "copy_sha256": "a4066a8cb65e6afad322c10fda1f6d3861665c213a9fabe18604e7c0084719bf",
+    "original_last_write_utc": "2026-10-09T16:29:05.847376+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_42.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_42.txt",
+    "bytes": 748,
+    "sha256": "34042d7e6acc487685dc2c8cb74d907e18bd9879c7baa2c38fa635d120433a6f",
+    "copy_sha256": "34042d7e6acc487685dc2c8cb74d907e18bd9879c7baa2c38fa635d120433a6f",
+    "original_last_write_utc": "2026-10-09T16:29:06.577559+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_43.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_43.txt",
+    "bytes": 654,
+    "sha256": "9efda7dbbd62d4570b27a1753592b55da7a1f84032f0d6beec364d54d9d7111f",
+    "copy_sha256": "9efda7dbbd62d4570b27a1753592b55da7a1f84032f0d6beec364d54d9d7111f",
+    "original_last_write_utc": "2026-10-09T16:29:07.236702+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_44.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_44.txt",
+    "bytes": 560,
+    "sha256": "22f4b3e87d19c4f28b11745f1f6a94e9d29785c66ee633c8f83f61bf99f41407",
+    "copy_sha256": "22f4b3e87d19c4f28b11745f1f6a94e9d29785c66ee633c8f83f61bf99f41407",
+    "original_last_write_utc": "2026-10-09T16:29:07.896503+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_45.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_45.txt",
+    "bytes": 654,
+    "sha256": "025b162bf497ccbe0c28891ebc0b20ebdc067d6fa48003b7dfb146533fef8642",
+    "copy_sha256": "025b162bf497ccbe0c28891ebc0b20ebdc067d6fa48003b7dfb146533fef8642",
+    "original_last_write_utc": "2026-10-09T16:29:08.664549+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_46.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_46.txt",
+    "bytes": 2440,
+    "sha256": "2f9e89b980998cc574802a095fb2f3bb15e46750da6d5876e6eb8c16fedbed69",
+    "copy_sha256": "2f9e89b980998cc574802a095fb2f3bb15e46750da6d5876e6eb8c16fedbed69",
+    "original_last_write_utc": "2026-10-09T16:29:11.821157+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_47.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_47.txt",
+    "bytes": 654,
+    "sha256": "fdb82ea476ebadd33ded85f0b9f800967076b565886bb3d66df631002587f730",
+    "copy_sha256": "fdb82ea476ebadd33ded85f0b9f800967076b565886bb3d66df631002587f730",
+    "original_last_write_utc": "2026-10-09T16:29:12.616625+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_48.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_48.txt",
+    "bytes": 2158,
+    "sha256": "99857063846e4b36b7377ec89e88d17cd8e3ac7e4c42b1bdd645323527f388ed",
+    "copy_sha256": "99857063846e4b36b7377ec89e88d17cd8e3ac7e4c42b1bdd645323527f388ed",
+    "original_last_write_utc": "2026-10-09T16:29:15.346229+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_49.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_49.txt",
+    "bytes": 654,
+    "sha256": "da4306e6ed1410b8e6c0ba95b5bd01c79e8601c145aa3dd644cacaf342119655",
+    "copy_sha256": "da4306e6ed1410b8e6c0ba95b5bd01c79e8601c145aa3dd644cacaf342119655",
+    "original_last_write_utc": "2026-10-09T16:29:16.038065+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_5.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_5.txt",
+    "bytes": 1594,
+    "sha256": "17d3df2de3c8297dbef54e3f5c2500ee094a0580105a9c7d1ad6a7bf24fcbeea",
+    "copy_sha256": "17d3df2de3c8297dbef54e3f5c2500ee094a0580105a9c7d1ad6a7bf24fcbeea",
+    "original_last_write_utc": "2026-10-09T16:28:18.743158+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_50.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_50.txt",
+    "bytes": 2816,
+    "sha256": "c3dc4b0f4d81b121e86350ac82105011e7eef23ebebe884501ebde1842c33f44",
+    "copy_sha256": "c3dc4b0f4d81b121e86350ac82105011e7eef23ebebe884501ebde1842c33f44",
+    "original_last_write_utc": "2026-10-09T16:29:19.772594+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_51.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_51.txt",
+    "bytes": 1030,
+    "sha256": "862924873230edb91baba8ca1271669189b5ab0446f0da1adb8b74cfbcaf95ce",
+    "copy_sha256": "862924873230edb91baba8ca1271669189b5ab0446f0da1adb8b74cfbcaf95ce",
+    "original_last_write_utc": "2026-10-09T16:29:21.137572+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_52.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_52.txt",
+    "bytes": 748,
+    "sha256": "2161ea690044f67b3297a4de24ac253553a965024be0f640e6ca2d152a8f3b6b",
+    "copy_sha256": "2161ea690044f67b3297a4de24ac253553a965024be0f640e6ca2d152a8f3b6b",
+    "original_last_write_utc": "2026-10-09T16:29:21.834513+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_53.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_53.txt",
+    "bytes": 1782,
+    "sha256": "fb06dc850ddd51a5fa25f0de660eb72bb61f9b99874c41c4b03c5d4352370bf9",
+    "copy_sha256": "fb06dc850ddd51a5fa25f0de660eb72bb61f9b99874c41c4b03c5d4352370bf9",
+    "original_last_write_utc": "2026-10-09T16:29:24.062291+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_54.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_54.txt",
+    "bytes": 1688,
+    "sha256": "c77df825f7b5f94eea039fe5c9a093f271ba610b8f32a04c21384f72f9b524ed",
+    "copy_sha256": "c77df825f7b5f94eea039fe5c9a093f271ba610b8f32a04c21384f72f9b524ed",
+    "original_last_write_utc": "2026-10-09T16:29:26.301371+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_55.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_55.txt",
+    "bytes": 1218,
+    "sha256": "31fa8e2db5257cc41884b30dc8cceb3b0b20a2692e3e52d0cc617937b6568a6a",
+    "copy_sha256": "31fa8e2db5257cc41884b30dc8cceb3b0b20a2692e3e52d0cc617937b6568a6a",
+    "original_last_write_utc": "2026-10-09T16:29:27.651998+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_56.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_56.txt",
+    "bytes": 3662,
+    "sha256": "69cc8155b9d525a962419dd928a09ca30d2cee6e86a4274067f0a937abbbae61",
+    "copy_sha256": "69cc8155b9d525a962419dd928a09ca30d2cee6e86a4274067f0a937abbbae61",
+    "original_last_write_utc": "2026-10-09T16:29:32.429043+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_57.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_57.txt",
+    "bytes": 842,
+    "sha256": "24eec95a05660c4a47081757204c6dfd51217af4c0f67b53f4d0b035f319d01b",
+    "copy_sha256": "24eec95a05660c4a47081757204c6dfd51217af4c0f67b53f4d0b035f319d01b",
+    "original_last_write_utc": "2026-10-09T16:29:33.148784+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_58.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_58.txt",
+    "bytes": 2252,
+    "sha256": "01c1b4972bb18a60ef7486349a88ab8264a317b7658ef064d0c2f620e2730823",
+    "copy_sha256": "01c1b4972bb18a60ef7486349a88ab8264a317b7658ef064d0c2f620e2730823",
+    "original_last_write_utc": "2026-10-09T16:29:35.939626+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_59.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_59.txt",
+    "bytes": 1312,
+    "sha256": "86dacc257fd20a640a12775d36cd71d70f5059940f708bb982f491a7973cc84d",
+    "copy_sha256": "86dacc257fd20a640a12775d36cd71d70f5059940f708bb982f491a7973cc84d",
+    "original_last_write_utc": "2026-10-09T16:29:37.606538+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_6.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_6.txt",
+    "bytes": 654,
+    "sha256": "122ddde3a17bf885c777cfc97ae8510c21d72bc3644c94ceb8db92172a134bb3",
+    "copy_sha256": "122ddde3a17bf885c777cfc97ae8510c21d72bc3644c94ceb8db92172a134bb3",
+    "original_last_write_utc": "2026-10-09T16:28:19.465362+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_60.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_60.txt",
+    "bytes": 936,
+    "sha256": "ad27a542e81ddd0e8aa03a0d8de27cd34e85c10f40a92e46b48bdc258e0cf219",
+    "copy_sha256": "ad27a542e81ddd0e8aa03a0d8de27cd34e85c10f40a92e46b48bdc258e0cf219",
+    "original_last_write_utc": "2026-10-09T16:29:38.881348+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_61.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_61.txt",
+    "bytes": 654,
+    "sha256": "a13d5fcb59d383d2bd37f0ccd5a961dcc533a0f15c80338c64038a0ec1f39755",
+    "copy_sha256": "a13d5fcb59d383d2bd37f0ccd5a961dcc533a0f15c80338c64038a0ec1f39755",
+    "original_last_write_utc": "2026-10-09T16:29:39.613075+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_62.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_62.txt",
+    "bytes": 1500,
+    "sha256": "6ff48d904f4989e0ebd08001400bc5eaa3c7be1fff101ed5eb3185d0ed68617e",
+    "copy_sha256": "6ff48d904f4989e0ebd08001400bc5eaa3c7be1fff101ed5eb3185d0ed68617e",
+    "original_last_write_utc": "2026-10-09T16:29:41.322085+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_63.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_63.txt",
+    "bytes": 1124,
+    "sha256": "4dc29a75d07b9ad3a67d4aa9813e3cb8f9bdf04399301d8d156efa17d23451d1",
+    "copy_sha256": "4dc29a75d07b9ad3a67d4aa9813e3cb8f9bdf04399301d8d156efa17d23451d1",
+    "original_last_write_utc": "2026-10-09T16:29:42.571928+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_64.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_64.txt",
+    "bytes": 560,
+    "sha256": "c75fe3fb96a24ef8c784b65a79c03c762fb8c5496b4ed8e54197602dfeb157b8",
+    "copy_sha256": "c75fe3fb96a24ef8c784b65a79c03c762fb8c5496b4ed8e54197602dfeb157b8",
+    "original_last_write_utc": "2026-10-09T16:29:43.230276+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_65.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_65.txt",
+    "bytes": 560,
+    "sha256": "004dbf0854a855bd6c43a8e84285cb3b25264386ccb0444fcb8ba61fe1ead157",
+    "copy_sha256": "004dbf0854a855bd6c43a8e84285cb3b25264386ccb0444fcb8ba61fe1ead157",
+    "original_last_write_utc": "2026-10-09T16:29:43.890798+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_66.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_66.txt",
+    "bytes": 1876,
+    "sha256": "a3d078793d55e02e6f5db2244f058b5ef886b8865a3449030da4ca1c37bf1547",
+    "copy_sha256": "a3d078793d55e02e6f5db2244f058b5ef886b8865a3449030da4ca1c37bf1547",
+    "original_last_write_utc": "2026-10-09T16:29:46.198659+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_67.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_67.txt",
+    "bytes": 936,
+    "sha256": "733935dc04147fae6e4de0426b29bff217b52f4f2b7d8cffc2f38bf204922542",
+    "copy_sha256": "733935dc04147fae6e4de0426b29bff217b52f4f2b7d8cffc2f38bf204922542",
+    "original_last_write_utc": "2026-10-09T16:29:47.315531+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_68.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_68.txt",
+    "bytes": 1124,
+    "sha256": "e50f8449622682e6cc2cbcb2dfb8b747a2c4ccab4739d0d1fdf9465534906fc7",
+    "copy_sha256": "e50f8449622682e6cc2cbcb2dfb8b747a2c4ccab4739d0d1fdf9465534906fc7",
+    "original_last_write_utc": "2026-10-09T16:29:48.618181+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_69.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_69.txt",
+    "bytes": 936,
+    "sha256": "9006222d4bf98c21bc4c67acdc5305dc48ad23e7e2622dec3a27e090665dcaa8",
+    "copy_sha256": "9006222d4bf98c21bc4c67acdc5305dc48ad23e7e2622dec3a27e090665dcaa8",
+    "original_last_write_utc": "2026-10-09T16:29:49.765750+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_7.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_7.txt",
+    "bytes": 654,
+    "sha256": "afe89d5d1242ff516570467ad76f5932c28cb5e3ca51ce2b2ef4be07c98ea27e",
+    "copy_sha256": "afe89d5d1242ff516570467ad76f5932c28cb5e3ca51ce2b2ef4be07c98ea27e",
+    "original_last_write_utc": "2026-10-09T16:28:20.141886+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_70.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_70.txt",
+    "bytes": 1500,
+    "sha256": "8bd12a5da51e6426eba60953bd2d568d8364728c31987b6657d7154d880a835b",
+    "copy_sha256": "8bd12a5da51e6426eba60953bd2d568d8364728c31987b6657d7154d880a835b",
+    "original_last_write_utc": "2026-10-09T16:29:51.543404+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_71.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_71.txt",
+    "bytes": 560,
+    "sha256": "3569d361958c3e953e7bcf2394741d97ae47f29e739aed1ce66b7ebaa71bce4c",
+    "copy_sha256": "3569d361958c3e953e7bcf2394741d97ae47f29e739aed1ce66b7ebaa71bce4c",
+    "original_last_write_utc": "2026-10-09T16:29:52.183438+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_72.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_72.txt",
+    "bytes": 1312,
+    "sha256": "e80816b62920bd6579f214e9966019fbc5d165a5cbf1070e6a2233e987f145d2",
+    "copy_sha256": "e80816b62920bd6579f214e9966019fbc5d165a5cbf1070e6a2233e987f145d2",
+    "original_last_write_utc": "2026-10-09T16:29:53.891052+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_73.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_73.txt",
+    "bytes": 1782,
+    "sha256": "7e7fe64b6abfb96952b0da6ef76e0534962bda449407180adf24d9f4506b75dd",
+    "copy_sha256": "7e7fe64b6abfb96952b0da6ef76e0534962bda449407180adf24d9f4506b75dd",
+    "original_last_write_utc": "2026-10-09T16:29:56.173109+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_74.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_74.txt",
+    "bytes": 3098,
+    "sha256": "4ad35fcd9499cf512f6efc0f0f9a917af3ee912528967bb5a75f729c22f40717",
+    "copy_sha256": "4ad35fcd9499cf512f6efc0f0f9a917af3ee912528967bb5a75f729c22f40717",
+    "original_last_write_utc": "2026-10-09T16:29:59.981285+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_75.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_75.txt",
+    "bytes": 560,
+    "sha256": "c2084a398efddc3adbc7497c0358545836702b8b2f371e220ecd7aa01d8cb623",
+    "copy_sha256": "c2084a398efddc3adbc7497c0358545836702b8b2f371e220ecd7aa01d8cb623",
+    "original_last_write_utc": "2026-10-09T16:30:00.589154+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_76.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_76.txt",
+    "bytes": 1876,
+    "sha256": "51a10dcd7cbdea0b335168336114f0233de1a44b81b758898794f243e5378132",
+    "copy_sha256": "51a10dcd7cbdea0b335168336114f0233de1a44b81b758898794f243e5378132",
+    "original_last_write_utc": "2026-10-09T16:30:02.990364+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_77.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_77.txt",
+    "bytes": 1312,
+    "sha256": "94de0c1d88cb2a65c775d69623c142cbf0d9047ebcd9aca00b04457156d95689",
+    "copy_sha256": "94de0c1d88cb2a65c775d69623c142cbf0d9047ebcd9aca00b04457156d95689",
+    "original_last_write_utc": "2026-10-09T16:30:04.654589+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_78.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_78.txt",
+    "bytes": 560,
+    "sha256": "004a0787a5f9b731def4b8a6bbd986adb3999db772496cf8abfdbd1a5c376bb5",
+    "copy_sha256": "004a0787a5f9b731def4b8a6bbd986adb3999db772496cf8abfdbd1a5c376bb5",
+    "original_last_write_utc": "2026-10-09T16:30:05.329468+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_79.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_79.txt",
+    "bytes": 2252,
+    "sha256": "dfb7791a72330ba2b4645d18cb113ae44a2fdee7d01be4b482898e440754f9d1",
+    "copy_sha256": "dfb7791a72330ba2b4645d18cb113ae44a2fdee7d01be4b482898e440754f9d1",
+    "original_last_write_utc": "2026-10-09T16:30:08.224253+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_8.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_8.txt",
+    "bytes": 560,
+    "sha256": "e5fce8cc20c341a5d6f5bb3b009c3416d10dbd9f9e0eefc15dece186dd39bb97",
+    "copy_sha256": "e5fce8cc20c341a5d6f5bb3b009c3416d10dbd9f9e0eefc15dece186dd39bb97",
+    "original_last_write_utc": "2026-10-09T16:28:20.763321+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_80.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_80.txt",
+    "bytes": 1218,
+    "sha256": "1ef8f9077d801177f3db1320affc76b0ad213f0d2471e52d687a4b51e6ea5bda",
+    "copy_sha256": "1ef8f9077d801177f3db1320affc76b0ad213f0d2471e52d687a4b51e6ea5bda",
+    "original_last_write_utc": "2026-10-09T16:30:09.464016+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_81.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_81.txt",
+    "bytes": 1124,
+    "sha256": "23bf5f7836e616124b98c68a8ddd6b72d26cda8eb87d6485513861a4a1173849",
+    "copy_sha256": "23bf5f7836e616124b98c68a8ddd6b72d26cda8eb87d6485513861a4a1173849",
+    "original_last_write_utc": "2026-10-09T16:30:10.655721+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_82.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_82.txt",
+    "bytes": 560,
+    "sha256": "b87a7d44af6eebb130263ade60eee42be615673d54bb37a4351f3fb6ce7f42db",
+    "copy_sha256": "b87a7d44af6eebb130263ade60eee42be615673d54bb37a4351f3fb6ce7f42db",
+    "original_last_write_utc": "2026-10-09T16:30:11.287240+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_83.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_83.txt",
+    "bytes": 560,
+    "sha256": "e8bcca2ff15cc34ca5e49f175803f155c3af39d8434d0b55cde3356d03eeca9e",
+    "copy_sha256": "e8bcca2ff15cc34ca5e49f175803f155c3af39d8434d0b55cde3356d03eeca9e",
+    "original_last_write_utc": "2026-10-09T16:30:11.956662+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_84.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_84.txt",
+    "bytes": 936,
+    "sha256": "515786a31ec53d762f562a548b0e160a6ada2dbd8c70c83ed738ac1177fe5a0c",
+    "copy_sha256": "515786a31ec53d762f562a548b0e160a6ada2dbd8c70c83ed738ac1177fe5a0c",
+    "original_last_write_utc": "2026-10-09T16:30:13.169373+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_85.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_85.txt",
+    "bytes": 1218,
+    "sha256": "cb6ad1e3420ed7d5f8e9328c437ce01f09f26b73651e2cac7570a22094778b01",
+    "copy_sha256": "cb6ad1e3420ed7d5f8e9328c437ce01f09f26b73651e2cac7570a22094778b01",
+    "original_last_write_utc": "2026-10-09T16:30:14.437202+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_86.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_86.txt",
+    "bytes": 936,
+    "sha256": "03a9f3ece7d2b09108702782f2faf36ba91ccd24b309f43108a32a3c80bcbfc2",
+    "copy_sha256": "03a9f3ece7d2b09108702782f2faf36ba91ccd24b309f43108a32a3c80bcbfc2",
+    "original_last_write_utc": "2026-10-09T16:30:15.536920+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_87.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_87.txt",
+    "bytes": 748,
+    "sha256": "12afafc9572b3b464d3e0fbb5b291a843828fe48229d107073e53eaa38d70258",
+    "copy_sha256": "12afafc9572b3b464d3e0fbb5b291a843828fe48229d107073e53eaa38d70258",
+    "original_last_write_utc": "2026-10-09T16:30:16.324117+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_88.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_88.txt",
+    "bytes": 3004,
+    "sha256": "0cc64422115a3aa679e9f1712879bf2552fb77d0af8aa522bc04a9947826d387",
+    "copy_sha256": "0cc64422115a3aa679e9f1712879bf2552fb77d0af8aa522bc04a9947826d387",
+    "original_last_write_utc": "2026-10-09T16:30:20.097311+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_89.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_89.txt",
+    "bytes": 1500,
+    "sha256": "9136ec31408be00e4f1cb55fbbc350fe1a3739a9d9944d7d29ae77e0a277e0fb",
+    "copy_sha256": "9136ec31408be00e4f1cb55fbbc350fe1a3739a9d9944d7d29ae77e0a277e0fb",
+    "original_last_write_utc": "2026-10-09T16:30:21.870370+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_9.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_9.txt",
+    "bytes": 1030,
+    "sha256": "34ade7b38d5d6a1cd2323929a48eca5352541b9f0cb1ffe0f4c80373c6c32ef7",
+    "copy_sha256": "34ade7b38d5d6a1cd2323929a48eca5352541b9f0cb1ffe0f4c80373c6c32ef7",
+    "original_last_write_utc": "2026-10-09T16:28:22.020380+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_90.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_90.txt",
+    "bytes": 1500,
+    "sha256": "2d34f0a13fa00896df39c87afcaa3f56f1371755ffe247f6addde917b68c6846",
+    "copy_sha256": "2d34f0a13fa00896df39c87afcaa3f56f1371755ffe247f6addde917b68c6846",
+    "original_last_write_utc": "2026-10-09T16:30:23.581495+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_91.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_91.txt",
+    "bytes": 1030,
+    "sha256": "0dfde0fc5fe8f1a360959be91d5310cc51c0553e988d8fbce9e179be57f8eb1f",
+    "copy_sha256": "0dfde0fc5fe8f1a360959be91d5310cc51c0553e988d8fbce9e179be57f8eb1f",
+    "original_last_write_utc": "2026-10-09T16:30:24.792398+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_92.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_92.txt",
+    "bytes": 560,
+    "sha256": "b34b349215d25d0f089fc28bced0398787ff4390d03af41e4bed60238bcdcaaa",
+    "copy_sha256": "b34b349215d25d0f089fc28bced0398787ff4390d03af41e4bed60238bcdcaaa",
+    "original_last_write_utc": "2026-10-09T16:30:25.436490+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_93.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_93.txt",
+    "bytes": 1030,
+    "sha256": "1cbcde464c1b1974a3026531082bc519c3de9361dfbd75a017a57b11714429e8",
+    "copy_sha256": "1cbcde464c1b1974a3026531082bc519c3de9361dfbd75a017a57b11714429e8",
+    "original_last_write_utc": "2026-10-09T16:30:26.706305+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_94.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_94.txt",
+    "bytes": 654,
+    "sha256": "2e2b3a68c31330642c08a872da2a7198ebd102b59a0b9414a570a4abf7790794",
+    "copy_sha256": "2e2b3a68c31330642c08a872da2a7198ebd102b59a0b9414a570a4abf7790794",
+    "original_last_write_utc": "2026-10-09T16:30:27.376968+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_95.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_95.txt",
+    "bytes": 842,
+    "sha256": "2808c4833aa8a00d3bf7d18997c7c831ef4c1ec28eeb200a3b825cd48e8aebb7",
+    "copy_sha256": "2808c4833aa8a00d3bf7d18997c7c831ef4c1ec28eeb200a3b825cd48e8aebb7",
+    "original_last_write_utc": "2026-10-09T16:30:28.241063+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_96.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_96.txt",
+    "bytes": 748,
+    "sha256": "2de1b7e2982de87a5eaaf35ad5c9013e2f9ae98716345bdb30879aa5fdeb6694",
+    "copy_sha256": "2de1b7e2982de87a5eaaf35ad5c9013e2f9ae98716345bdb30879aa5fdeb6694",
+    "original_last_write_utc": "2026-10-09T16:30:28.916234+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_97.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_97.txt",
+    "bytes": 2722,
+    "sha256": "717c4340b357193fd1dae31d00e35d7d1e415342620bc6db3d13798f9a68804b",
+    "copy_sha256": "717c4340b357193fd1dae31d00e35d7d1e415342620bc6db3d13798f9a68804b",
+    "original_last_write_utc": "2026-10-09T16:30:32.183922+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_98.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_98.txt",
+    "bytes": 560,
+    "sha256": "66b80f35a4b7717e64297b370f14c5964ea2cfbec7dc9b15d867eebe06d3d91c",
+    "copy_sha256": "66b80f35a4b7717e64297b370f14c5964ea2cfbec7dc9b15d867eebe06d3d91c",
+    "original_last_write_utc": "2026-10-09T16:30:32.815308+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_99.txt",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FIRESTARTER_EVOLVE_GPU_99.txt",
+    "bytes": 1124,
+    "sha256": "b6edcbea52e176a3468f39f0cf0d46a658442d9f843c375565a60c1cad645234",
+    "copy_sha256": "b6edcbea52e176a3468f39f0cf0d46a658442d9f843c375565a60c1cad645234",
+    "original_last_write_utc": "2026-10-09T16:30:34.054954+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FireStarter_LoadState.h",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FireStarter_LoadState.h",
+    "bytes": 5420,
+    "sha256": "ac1b23f2b41b36a1c4a76a690556231de114fdae36fdb7e47ba64aa4334ca4ac",
+    "copy_sha256": "ac1b23f2b41b36a1c4a76a690556231de114fdae36fdb7e47ba64aa4334ca4ac",
+    "original_last_write_utc": "2026-10-09T16:34:31.823178+00:00"
+  },
+  {
+    "name": "2026-10-09_09-28-05_FireStarterSettings.h",
+    "original_path": "C:\\Work\\FireStarter\\FireStarter\\Logs\\2026-10-09_09-28-05_FireStarterSettings.h",
+    "bytes": 31852,
+    "sha256": "a9cfa4733ff86744bb18d0a2a0eb79f24a41f886634b897eefd49481fcd0eaa5",
+    "copy_sha256": "a9cfa4733ff86744bb18d0a2a0eb79f24a41f886634b897eefd49481fcd0eaa5",
+    "original_last_write_utc": "2026-10-09T16:28:10.922563+00:00"
+  }
+]

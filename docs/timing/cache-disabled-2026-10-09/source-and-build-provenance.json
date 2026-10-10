@@ -1,0 +1,370 @@
+{
+  "observed_utc": "2026-10-09T18:08:27.993835+00:00",
+  "repository_head": "ecc41e66c220a7b89dd766054a152981c96bb431",
+  "tested_source_commit": "13461b1733a03019eded0745a557ab021613fa17",
+  "tested_source_basis": "All recorded source and launch-binary hashes compared with the October 8 source/build provenance; no embedded binary commit or before-run capture.",
+  "source_checks": [
+    {
+      "name": "CUDACompile.cpp",
+      "sha256": "239c93550cb244d0a8b162e8c3ce145281218bad5830ea6e86078bc1e8d56071",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "CUDACompile.h",
+      "sha256": "e81dcbc4406459c9ffbc57ab1d41938c719ea70db26a9cf15731592d103a2f93",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "CUDAContext.h",
+      "sha256": "3861223836fac41c076637b6d7f0cd92131224769112301b40d7e97aa1c0db6a",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "CUDADefines.h",
+      "sha256": "4738663d5e2a279dea22b90dd1202f0533793b8261dcc48421bbf8da91859fd5",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "CUDAErrors.h",
+      "sha256": "5d5d1748757823b342692a395b775c29208eab7640d6e6a81824f327d3a260a5",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "CUDAModule.h",
+      "sha256": "1bec2abd93aa3e7971c88880b23bdba65758ee40c0ac0ea7e1e683627def13e9",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "CUDAThread.h",
+      "sha256": "f6bb74757c643c28259c0f81225f83128803cb337954b3ee0df414b77df886ff",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireEvolverGPU.cu",
+      "sha256": "51808407f00b62d99d5a9c72d4780c92c71ad7f01acc225a0ec3ddf0c80f117d",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireEvolverNew.cu",
+      "sha256": "e2c9532f656ac83fd76be26352a6d235a4dea60a752b10ca2543262e9f0e1ce8",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireEvolverSinSim.cu",
+      "sha256": "1acb4a36ca22c6346a9f1fb6386acec87014d053da3170b1748434277339d905",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireMoneyMaker.cu",
+      "sha256": "eb175251cb87936858914098a4310f1f64f70a7a94cdc93546bd2879f28f58fa",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireMoneyMaker.h",
+      "sha256": "d0195d77436e0e9def780bf7d780387c6951bd403a6de575471167e5b297732b",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireMoneyOptimizer.cu",
+      "sha256": "86ce54abd3cb87c0d80d267667df1335a7769c5cffdb0a6b91d57c7723e7bc4c",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireOptimizer.cu",
+      "sha256": "8c88e058e5f8d33ff276f4b039f4371ae0657055afcacd1f749842c2fb74cee9",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireSelect.cu",
+      "sha256": "bf319766724e0d54d8e3390c024481972c6026cfa8a6123b6724209a674a9980",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireSinSim.cu",
+      "sha256": "fd25cb76be0e0a6269b9693240322850cc7dea92add806a1f8c3c84f56ad1ccf",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireSinSim.h",
+      "sha256": "1341808acd0ab094f1c23528efb9dbc930d039315eb4688813a58d901dcfb043",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireSolution.cpp",
+      "sha256": "4c0e869bf7a632d328ed6064b9c8e12ce150e126558798dc0ea1b75a1c726aed",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireSpeedTest.cu",
+      "sha256": "7ba707654a17a38e392dcd6fa4f19403170df84ac9821424aec9a261724be1b2",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarter_LoadState.h",
+      "sha256": "54832952d1f45e4d1cfefe0be6c1ea8d085f03b8b98de8d90eb72e2e911fae0c",
+      "matches_october_8_record": true,
+      "runtime_saved_state": true
+    },
+    {
+      "name": "FireStarter_MoneyMakerSolution.h",
+      "sha256": "12961265bf92c1c7e6c6e04676e8012f90218962f14c06553b1b5f963a34efdd",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarter_Solution.h",
+      "sha256": "2488b78512b8933325ed117a1da9996010cc75c8f0b728e5a019687b1a36704a",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarter.cpp",
+      "sha256": "86be8bdc2bd587110c51bca4a5fa039e932b3136f4fe1889342c70278b330e1a",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarter.h",
+      "sha256": "681a61aadc4fadff8b14a330d76af2b80972916ee970946880d996806e450c7c",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterComplete.cpp",
+      "sha256": "e7b15f4dd05b3aeb556e17649125be56562e4fb663f3e3fd8f48eadf721f1df0",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterComplete.h",
+      "sha256": "6c8e82ff3fa0db3f4cf1c956ff7fe11f3bc6d6e1a1185cf9d91e20d449cb39ae",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterEvolve.cpp",
+      "sha256": "644cb595f6ea73d1eb0fb688c4bfc900db8c28713d1dcd53b445c3a8866903ee",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterEvolve.h",
+      "sha256": "f106a28ee9c261ce7520b124028bcacbe819337e055b10f310ed22c79cf1d3cb",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterExecute.cpp",
+      "sha256": "f6e3889911c25b67c622863c44dd0a1416b2802c213d6e6e9a9c7abbc80ee241",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterExecute.h",
+      "sha256": "34d3786f8c575f2ea70c64f2bf479a4913802e4b7e7c2e19612be6e370182601",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterGenerate.cpp",
+      "sha256": "74566d79fa4d91772055ccc08380e5ab54476d864a0871c887db36d4ab55e52a",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterGenerate.h",
+      "sha256": "b71728598c4ea267ab75abb0e0a8cc751f23ed7f869f87ad8bd77e70e33e311f",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterMain.cpp",
+      "sha256": "67a69491dda60e42f82214b09f618069943a6050cd1fca6f1f6383261d0dc0f0",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterModes.h",
+      "sha256": "75b4b9aa913d2928768df73307c1ef3c8c198a3f3586585ed221e0563db83e77",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterResults.h",
+      "sha256": "84d9e18b4a0be21e131e4912a995a8472f1de353fe90ae11512133e7f740853c",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterSettings.h",
+      "sha256": "a9cfa4733ff86744bb18d0a2a0eb79f24a41f886634b897eefd49481fcd0eaa5",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterShow.cpp",
+      "sha256": "bfefb615ed6de67a61a2c4518044fcb975aba926890b66198fc70ed9affc34f9",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterShow.h",
+      "sha256": "98a6ef44b0b3c33b6f5a0c15a73242d6b8b87f0ead78acdd70575f8430a81315",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterSource.cpp",
+      "sha256": "e4e720128ba42854d7bbb93fe353c5d5318f0c75f7a29af47f7c734ef4cf0157",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterSource.h",
+      "sha256": "6f851054bbad54151db358b126f40968871a79e9dd814b064484135ec4d5deb4",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterState.cpp",
+      "sha256": "515ca79881aa0301a5e6642c2fcebefa349430cd05725ff9b7bf00b676bb1eff",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterState.h",
+      "sha256": "d828f7a8c020be2317777cd737fb9ba8343bda956024ad499511a4ed781c9158",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterStream.cpp",
+      "sha256": "0be2d6abfd80a7e7961b1fe3c6e63876b5ad97460b50048ebd8dc3b46587b32a",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterStream.h",
+      "sha256": "73fe3f33242e6655fd234088e2ebcf0f1214edddc55c8323e9126b1114ec8fb8",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterTarget.h",
+      "sha256": "7809005a04cc7d7491af9bbbe25398e915074e463b8a113531ccb9ae652aa4e7",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterUtil.h",
+      "sha256": "f8636d0abd0446326c9beec4c4ef0a2ec940fecf4369c0a91b9f761c4e4a8162",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "FireStarterWindow.h",
+      "sha256": "34d29abc222f4ca6dfcab863a8c01d9e66b807b5be30f0853af125d6ba20f66e",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "Format.h",
+      "sha256": "288c447cd75bcd77c288d774988bb986d2f86c3e14f7701d899a2869376101e9",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "HashRandom.h",
+      "sha256": "ade2428dbe80e0e5c7347518d5c9c081935bbeeec9f18a221000fa010129b2df",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "MoneyMakerStocks.cpp",
+      "sha256": "44b2057fb75ef0a957b7dfdef77796a28ddae3e21a5def5055a7b7e0341eac12",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "MoneyMakerStocks.h",
+      "sha256": "48b5bde2d3074d6902f7c88b9bc42db8b75ec924022c9391c57aa5bc012fd031",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "PrintF.h",
+      "sha256": "1e4c48b2b0d0b9a212c93465126b66c116d0c7c95dfbb1c23e7117cc19109f58",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "SerialThread.h",
+      "sha256": "0985d5f018e1f473d749eef68f56ef3cd5cee95cb8b2e2008ddc347fb2cb6d75",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "SimpleTimer.h",
+      "sha256": "255b40de4c9265a5f46f13a9719f68e94394b357e77fdd6f539e44fca89bf651",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    },
+    {
+      "name": "Sin.h",
+      "sha256": "1789a2f30f975d6b81148b363477bf9ae594266e03216089a7e57ee6c3ccd989",
+      "matches_october_8_record": true,
+      "runtime_saved_state": false
+    }
+  ],
+  "binary_checks": [
+    {
+      "configuration": "Evolve_New_Release",
+      "launchPath": "C:\\Work\\FireStarter\\FireStarter\\Evolve_New_Release.exe",
+      "sha256": "1982a6dc33c21e94896366d861c7bff50d03f12c4cf03ce9ff7178d32ed4ed82",
+      "matches_october_8_tested_binary": true,
+      "linker_matches_launch": true,
+      "last_write_utc": "2026-10-08T18:49:15.202929+00:00"
+    },
+    {
+      "configuration": "Evolve_GPU_Release",
+      "launchPath": "C:\\Work\\FireStarter\\FireStarter\\Evolve_GPU_Release.exe",
+      "sha256": "0c4f3f686a8a77fbfa6d5821f024ffb41719dde0d831d7577cd28394e936cc80",
+      "matches_october_8_tested_binary": true,
+      "linker_matches_launch": true,
+      "last_write_utc": "2026-10-08T18:49:42.666334+00:00"
+    },
+    {
+      "configuration": "Evolve_CPU_Release",
+      "launchPath": "C:\\Work\\FireStarter\\FireStarter\\Evolve_CPU_Release.exe",
+      "sha256": "d875bd3f82803808c269cd083f4cc57aad7f5638db311bf8b1c993d99142ea33",
+      "matches_october_8_tested_binary": true,
+      "linker_matches_launch": true,
+      "last_write_utc": "2026-10-08T18:49:56.334450+00:00"
+    }
+  ],
+  "cache_disable_user_report": "1",
+  "cache_disable_current_analysis_process": "1",
+  "cache_flag_independently_logged_during_runs": false,
+  "protocol": "Direct local console; GPU checked unused; applications closed as far as practicable; two batches per mode.",
+  "continuous_telemetry": false,
+  "reboot_asserted": false
+}
