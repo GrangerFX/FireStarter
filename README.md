@@ -12,6 +12,8 @@ The long-term motivation is discovering structures useful for machine intelligen
 
 The repository includes the **Evolutionary Computational Discovery white paper, version 1.0** (October 9, 2026): [Markdown](docs/white-paper/version-1.0/Evolutionary_Computational_Discovery_White_Paper_Version_1_0.md) and [PDF](docs/white-paper/version-1.0/Evolutionary_Computational_Discovery_White_Paper_Version_1_0.pdf). It explains the architecture, motivation, experiments, and limitations.
 
+The published paper is available on [Zenodo](https://zenodo.org/records/23302323), with DOI [10.5281/zenodo.23302323](https://doi.org/10.5281/zenodo.23302323).
+
 In the [October 9 timing campaign](docs/timing/cache-disabled-2026-10-09/README.md), all 1,152 tests met the configured sine-fitness criterion on one RTX 5090 with compilation caching disabled. Mean solution times were approximately 0.496 seconds for EvolveNew, 1.51 seconds for EvolveGPU, and 27.9 seconds for EvolveCPU.
 
 These are results for one configured benchmark: maximum absolute error below `1e-6` on 15 fitness samples over `[0, 2*pi]`. Accuracy between samples can be worse. EvolveNew is supplied with a previously successful register-use pattern, and its timing excludes discovering that pattern. EvolveCPU also uses GPU optimization, so these timings compare search strategies rather than CPU and GPU hardware alone.
@@ -155,6 +157,16 @@ inline float Sin(float n)
 }
 ```
 
+## Citation
+
+If you use FireStarter or its ECD methods in research, please cite the white paper:
+
+Granger, M. W. J. (2026). *Evolutionary Computational Discovery: High-Throughput Evolution of Computational Structures* (Version 1.0). Zenodo. https://doi.org/10.5281/zenodo.23302323
+
+Machine-readable citation information is provided in [CITATION.cff](CITATION.cff).
+
 ## License
 
-[MIT](LICENSE). Author: Mark Granger.
+FireStarter source code: [MIT](LICENSE). Author: Mark Granger.
+
+The published ECD white paper is available under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).

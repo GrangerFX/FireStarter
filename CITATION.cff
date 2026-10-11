@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use FireStarter or its ECD methods in research, please cite the white paper below."
+type: software
+title: "FireStarter"
+authors:
+  - family-names: "Granger"
+    given-names: "Mark W. J."
+url: "https://github.com/GrangerFX/FireStarter"
+repository-code: "https://github.com/GrangerFX/FireStarter"
+license: MIT
+preferred-citation:
+  type: report
+  title: "Evolutionary Computational Discovery: High-Throughput Evolution of Computational Structures"
+  authors:
+    - family-names: "Granger"
+      given-names: "Mark W. J."
+  version: "1.0"
+  year: 2026
+  month: 10
+  publisher:
+    name: "Zenodo"
+  doi: "10.5281/zenodo.23302323"
+  url: "https://zenodo.org/records/23302323"
