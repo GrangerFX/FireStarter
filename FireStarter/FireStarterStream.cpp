@@ -491,7 +491,7 @@ void FireStarterStream::EvolveNewStream(void)
 void FireStarterStream::EvolveSinSimStream(void)
 {
     // EvolveSinSim performs the same Sin() simulation as the original SinSim() but uses code evolution rather than a fixed neural network.
-    // This explores the generation of code and registers that processes multiple input samples without resetting the registers for each sample.
+    // This explores the generation of code and registers that process multiple input samples without resetting the registers for each sample.
     // MoneyMaker is the more complex version of multi-sample processing. This is a current area of research and could lead towards code that can
     // evolve itself. Currently the results are poor compared to the original SinSim() and EvolveGPU.
     FireStarterSettings evolveSettings(FIRESTARTER_EVOLVE_SINSIM);
@@ -555,10 +555,11 @@ void FireStarterStream::EvolveSinSimStream(void)
 
 void FireStarterStream::SinSimStream(void)
 {
-    // This is the best GPU implementation of the original SinSim neural network from around 2008.
-    // It uses just four neurons and successfully matches the target function to six digits of accuracy over [0, 2*pi].
-    // The Sin() simulation initializes the neuron weights and then runs the simulation over a number of samples.
-    // The target function is Sin(theta) where theta is offset 45 samples.
+    // This is an improved GPU implementation of the original CPU SinSim neural network from around 2008.
+    // It uses just four neurons and successfully matches the target function with an average of six digits of accuracy over [0, 2*pi] for the set of samples.
+    // That does not mean that the evolved code will be able to achieve six digits of accuracy for all values of theta or even all the individual samples.
+    // The Sin() simulation initializes the neuron weights and then runs the simulation over 4096 samples and accumulates the average error for all but the first 256 samples.
+    // The input is Cos(theta) and the target function is Sin(theta) where theta is offset 45 samples or about 36.42 degrees.
     // This version runs using CUDA on the GPU with a population size of 65536.
     FireStarterSettings sinSimSettings(FIRESTARTER_SINSIM);
     std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
@@ -617,7 +618,7 @@ void FireStarterStream::SinSimStream(void)
 void FireStarterStream::MoneyMakerStream(void)
 {
     // MoneyMaker is an experiment to find out if code evolution can be used to predict the future rather than simulate a static function.
-    // This code is based on EvolveSinSim() but uses stock market data as the input and output. The goal is to evolve code that signal when to
+    // This code is based on EvolveSinSim() but uses stock market data as the input and output. The goal is to evolve code that signals when to
     // buy, sell or hold shares in a stock. Currently results are inconclusive. This problem may not be solvable using the current number of
     // instructions, registers and opcodes. See MoneyMaker.cu for more details.
 #if FIRESTARTER_MULTI_GPU
