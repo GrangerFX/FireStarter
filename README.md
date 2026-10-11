@@ -25,10 +25,10 @@ The mode is selected by the Visual Studio build configuration, not a command-lin
 | **EvolveCPU** | `Evolve_CPU_Release` | Keeps a historical pool of candidates, selects and mutates code on the CPU, then compiles candidates for register-data evolution on the GPU. Supports searching for one structure that works across related target variations. |
 | **EvolveGPU** | `Evolve_GPU_Release` | Samples many random structures on the GPU and gives each a bounded data-evolution budget. Promising structures are compiled for deeper optimization. |
 | **EvolveNew** | `Evolve_New_Release` | Holds a successful register-use pattern fixed, samples opcodes, and evolves register data. This experiment avoids costly dynamic register indexing during GPU evaluation. |
-| **EvolveSelect** | `Evolve_Select_Release` | Select is an earlier version of EvolveGPU. It attempts to evolve by changing just two or three instructions when the code fails to evolve afer a number of generations. |
-| **EvolveSinSim** | `Evolve_SinSim_Release` | EvolveSinSim peforms the same Sin() simulation as the original SinSim() but uses code evolution rather than a fixed neural network. This explores the generation of code and registers that processes multiple input samples without resetting the registers for each sample. |
-| **SinSim** | `SinSim_Release` | This is a demonstration of the original SinSim neural network from around 2008. It uses just four neurons and successfully converges match the target function to six digits of accuracy. The Sin() simulation initializes the neuron weights and then runs the simulation over a number of samples. The target function is Sin(theta) where theta is offset 45 samples. |
-| **Random** | `Random_Release` | Random creates randomly generated code instructions and the uses one or more Optimize passes to evolve the best register data. The results demonstrate that some random code instructions are far more evolvable than others. This discovery was the basis for the EvolveGPU code evolution method. |
+| **EvolveSelect** | `Evolve_Select_Release` | Select is an earlier version of EvolveGPU. It attempts to evolve by changing just two or three instructions when the code fails to evolve after a number of generations. |
+| **EvolveSinSim** | `Evolve_SinSim_Release` | EvolveSinSim performs the same Sin() simulation as the original SinSim() but uses code evolution rather than a fixed neural network. This explores the generation of code and registers that processes multiple input samples without resetting the registers for each sample. |
+| **SinSim** | `SinSim_Release` | This is the best GPU implementation of the original SinSim neural network from around 2008. It uses just four neurons and successfully matches the target function to six digits of accuracy over [0, 2*pi]. The Sin() simulation initializes the neuron weights and then runs the simulation over a number of samples. The target function is Sin(theta) where theta is offset 45 samples. |
+| **Random** | `Random_Release` | Random creates randomly generated code instructions and then uses one or more Optimize passes to evolve the best register data. The results demonstrate that some random code instructions are far more evolvable than others. This discovery was the basis for the EvolveGPU code evolution method. |
 | **MoneyMaker** | `MoneyMaker_Release` | MoneyMaker is an experiment to find out if code evolution can be used to predict the future rather than simulate a static function. This code is based on EvolveSinSim() but uses stock market data as the input and output. The goal is to evolve code that signal when to buy, sell or hold shares in a stock. Currently results are inconclusive. This problem may not be solvable using the current number of instructions, registers and opcodes. |
 | **SpeedTest** | `SpeedTest_Release` | SpeedTest can be used to test the performance impact of changes to the evolve code. Paste the code you wish to modify into FireSpeedTest.cu before making changes and use it as a reference. |
 | **Optimize** | `Optimize_Release` | Optimize mode allows previously evolved code instructions to have their data fully evolved. In addition, Optimize can run multiple tests to find alternate register data values. This is also a way to test the Optimize pass separately from the Evolve passes. |
@@ -100,7 +100,7 @@ Validate discovered programs on additional inputs and against the intended numer
 ## Example generated Sin() function
 
 Note: This is only one of a very large number of solutions that can be evolved.
-```
+```cpp
 inline float Sin(float n)
 {
     float r0, r1, r2, r3, r4;

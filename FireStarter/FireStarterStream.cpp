@@ -8,7 +8,7 @@
 
 void FireStarterStream::RandomStream(void)
 {
-    // Random creates randomly generated code instructions and the uses one or more Optimize passes to evolve the best register data.
+    // Random creates randomly generated code instructions and then uses one or more Optimize passes to evolve the best register data.
     // The results demonstrate that some random code instructions are far more evolvable than others.
     // This discovery was the basis for the EvolveGPU code evolution method.
     FireStarterSettings randomSettings(FIRESTARTER_RANDOM);
@@ -61,7 +61,7 @@ void FireStarterStream::RandomStream(void)
 
 void FireStarterStream::EvolveSelectStream(void)
 {
-    // Select is an earlier version of EvolveGPU. It attempts to evolve by changing just two or three instructions when the code fails to evolve afer a number of generations.
+    // Select is an earlier version of EvolveGPU. It attempts to evolve by changing just two or three instructions when the code fails to evolve after a number of generations.
     // EvolveGPU's simpler approach of re-randomizing all the instructions with the goal of finding code with maximum evolvability was more efficient in the end.
     FireStarterSettings selectSettings(FIRESTARTER_EVOLVE_SELECT);
     FireStarterSettings optimizeSettings(FIRESTARTER_EVOLVE_OPTIMIZE);
@@ -490,7 +490,7 @@ void FireStarterStream::EvolveNewStream(void)
 
 void FireStarterStream::EvolveSinSimStream(void)
 {
-    // EvolveSinSim peforms the same Sin() simulation as the original SinSim() but uses code evolution rather than a fixed neural network.
+    // EvolveSinSim performs the same Sin() simulation as the original SinSim() but uses code evolution rather than a fixed neural network.
     // This explores the generation of code and registers that processes multiple input samples without resetting the registers for each sample.
     // MoneyMaker is the more complex version of multi-sample processing. This is a current area of research and could lead towards code that can
     // evolve itself. Currently the results are poor compared to the original SinSim() and EvolveGPU.
@@ -555,8 +555,8 @@ void FireStarterStream::EvolveSinSimStream(void)
 
 void FireStarterStream::SinSimStream(void)
 {
-    // This is a demonstration of the of original SinSim neural network from around 2008.
-    // It uses just four neurons and successfully converges match the target function to six digits of accuracy.
+    // This is the best GPU implementation of the original SinSim neural network from around 2008.
+    // It uses just four neurons and successfully matches the target function to six digits of accuracy over [0, 2*pi].
     // The Sin() simulation initializes the neuron weights and then runs the simulation over a number of samples.
     // The target function is Sin(theta) where theta is offset 45 samples.
     // This version runs using CUDA on the GPU with a population size of 65536.
