@@ -556,8 +556,8 @@ void FireStarterStream::EvolveSinSimStream(void)
 void FireStarterStream::SinSimStream(void)
 {
     // This is an improved GPU implementation of the original CPU SinSim neural network from around 2008.
-    // It uses just four neurons and successfully matches the target function with an average of six digits of accuracy over [0, 2*pi] for the set of samples.
-    // That does not mean that the evolved code will be able to achieve six digits of accuracy for all values of theta or even all the individual samples.
+    // It uses just four neurons and successfully matches the target function with an average error close to six digits of accuracy over [0, 2*pi] for the set of samples.
+    // That does not mean that the evolved code will be able to achieve close to six digits of accuracy for all values of theta or even all the individual samples.
     // The Sin() simulation initializes the neuron weights and then runs the simulation over 4096 samples and accumulates the average error for all but the first 256 samples.
     // The input is Cos(theta) and the target function is Sin(theta) where theta is offset 45 samples or about 36.42 degrees.
     // This version runs using CUDA on the GPU with a population size of 65536.
@@ -573,42 +573,44 @@ void FireStarterStream::SinSimStream(void)
     FireStarterExecute* executeSinSim = new FireStarterExecute();
 
     // Initialize the states.
-    unsigned long long test = FIRESTARTER_START_TEST;
-    FireStarterState evolveState = FireStarterState(sinSimSettings, 0, 0, 0, test);
-    FireStarterState bestState = FireStarterState(sinSimSettings, 0, 0, 0, test);
+    unsigned int evolveTests = MAX(sinSimSettings.m_tests, 1);
+    for (unsigned int t = 0; (t < evolveTests) && !WillTerminate(); t++) {
+        unsigned long long test = t + FIRESTARTER_START_TEST;
+        FireStarterState evolveState = FireStarterState(sinSimSettings, 0, 0, 0, test);
+        FireStarterState bestState = FireStarterState(sinSimSettings, 0, 0, 0, test);
 
-    // Evolve the current test.
-    while (!WillTerminate() && !bestState.Complete()) {
-        // Execute the initial GPU evolve.
-        executeSinSim->ExecuteSinSim(evolveState);
+        // Evolve the current test.
+        while (!WillTerminate() && !bestState.Complete()) {
+            // Execute the initial GPU evolve.
+            executeSinSim->ExecuteSinSim(evolveState);
 
-        // Update the results in the UI and check for completion.
-        complete->CompleteState(bestState, evolveState);
+            // Update the results in the UI and check for completion.
+            complete->CompleteState(bestState, evolveState);
 
-        // Exit after a set number of generations.
-        if (sinSimSettings.m_generations && (evolveState.m_generation >= sinSimSettings.m_generations))
-            break;
-    }
+            // Exit after a set number of generations.
+            if (sinSimSettings.m_generations && (evolveState.m_generation >= sinSimSettings.m_generations))
+                break;
+        }
 
-    // Output the test results.
-    if (!WillTerminate()) {
-        // Output the evolve results.
-        double duration = bestState.Duration();
-        totalDuration += duration;
-        totalGenerations += evolveState.m_generation;
+        // Output the test results.
+        if (!WillTerminate()) {
+            // Output the evolve results.
+            double duration = bestState.Duration();
+            totalDuration += duration;
+            totalGenerations += evolveState.m_generation;
 
-        std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Best Result=%.8f  Duration: %8.1f  GenTime: %6.1f", sinSimSettings.m_evolveSeed, test, evolveState.m_generation, totalGenerations, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation);
-        if (bestState.MaxResults() <= sinSimSettings.m_target)
-            resultText += " *******";
-        resultText += "\n";
-        FireStarterSource::AppendSource(resultText, Format("Logs\\%s_SinSim_Results.txt", streamDate.c_str()));
+            std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Best Result=%.8f  Duration: %8.1f  GenTime: %6.1f", sinSimSettings.m_evolveSeed, test, evolveState.m_generation, totalGenerations, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation);
+            if (bestState.MaxResults() <= sinSimSettings.m_target)
+                resultText += " *******";
+            resultText += "\n";
+            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_SinSim_Results.txt", streamDate.c_str()));
 
-        // Save the best state and best solution.
-        complete->CompleteSaveResults(bestState);
+            // Save the best state and best solution.
+            complete->CompleteSaveResults(bestState);
+        }
     }
 
     // Delete the completion unit.
-    complete->Synchronize();
     delete complete;
 
     // Finish processing and terminate the evolution execution units.

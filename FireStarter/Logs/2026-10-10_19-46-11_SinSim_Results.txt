@@ -1,0 +1,4 @@
+Seed: 0  Test:   0  Generation=1000  Total=  1000  Evolve Result=0.00000120  Best Result=0.00000120  Duration:     17.3  GenTime:    0.0
+Seed: 0  Test:   1  Generation=1000  Total=  2000  Evolve Result=0.00000127  Best Result=0.00000127  Duration:     19.5  GenTime:    0.0
+Seed: 0  Test:   2  Generation=1000  Total=  3000  Evolve Result=0.00000116  Best Result=0.00000116  Duration:     19.7  GenTime:    0.0
+Seed: 0  Test:   3  Generation=1000  Total=  4000  Evolve Result=0.00000113  Best Result=0.00000113  Duration:     19.0  GenTime:    0.0
