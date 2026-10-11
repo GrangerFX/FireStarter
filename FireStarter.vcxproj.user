@@ -5,7 +5,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
@@ -60,7 +60,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>

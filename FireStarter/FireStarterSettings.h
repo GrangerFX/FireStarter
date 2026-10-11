@@ -187,13 +187,13 @@
 #define FIRESTARTER_OPTIMIZE_OPTIMIZE           1
 #define FIRESTARTER_OPTIMIZE_TESTS              FIRESTARTER_TESTS
 
-#define FIRESTARTER_SPEED_TEST_UNITS            1
-#define FIRESTARTER_SPEED_TEST_STATES           1
-#define FIRESTARTER_SPEED_TEST_GENERATIONS      0
-#define FIRESTARTER_SPEED_TEST_POPULATION       FIRESTARTER_POPULATION
-#define FIRESTARTER_SPEED_TEST_PASSES           FIRESTARTER_PASSES
-#define FIRESTARTER_SPEED_TEST_OPTIMIZE         0
-#define FIRESTARTER_SPEED_TEST_TESTS            FIRESTARTER_TESTS
+#define FIRESTARTER_SPEEDTEST_UNITS            1
+#define FIRESTARTER_SPEEDTEST_STATES           1
+#define FIRESTARTER_SPEEDTEST_GENERATIONS      0
+#define FIRESTARTER_SPEEDTEST_POPULATION       FIRESTARTER_POPULATION
+#define FIRESTARTER_SPEEDTEST_PASSES           FIRESTARTER_PASSES
+#define FIRESTARTER_SPEEDTEST_OPTIMIZE         0
+#define FIRESTARTER_SPEEDTEST_TESTS            FIRESTARTER_TESTS
 
 // Complex program generation.
 typedef enum : unsigned short {
@@ -308,8 +308,8 @@ public:
                 return "FIRESTARTER_MONEYOPTIMIZE";
             case FIRESTARTER_OPTIMIZE:
                 return "FIRESTARTER_OPTIMIZE";
-            case FIRESTARTER_SPEED_TEST:
-                return "FIRESTARTER_SPEED_TEST";
+            case FIRESTARTER_SPEEDTEST:
+                return "FIRESTARTER_SPEEDTEST";
             case FIRESTARTER_SOLUTION:
                 return "FIRESTARTER_SOLUTION";
             default:
@@ -343,7 +343,7 @@ public:
                 return "FireMoneyOptimizer.cu";
             case FIRESTARTER_OPTIMIZE:
                 return "FireOptimizer.cu";
-            case FIRESTARTER_SPEED_TEST:
+            case FIRESTARTER_SPEEDTEST:
                 return "FireSpeedTest.cu";
         }
         return "";
@@ -393,7 +393,7 @@ public:
                 return "MoneyOptimizer";
             case FIRESTARTER_OPTIMIZE:
                 return "Optimizer";
-            case FIRESTARTER_SPEED_TEST:
+            case FIRESTARTER_SPEEDTEST:
                 return "SpeedTest";
         }
         return "";
@@ -635,17 +635,17 @@ public:
                 m_target =      FIRESTARTER_TARGET;
                 break;
 
-            case FIRESTARTER_SPEED_TEST:
+            case FIRESTARTER_SPEEDTEST:
                 m_variations =  FIRESTARTER_VARIATIONS;
-                m_units =       FIRESTARTER_SPEED_TEST_UNITS;
-                m_states =      FIRESTARTER_SPEED_TEST_STATES;
-                m_generations = FIRESTARTER_SPEED_TEST_GENERATIONS;
-                m_population =  FIRESTARTER_SPEED_TEST_POPULATION;
-                m_passes =      FIRESTARTER_SPEED_TEST_PASSES;
+                m_units =       FIRESTARTER_SPEEDTEST_UNITS;
+                m_states =      FIRESTARTER_SPEEDTEST_STATES;
+                m_generations = FIRESTARTER_SPEEDTEST_GENERATIONS;
+                m_population =  FIRESTARTER_SPEEDTEST_POPULATION;
+                m_passes =      FIRESTARTER_SPEEDTEST_PASSES;
                 m_iterations =  FIRESTARTER_ITERATIONS;
                 m_samples =     FIRESTARTER_SAMPLES;
-                m_optimize =    FIRESTARTER_SPEED_TEST_OPTIMIZE;
-                m_tests =       FIRESTARTER_SPEED_TEST_TESTS;
+                m_optimize =    FIRESTARTER_SPEEDTEST_OPTIMIZE;
+                m_tests =       FIRESTARTER_SPEEDTEST_TESTS;
                 m_target =      FIRESTARTER_TARGET;
                 break;
 

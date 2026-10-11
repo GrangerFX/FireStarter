@@ -12,6 +12,6 @@
 #define FIRESTARTER_MONEYMAKER      9           // GPU MoneyMaker evolved share price prediction.
 #define FIRESTARTER_MONEYOPTIMIZE   10          // Optimize a previously MoneyMaker evolved state.
 #define FIRESTARTER_OPTIMIZE        11          // Optimize a previously evolved state.
-#define FIRESTARTER_SPEED_TEST      12          // Speed testing for variations of GPU evolution.
+#define FIRESTARTER_SPEEDTEST       12          // Speed testing for variations of GPU evolution.
 #define FIRESTARTER_SOLUTION        13          // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODES           14          // Number of modes

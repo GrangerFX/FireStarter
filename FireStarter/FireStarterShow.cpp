@@ -446,7 +446,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("BestError=%.8f", bestError);
 
         // Only used for debugging.
-//      if (!((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEED_TEST)))
+//      if (!((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEEDTEST)))
 //          statusString += Format("  BestAge=%3u", bestState.m_age);
 
         // Comment out this line when doing diffs to compare the results.

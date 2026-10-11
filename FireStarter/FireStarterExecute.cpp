@@ -58,7 +58,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     size_t networksSize = 0;
     size_t tradingDataSize = 0;
 
-    if ((settings.m_mode == FIRESTARTER_EVOLVE_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_OPTIMIZE) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
+    if ((settings.m_mode == FIRESTARTER_EVOLVE_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_OPTIMIZE) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE) || (settings.m_mode == FIRESTARTER_SPEEDTEST)) {
         resultsSize = settings.m_population * sizeof(float);
         codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
         if (!(settings.m_mode == FIRESTARTER_EVOLVE_GPU))

@@ -41,12 +41,12 @@
       <Configuration>Evolve_SinSim_Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Evolve_Speed_Test_Debug|x64">
-      <Configuration>Evolve_Speed_Test_Debug</Configuration>
+    <ProjectConfiguration Include="Speed_Test_Debug|x64">
+      <Configuration>Speed_Test_Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Evolve_Speed_Test_Release|x64">
-      <Configuration>Evolve_Speed_Test_Release</Configuration>
+    <ProjectConfiguration Include="Speed_Test_Release|x64">
+      <Configuration>Speed_Test_Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Optimize_Debug|x64">
@@ -106,7 +106,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='Solution_Debug'">
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Evolve_Speed_Test_Debug'">
+  <PropertyGroup Condition="'$(Configuration)'=='Speed_Test_Debug'">
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Evolve_MoneyMaker_Debug'">
@@ -139,7 +139,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='Solution_Release'">
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Evolve_Speed_Test_Release'">
+  <PropertyGroup Condition="'$(Configuration)'=='Speed_Test_Release'">
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Evolve_MoneyMaker_Release'">
@@ -188,7 +188,7 @@
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
     <TargetName>$(Configuration)</TargetName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
     <TargetName>$(Configuration)</TargetName>
   </PropertyGroup>
@@ -232,7 +232,7 @@
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
     <TargetName>$(Configuration)</TargetName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
     <TargetName>$(Configuration)</TargetName>
   </PropertyGroup>
@@ -295,11 +295,11 @@
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Evolve_Speed_Test_Debug'">
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Speed_Test_Debug'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PreprocessorDefinitions>_WINDOWS;NOMINMAX;_DEBUG;FIRESTARTER_MODE=FIRESTARTER_SPEED_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;NOMINMAX;_DEBUG;FIRESTARTER_MODE=FIRESTARTER_SPEEDTEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -416,11 +416,11 @@
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Evolve_Speed_Test_Release'">
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Speed_Test_Release'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>_WINDOWS;NOMINMAX;NDEBUG;FIRESTARTER_MODE=FIRESTARTER_SPEED_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;NOMINMAX;NDEBUG;FIRESTARTER_MODE=FIRESTARTER_SPEEDTEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -531,7 +531,7 @@
       <AdditionalDependencies>cuda.lib;cudart_static.lib;nvrtc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </IgnoreAllDefaultLibraries>
-      <IgnoreAllDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
+      <IgnoreAllDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">
       </IgnoreAllDefaultLibraries>
       <IgnoreAllDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">
       </IgnoreAllDefaultLibraries>
@@ -552,7 +552,7 @@
       <IgnoreAllDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">
       </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
-      <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
@@ -564,7 +564,7 @@
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">libcmt.lib</IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">
       </IgnoreSpecificDefaultLibraries>
-      <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
+      <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">
       </IgnoreSpecificDefaultLibraries>
       <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </IgnoreSpecificDefaultLibraries>
@@ -587,7 +587,7 @@
     </Link>
     <ClCompile>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">stdcpp20</LanguageStandard>
-      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">stdcpp20</LanguageStandard>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">stdcpp20</LanguageStandard>
@@ -598,7 +598,7 @@
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Random_Release|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Optimize_Release|x64'">stdcpp20</LanguageStandard>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">true</UseStandardPreprocessor>
-      <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">true</UseStandardPreprocessor>
+      <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">true</UseStandardPreprocessor>
@@ -611,7 +611,7 @@
     </ClCompile>
     <ClCompile>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">stdcpp20</LanguageStandard>
-      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">stdcpp20</LanguageStandard>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">stdcpp20</LanguageStandard>
@@ -622,7 +622,7 @@
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Random_Debug|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">stdcpp20</LanguageStandard>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">true</UseStandardPreprocessor>
-      <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">true</UseStandardPreprocessor>
+      <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">true</UseStandardPreprocessor>
       <UseStandardPreprocessor Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">true</UseStandardPreprocessor>
@@ -635,7 +635,7 @@
     </ClCompile>
     <PostBuildEvent>
       <Command Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
@@ -648,7 +648,7 @@
     </PostBuildEvent>
     <PostBuildEvent>
       <Command Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)FireStarter"</Command>
@@ -661,7 +661,7 @@
     </PostBuildEvent>
     <CudaCompile>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
@@ -674,7 +674,7 @@
     </CudaCompile>
     <CudaCompile>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
-      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
+      <CompileOut Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
       <CompileOut Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">$(IntDir)%(Filename)%(Extension).obj</CompileOut>
@@ -736,7 +736,7 @@
     <None Include="FireStarter\FireEvolverNew.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">
       </ExcludedFromBuild>
@@ -758,7 +758,7 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
@@ -782,7 +782,7 @@
     <None Include="FireStarter\FireEvolverSinSim.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">
       </ExcludedFromBuild>
@@ -804,7 +804,7 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
@@ -830,7 +830,7 @@
     <None Include="FireStarter\FireSelect.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">
       </ExcludedFromBuild>
@@ -852,7 +852,7 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
@@ -877,7 +877,7 @@
     <None Include="FireStarter\FireOptimizer.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">
       </ExcludedFromBuild>
@@ -899,7 +899,7 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
@@ -923,7 +923,7 @@
     <None Include="FireStarter\FireSinSim.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">
       </ExcludedFromBuild>
@@ -945,7 +945,7 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
@@ -969,7 +969,7 @@
     <None Include="FireStarter\FireSpeedTest.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">
       </ExcludedFromBuild>
@@ -991,7 +991,7 @@
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">
       </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
       </ExcludedFromBuild>
@@ -1016,7 +1016,7 @@
   <ItemGroup>
     <CudaCompile Include="FireStarter\FireGenerate.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">true</ExcludedFromBuild>
@@ -1027,7 +1027,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Random_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">true</ExcludedFromBuild>
@@ -1040,7 +1040,7 @@
     </CudaCompile>
     <CudaCompile Include="FireStarter\FireSettings.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Debug|x64'">true</ExcludedFromBuild>
@@ -1051,7 +1051,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Random_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Optimize_Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Solution_Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_Speed_Test_Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Evolve_SinSim_Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='SinSim_Release|x64'">true</ExcludedFromBuild>

@@ -11,16 +11,14 @@ Global
 		Evolve_CPU_Release|x64 = Evolve_CPU_Release|x64
 		Evolve_GPU_Debug|x64 = Evolve_GPU_Debug|x64
 		Evolve_GPU_Release|x64 = Evolve_GPU_Release|x64
-		Evolve_MoneyMaker_Debug|x64 = Evolve_MoneyMaker_Debug|x64
-		Evolve_MoneyMaker_Release|x64 = Evolve_MoneyMaker_Release|x64
 		Evolve_New_Debug|x64 = Evolve_New_Debug|x64
 		Evolve_New_Release|x64 = Evolve_New_Release|x64
 		Evolve_Select_Debug|x64 = Evolve_Select_Debug|x64
 		Evolve_Select_Release|x64 = Evolve_Select_Release|x64
 		Evolve_SinSim_Debug|x64 = Evolve_SinSim_Debug|x64
 		Evolve_SinSim_Release|x64 = Evolve_SinSim_Release|x64
-		Evolve_Speed_Test_Debug|x64 = Evolve_Speed_Test_Debug|x64
-		Evolve_Speed_Test_Release|x64 = Evolve_Speed_Test_Release|x64
+		MoneyMaker_Debug|x64 = MoneyMaker_Debug|x64
+		MoneyMaker_Release|x64 = MoneyMaker_Release|x64
 		Optimize_Debug|x64 = Optimize_Debug|x64
 		Optimize_Release|x64 = Optimize_Release|x64
 		Random_Debug|x64 = Random_Debug|x64
@@ -29,6 +27,8 @@ Global
 		SinSim_Release|x64 = SinSim_Release|x64
 		Solution_Debug|x64 = Solution_Debug|x64
 		Solution_Release|x64 = Solution_Release|x64
+		SpeedTest_Debug|x64 = SpeedTest_Debug|x64
+		SpeedTest_Release|x64 = SpeedTest_Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_CPU_Debug|x64.ActiveCfg = Evolve_CPU_Debug|x64
@@ -39,10 +39,6 @@ Global
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_GPU_Debug|x64.Build.0 = Evolve_GPU_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_GPU_Release|x64.ActiveCfg = Evolve_GPU_Release|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_GPU_Release|x64.Build.0 = Evolve_GPU_Release|x64
-		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_MoneyMaker_Debug|x64.ActiveCfg = Evolve_MoneyMaker_Debug|x64
-		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_MoneyMaker_Debug|x64.Build.0 = Evolve_MoneyMaker_Debug|x64
-		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_MoneyMaker_Release|x64.ActiveCfg = Evolve_MoneyMaker_Release|x64
-		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_MoneyMaker_Release|x64.Build.0 = Evolve_MoneyMaker_Release|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_New_Debug|x64.ActiveCfg = Evolve_New_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_New_Debug|x64.Build.0 = Evolve_New_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_New_Release|x64.ActiveCfg = Evolve_New_Release|x64
@@ -55,10 +51,10 @@ Global
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_SinSim_Debug|x64.Build.0 = Evolve_SinSim_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_SinSim_Release|x64.ActiveCfg = Evolve_SinSim_Release|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_SinSim_Release|x64.Build.0 = Evolve_SinSim_Release|x64
-		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_Speed_Test_Debug|x64.ActiveCfg = Evolve_Speed_Test_Debug|x64
-		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_Speed_Test_Debug|x64.Build.0 = Evolve_Speed_Test_Debug|x64
-		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_Speed_Test_Release|x64.ActiveCfg = Evolve_Speed_Test_Release|x64
-		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Evolve_Speed_Test_Release|x64.Build.0 = Evolve_Speed_Test_Release|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.MoneyMaker_Debug|x64.ActiveCfg = Evolve_MoneyMaker_Debug|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.MoneyMaker_Debug|x64.Build.0 = Evolve_MoneyMaker_Debug|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.MoneyMaker_Release|x64.ActiveCfg = Speed_Test_Release|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.MoneyMaker_Release|x64.Build.0 = Speed_Test_Release|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Optimize_Debug|x64.ActiveCfg = Optimize_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Optimize_Debug|x64.Build.0 = Optimize_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Optimize_Release|x64.ActiveCfg = Optimize_Release|x64
@@ -75,6 +71,10 @@ Global
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Solution_Debug|x64.Build.0 = Solution_Debug|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Solution_Release|x64.ActiveCfg = Solution_Release|x64
 		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Solution_Release|x64.Build.0 = Solution_Release|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.SpeedTest_Debug|x64.ActiveCfg = Speed_Test_Debug|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.SpeedTest_Debug|x64.Build.0 = Speed_Test_Debug|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.SpeedTest_Release|x64.ActiveCfg = Speed_Test_Release|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.SpeedTest_Release|x64.Build.0 = Speed_Test_Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

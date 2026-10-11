@@ -8,7 +8,7 @@
 
 void FireStarterStream::RandomStream(void)
 {
-    // RandomStream creates randomly generated code instructions and the uses one or more Optimize passes to evolve the best register data.
+    // Random creates randomly generated code instructions and the uses one or more Optimize passes to evolve the best register data.
     // The results demonstrate that some random code instructions are far more evolvable than others.
     // This discovery was the basis for the EvolveGPU code evolution method.
     FireStarterSettings randomSettings(FIRESTARTER_RANDOM);
@@ -555,7 +555,7 @@ void FireStarterStream::EvolveSinSimStream(void)
 
 void FireStarterStream::SinSimStream(void)
 {
-    // This is a demonstration of the best version of original SinSim neural network from around 2008.
+    // This is a demonstration of the of original SinSim neural network from around 2008.
     // It uses just four neurons and successfully converges match the target function to six digits of accuracy.
     // The Sin() simulation initializes the neuron weights and then runs the simulation over a number of samples.
     // The target function is Sin(theta) where theta is offset 45 degrees.
@@ -619,7 +619,7 @@ void FireStarterStream::MoneyMakerStream(void)
     // MoneyMaker is an experiment to find out if code evolution can be used to predict the future rather than simulate a static function.
     // This code is based on EvolveSinSim() but uses stock market data as the input and output. The goal is to evolve code that signal when to
     // buy, sell or hold shares in a stock. Currently results are inconclusive. This problem may not be solvable using the current number of
-    // instrucitons, registers and opcodes. See MoneyMaker.cu for more details.
+    // instructions, registers and opcodes. See MoneyMaker.cu for more details.
 #if FIRESTARTER_MULTI_GPU
     unsigned int numDevices = CUDAContext::CUDADevices();
 #else
@@ -888,7 +888,8 @@ void FireStarterStream::OptimizeStream(void)
 void FireStarterStream::SpeedTestStream(void)
 {
     // SpeedTest can be used to test the performance impact of changes to the evolve code.
-    FireStarterSettings speedTestSettings(FIRESTARTER_SPEED_TEST);
+    // Paste the code you wish to modify into FireSpeedTest.cu before making changes and use it as a reference.
+    FireStarterSettings speedTestSettings(FIRESTARTER_SPEEDTEST);
     std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
 
     // Create the optimization execution unit.
@@ -971,7 +972,7 @@ FireStarterStream::FireStarterStream(FireStarterWindow& window) : SerialThread("
         case FIRESTARTER_OPTIMIZE:
             OptimizeStream();
             break;
-        case FIRESTARTER_SPEED_TEST:
+        case FIRESTARTER_SPEEDTEST:
             SpeedTestStream();
             break;
         case FIRESTARTER_SOLUTION:

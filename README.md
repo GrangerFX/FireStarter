@@ -1,140 +1,141 @@
-Project FireStarter
+<!-- Starting README draft for review and editing by the project author. -->
 
-Goal: Find methods to evolve code that can solve a specific problem. These methods must be optimized to run on a GPU using CUDA.
+# FireStarter
 
-Code Evolution
+FireStarter is a Windows C++/CUDA research project for evolving executable programs and their initial numerical state. It explores **Evolutionary Computational Discovery (ECD)**: searching for useful computational structures when the algorithm or architecture is not known in advance, but candidate behavior can be evaluated.
 
-The code has three components:
-1. The instructions that perform simple operations such as adding or multiplying a register.
-2. The register indices that the operations are applied to.
-3. The inital data values for each register.
+The engineering focus is making that search practical on NVIDIA GPUs. FireStarter separates program structure from register data, screens candidates for their response to limited evolution, and compiles promising structures into specialized CUDA code for deeper numerical optimization. ECD describes the research objective; it builds on established evolutionary computation and genetic programming.
 
-Each of these components can be evolved separately or together.
+The long-term motivation is discovering structures useful for machine intelligence, including methods that human or AI researchers could adapt to unfamiliar problems. The demonstrated work is narrower: evolving compact arithmetic programs for controlled mathematical targets. Broader applications remain research questions.
 
-Example:
+## White paper and demonstrated results
 
-float function(float n) {
-    float r0 = 1.23456f;
-    float r1 = -0.09876f;
-    n = r0 += n;
+The repository includes the **Evolutionary Computational Discovery white paper, version 1.0** (October 9, 2026): [Markdown](docs/white-paper/version-1.0/Evolutionary_Computational_Discovery_White_Paper_Version_1_0.md) and [PDF](docs/white-paper/version-1.0/Evolutionary_Computational_Discovery_White_Paper_Version_1_0.pdf). It explains the architecture, motivation, experiments, and limitations.
+
+In the [October 9 timing campaign](docs/timing/cache-disabled-2026-10-09/README.md), all 1,152 tests met the configured sine-fitness criterion on one RTX 5090 with compilation caching disabled. Mean solution times were approximately 0.496 seconds for EvolveNew, 1.51 seconds for EvolveGPU, and 27.9 seconds for EvolveCPU.
+
+These are results for one configured benchmark: maximum absolute error below `1e-6` on 15 fitness samples over `[0, 2*pi]`. Accuracy between samples can be worse. EvolveNew is supplied with a previously successful register-use pattern, and its timing excludes discovering that pattern. EvolveCPU also uses GPU optimization, so these timings compare search strategies rather than CPU and GPU hardware alone.
+
+## Test modes
+
+The mode is selected by the Visual Studio build configuration, not a command-line option.
+
+| Mode | Release configuration (`x64`) | Approach |
+| --- | --- | --- |
+| **EvolveCPU** | `Evolve_CPU_Release` | Keeps a historical pool of candidates, selects and mutates code on the CPU, then compiles candidates for register-data evolution on the GPU. Supports searching for one structure that works across related target variations. |
+| **EvolveGPU** | `Evolve_GPU_Release` | Samples many random structures on the GPU and gives each a bounded data-evolution budget. Promising structures are compiled for deeper optimization. |
+| **EvolveNew** | `Evolve_New_Release` | Holds a successful register-use pattern fixed, samples opcodes, and evolves register data. This experiment avoids costly dynamic register indexing during GPU evaluation. |
+| **EvolveSelect** | `Evolve_Select_Release` | Select is an earlier version of EvolveGPU. It attempts to evolve by changing just two or three instructions when the code fails to evolve afer a number of generations. |
+| **EvolveSinSim** | `Evolve_SinSim_Release` | EvolveSinSim peforms the same Sin() simulation as the original SinSim() but uses code evolution rather than a fixed neural network. This explores the generation of code and registers that processes multiple input samples without resetting the registers for each sample. |
+| **SinSim** | `SinSim_Release` | This is a demonstration of the original SinSim neural network from around 2008. It uses just four neurons and successfully converges match the target function to six digits of accuracy. The Sin() simulation initializes the neuron weights and then runs the simulation over a number of samples. The target function is Sin(theta) where theta is offset 45 degrees. |
+| **Random** | `Random_Release` | Random creates randomly generated code instructions and the uses one or more Optimize passes to evolve the best register data. The results demonstrate that some random code instructions are far more evolvable than others. This discovery was the basis for the EvolveGPU code evolution method. |
+| **MoneyMaker** | `MoneyMaker_Release` | MoneyMaker is an experiment to find out if code evolution can be used to predict the future rather than simulate a static function. This code is based on EvolveSinSim() but uses stock market data as the input and output. The goal is to evolve code that signal when to buy, sell or hold shares in a stock. Currently results are inconclusive. This problem may not be solvable using the current number of instructions, registers and opcodes. |
+| **SpeedTest** | `SpeedTest_Release` | SpeedTest can be used to test the performance impact of changes to the evolve code. Paste the code you wish to modify into FireSpeedTest.cu before making changes and use it as a reference. |
+| **Optimize** | `Optimize_Release` | Optimize mode allows previously evolved code instructions to have their data fully evolved. In addition, Optimize can run multiple tests to find alternate register data values. This is also a way to test the Optimize pass separately from the Evolve passes. |
+| **Solution** | `Solution_Release` | Solution mode tests the solution code generated in another pass. It calls the generated function to draw a graph of the function for theta within the target range. |
+
+Debug configurations are available for development; use Release configurations for timing.
+
+## Computational substrate
+
+The three main modes use fixed-length, straight-line programs. A candidate consists of an opcode sequence, a register-use sequence, and initial register values. The current setup uses 32 instructions and at most 30 registers, with two operations:
+
+```cpp
+n = r[i] += n;
+n = r[i] *= n;
+```
+
+Each instruction updates both the selected register and the scalar intermediate value `n`. Registers retain their updated values within an evaluation; they are mutable working state rather than just constants. The evolved programs have no sine instruction. The reference sine function supplies the fitness target.
+
+## Requirements
+
+- Windows, with an NVIDIA CUDA-capable GPU and a compatible NVIDIA driver.
+- Visual Studio 2026 with **Desktop development with C++**, the MSVC `v145` toolset, and a Windows SDK.
+- A recent NVIDIA CUDA Toolkit that supports your GPU, including its headers, libraries, and NVRTC runtime compiler. The recorded benchmark used CUDA Toolkit 13.4.2.
+
+The project uses `CUDA_PATH` to locate CUDA headers and libraries. Ensure it points to the installed toolkit and that its `bin` directory is on `PATH`. Generated CUDA programs are compiled at runtime with NVRTC.
+
+## Build and run
+
+1. Clone the repository:
+
+   ```powershell
+   git clone https://github.com/GrangerFX/FireStarter.git
+   cd FireStarter
+   ```
+
+2. Open `FireStarter.sln` in Visual Studio 2026. Set **FireStarter** as the startup project, select **x64**, and choose **Evolve_New_Release** for an initial run.
+
+3. For a short first run, edit `FireStarter/FireStarterSettings.h` and set `FIRESTARTER_EVOLVE_NEW_TESTS` to `1`. The checked-in defaults run 256 tests for EvolveNew and EvolveGPU, and 64 for EvolveCPU. Build the solution after changing settings.
+
+4. Create `FireStarter/Logs` if it does not exist. Under **Project Properties > Debugging**, use `$(ProjectDir)FireStarter` as the working directory and `$(ProjectDir)FireStarter\$(TargetFileName)` as the command. Start with **F5**, or **Ctrl+F5** without debugging.
+
+The build output is `Build/FireStarter_x64/<configuration>/<configuration>.exe`; the post-build step also copies the executable into `FireStarter/`. **Run with that source folder as the working directory**, because the application loads CUDA source and headers from relative paths.
+
+Alternatively, from a Visual Studio 2026 Developer PowerShell at the repository root:
+
+```powershell
+msbuild .\FireStarter.sln /m /p:Configuration=Evolve_New_Release /p:Platform=x64
+New-Item -ItemType Directory -Force .\FireStarter\Logs | Out-Null
+$env:Path = "$env:CUDA_PATH\bin;$env:Path"
+Set-Location .\FireStarter
+.\Evolve_New_Release.exe
+```
+
+For another mode, substitute its configuration and executable name, such as `Evolve_GPU_Release` and `Evolve_GPU_Release.exe`. The application starts its configured search automatically, displays progress and graphs, and exits when the batch finishes. Press **Q** in the application window or close it to stop early. Status logs, summaries, settings snapshots, and saved-state snapshots are written under `FireStarter/Logs`.
+
+## Changing experiments and saving solutions
+
+Edit [FireStarterSettings.h](FireStarter/FireStarterSettings.h) for sample counts, target error, seeds, populations, passes, test counts, and target variations. Edit [FireStarterTarget.h](FireStarter/FireStarterTarget.h) to change the target function or input interval. Rebuild after changes. Several population defaults are sized around an RTX 5090; adjust them for other GPUs and record settings when comparing performance.
+
+Generated solution export is disabled by default. Set `FIRESTARTER_SAVE_SOLUTION` to `1` and rebuild to write generated solution headers, including `FireStarter_Solution.h`. Then build and run `Solution_Release` to inspect that exported solution. `FIRESTARTER_SAVE_BESTSTATE` controls updating the working `FireStarter_LoadState.h` used by `Optimize_Release`; timestamped state snapshots are saved in `Logs` independently. Preserve any existing generated headers you want to keep before enabling these options.
+
+Validate discovered programs on additional inputs and against the intended numerical requirements before reusing them. Meeting the search fitness threshold establishes success for that objective.
+
+## Example generated Sin() function
+
+Note: This is only one of a very large number of solutions that can be evolved.
+```
+inline float Sin(float n)
+{
+    float r0, r1, r2, r3, r4;
+
+    r0 = n += -1.57079625f;
+    n *= r0;
+    r0 = n += -1.55048871f;
+    r1 = n *= -0.00504709f;
+    r2 = n += -3.27915645f;
+    r3 = n *= 0.97507936f;
+    n += 6.77082920f;
+    n *= 5.91008902f;
+    n *= r0;
+    n *= 0.04096542f;
+    n *= -0.01095512f;
+    n *= -0.05268164f;
+    r0 = n += -0.22633524f;
+    n *= 5.91095209f;
+    r4 = n *= 1.69961059f;
     n = r1 *= n;
+    n *= r4;
+    r4 = n += 1.94992745f;
+    n += r0;
+    n *= -3.13565612f;
+    n = r1 *= n;
+    n += 0.89263713f;
+    n = r1 += n;
+    n *= 0.72802269f;
+    n *= r4;
+    n *= r2;
+    n *= r1;
+    n *= r3;
+    n *= 0.31613135f;
+    n *= 0.96034288f;
+    n += -2.72793937f;
+    n *= 0.36657712f;
     return n;
 }
+```
 
-Here there are two instructions, two registers and two initial data values.
+## License
 
-The opcodes are:
-    n = r[x] += n
-    n = r[x] *= n
-The register indices are 0 and 1.
-The initial data values are 1.23456 and -0.09876.
-
-When evolving the components together, the opcodes, register indices and data values will all initially be assigned random values. At each evolution iteration, one of these would be randomized, the code function would tested against the fitness function and reverted to the pevious state if the result does not improve.
-Alternately, only one component, for example the initial data value, would be modified, tested and, if needed, reverted during each evolution iteration. This would test the initial random instructions and register indices to find out if any set of initial data values allow them to improve on the current best results. This operation is simple enough to be performed in parallel on a GPU.
-
-
-Initial Data Optimization
-
-The best code candidates are compiled into CUDA PTX and executed directly on the GPU. This fully compiled code is highly performant and massively parallel. Only the initial data values are evolved as described above in a series of iterations. If the results improved during the generation, they are saved. If not, a number of random candidates are selected from the previous generation. If any of these produced better results than the current member, it is copied with its age incremeted.
-At each generation, newly successful members retain their previous inital data values. Older members (copied or original), have one of their values randomized prior to evolution iterations.
-This algorithm does a good job of avoiding stuck evolutions. It is the most tested, optimized and reliable code evolution algorithms.
-
-
-Problem: Indexing registers is much less performant than accessing fixed registers directly. In code, the difference is n = r[0] += n and n = r0 += n. The former requires looking up the register in shared memory while the latter accesses it directly.
-
-Solution 1: CPU Evolution. Perform only a small amount of iterations for randomized code to determine the best candidates. Compile the best candidates into CUDA PTX code with fixed register indices. Fully evolve only the data registers.
-This works very well for relatively simple problems but cannot solve more complex problems.
-
-Solution 2: GPU Evolution. Randomly generate and the evolve a large set of code candidates using the CPU. Each candidate is assigned a weight based on its fitness multiplied by the number of times it has been evolved without an improvement. The candidate with the lowest weight is selected for further evolution, compilation to CUDA PTX and initial data value evolution.
-
-Solution 3: New Evolution. Maintain a library of successfully evolved register indices. Evolve the instruction opcodes directly on the GPU by emulating them using the fixed registers. This removes the slow register indexing problem while allowing both the opcodes and initial data values to be evolved in parallel.
-This method has been tested and is several times faster at evolving code compared to using register indexing. The speed comes from both avoiding register indexing and also from the smaller number of generations required to find a successful result.
-
-
-Programming Evolutionary Code
-
-The Breakthroughs:
-GPU Data Evolution: Code and the initial register data it uses can be evolved separately. This allows the code to be generated and compiled on either the CPU or GPU while the data used by the compiled code is evolved on the GPU. The data can be evolved many thousands of times faster than it can be on a CPU.
-
-CPU Code Evolution: A code evolution algorithm has been created that can solve more difficult problems. It uses natural selection among an ever increasing pool of candidate algorithms. It has a list of code generations and weights that prefers newer and more successful members for evolution.
-
-GPU Random Code Evolution: Rather than attempting to evolve code by randomly changing instructions, this very simple method of evolution is based on population size alone. A very large population of randomly generated programs are generated and then emulated on the GPU. A relatively small number of generations of data evolution is then performed on each of them. This is at least ten times slower than GPU data evolution using compiled code but it allows early candidates to be found for full data evolution. This algorithm is based on the concept of evolvability. That is the speed at which a set of random instructions can have its register data evolved to converge on a solution. This discovery was made while attempting to use data evolution on thousands of randomly generated code candidates. The ones that ended up with better results had more improvements per generation than ones with worse results.
-
-GPU Fixed Register Evolution: The slowest part of emulating code on a GPU is the slow speed of indexing registers. GPUs have no ability to directly index their registers. Instead they must be written to shared memory and then loaded immediately prior to the instruction emulation and finally written back to the shared memory. Using shared memory is many times faster than using global memory but it is still at least ten times slower than using the register directly. One way around this is to use fixed register indexing. The register indices for each instruction are stored in a constant array. The compiler skips loading the indices from the array when it unrolls the instruction emulation loop. This would allow a library of successful instruction register indices to be built which solve numerous different problems. Register sets from the library could be tested until a working code solution is found. This method has its limitations but could be useful in many situations.
-
-The Results:
-The original GPU random code evolution takes 2.1 seconds, on average, to generate a sin() function with six digits of accuracy on a tuned RTX 5090. The code uses 32 instructions, up to 30 registers and just two opcodes. This code is entirely generated from scratch with the evolutionary algorithm knowing only if the results are better or worse than the original.
-Since the data evolution pass takes far less time than the code evolution pass, performing data evolution on the top four candidates drops the average solution time to 1.7 seconds on an untuned RTX 5090.
-
-GPU random code evolution with fixed register indices takes 0.5 seconds on average to generate a sin() function with six digits of accuracy on an untuned RTX 5090.
-
-A more difficult problem is to require that three variations of sine waves be generated using the same code but different initial register data. This requires the CPU evolution to be successful. The fact that it works implies that certain patterns of code can solve a range of problems. It also implies that having a library of successful register indices could solve a range of problems.
-
-
-Unexpected Results:
-
-For the small set of samples used to test the evolved code against sin(), the results are better than 6 digits of accuracy. It arranges the floating point math errors such that on those exact samples the precision is much higher than expected. The actual precision is about ten times less than the sampled precision.
-
-
-Example Result:
-Note: This is only one of a very large number of solutions that can be evolved.
-
-    inline float Sin(float n)
-    {
-        float r0, r1, r2, r3, r4;
-    
-        r0 = n += -1.57079625f;
-        n *= r0;
-        r0 = n += -1.55048871f;
-        r1 = n *= -0.00504709f;
-        r2 = n += -3.27915645f;
-        r3 = n *= 0.97507936f;
-        n += 6.77082920f;
-        n *= 5.91008902f;
-        n *= r0;
-        n *= 0.04096542f;
-        n *= -0.01095512f;
-        n *= -0.05268164f;
-        r0 = n += -0.22633524f;
-        n *= 5.91095209f;
-        r4 = n *= 1.69961059f;
-        n = r1 *= n;
-        n *= r4;
-        r4 = n += 1.94992745f;
-        n += r0;
-        n *= -3.13565612f;
-        n = r1 *= n;
-        n += 0.89263713f;
-        n = r1 += n;
-        n *= 0.72802269f;
-        n *= r4;
-        n *= r2;
-        n *= r1;
-        n *= r3;
-        n *= 0.31613135f;
-        n *= 0.96034288f;
-        n += -2.72793937f;
-        n *= 0.36657712f;
-        return n;
-    }
-
-
-Future Research
-
-There is a field of study called Genetic Programming. It attempts to apply the way DNA can be evolved through mutation and mixing with the DNA of other population members to create better versions. However this approach misses the point about how DNA is used to create organisms. A program is much more like the organism itself than the DNA that created it. Splicing one section of code into another is like cutting up a cow and a sparrow and then sewing them back together and hoping you now have a flying herbivore. The fact that it works at all shows that evolution can still work even in the bleakest of circumstances.
-
-However, the idea of basing a simulated evolutionary system on something like DNA has the potential to work very well. If you had an array of random number seeds and an algorithm that used those seeds to generate a complex program consisting of instructions and data registers, that program could then be tested to find its suitability for some goal. For example, a simulated environment could be created such that each program could become a creature in that environment. At each step, a creature loses energy until it eventually dies if it has not consumed enough to stay alive. The creatures would consume energy found in the environment, fight and consume other creatures and eventually split into two creatures once it has enough energy. When it splits, the child’s DNA could be mutated such that the generated program would be different. In addition sometimes new creatures are added to the environment that contain DNA from two or more other creatures.
-
-The goal is to end up with a two stage evolution. Both the algorithm that converts DNA into code and the code that it produces are evolved. It is the algorithm that converts DNA into code that is the real target but it evolves much slower than the programs it generates. The length of the DNA and program generated could scale as well but shorter programs would use less energy per step than larger programs so larger programs must be smarter. It is likely that the whole system could be run on multiple computers or even an AI data center as the program size and simulation complexity increased.
-
-With sufficiently evolved DNA to code conversion and realistic environment simulations, it is possible that general intelligence could be evolved. At a minimum this approach should yield new algorithms that would point to further research.
-
-
-Future GPU Hardware or Firmware
-
-Current GPUs are poorly suited to running code evolution because they do not have the ability to index registers. If you have an instruction like R[x] = R[y] * R[z] where x, y and z are indexes to the set of registers, a GPU must move the registers into RAM and then index the RAM addresses which is vastly slower than using fixed registers: R1 = R2 * R3. While it is unlikely that it would be cost effective to implement indexed registers, it may be possible to instead generate the fixed register code directly on the same GPU that is executing it. This would likely require minimal, or no hardware changes. As long as the instruction set was simple enough and the register array size was fixed and pre-declared, it should be reasonably safe to convert the instructions into GPU machine code between runs of the simulation. This would increase the speed of the testing of evolved GPU code greatly, at least ten times.
-
-That's the entire project in a nutshell. I had no idea about any of this when I started. I had to observe it and then test my hypotheses to learn anything. Essentially the AI is teaching me. Considering all the computations it does, this is not terribly surprising. That's the thing about trying to work on general AI. The challenge is not creating an AI smarter than a human but accepting that in some ways it was smarter all along.
-
-Mark Granger
-grangerfx@gmail.com
+[MIT](LICENSE). Author: Mark Granger.
