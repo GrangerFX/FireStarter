@@ -5,12 +5,12 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SpeedTest_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MoneyMaker_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
@@ -40,7 +40,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Select_Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_Select_Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
@@ -60,12 +60,12 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Speed_Test_Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SpeedTest_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_MoneyMaker_Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MoneyMaker_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
@@ -95,7 +95,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Select_Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Evolve_Select_Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)FireStarter</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(ProjectDir)FireStarter\$(TargetFileName)</LocalDebuggerCommand>

@@ -558,7 +558,7 @@ void FireStarterStream::SinSimStream(void)
     // This is a demonstration of the of original SinSim neural network from around 2008.
     // It uses just four neurons and successfully converges match the target function to six digits of accuracy.
     // The Sin() simulation initializes the neuron weights and then runs the simulation over a number of samples.
-    // The target function is Sin(theta) where theta is offset 45 degrees.
+    // The target function is Sin(theta) where theta is offset 45 samples.
     // This version runs using CUDA on the GPU with a population size of 65536.
     FireStarterSettings sinSimSettings(FIRESTARTER_SINSIM);
     std::string streamDate = FileNameDate(SimpleTimer::RunSecond());

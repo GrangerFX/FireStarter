@@ -27,7 +27,7 @@ The mode is selected by the Visual Studio build configuration, not a command-lin
 | **EvolveNew** | `Evolve_New_Release` | Holds a successful register-use pattern fixed, samples opcodes, and evolves register data. This experiment avoids costly dynamic register indexing during GPU evaluation. |
 | **EvolveSelect** | `Evolve_Select_Release` | Select is an earlier version of EvolveGPU. It attempts to evolve by changing just two or three instructions when the code fails to evolve afer a number of generations. |
 | **EvolveSinSim** | `Evolve_SinSim_Release` | EvolveSinSim peforms the same Sin() simulation as the original SinSim() but uses code evolution rather than a fixed neural network. This explores the generation of code and registers that processes multiple input samples without resetting the registers for each sample. |
-| **SinSim** | `SinSim_Release` | This is a demonstration of the original SinSim neural network from around 2008. It uses just four neurons and successfully converges match the target function to six digits of accuracy. The Sin() simulation initializes the neuron weights and then runs the simulation over a number of samples. The target function is Sin(theta) where theta is offset 45 degrees. |
+| **SinSim** | `SinSim_Release` | This is a demonstration of the original SinSim neural network from around 2008. It uses just four neurons and successfully converges match the target function to six digits of accuracy. The Sin() simulation initializes the neuron weights and then runs the simulation over a number of samples. The target function is Sin(theta) where theta is offset 45 samples. |
 | **Random** | `Random_Release` | Random creates randomly generated code instructions and the uses one or more Optimize passes to evolve the best register data. The results demonstrate that some random code instructions are far more evolvable than others. This discovery was the basis for the EvolveGPU code evolution method. |
 | **MoneyMaker** | `MoneyMaker_Release` | MoneyMaker is an experiment to find out if code evolution can be used to predict the future rather than simulate a static function. This code is based on EvolveSinSim() but uses stock market data as the input and output. The goal is to evolve code that signal when to buy, sell or hold shares in a stock. Currently results are inconclusive. This problem may not be solvable using the current number of instructions, registers and opcodes. |
 | **SpeedTest** | `SpeedTest_Release` | SpeedTest can be used to test the performance impact of changes to the evolve code. Paste the code you wish to modify into FireSpeedTest.cu before making changes and use it as a reference. |
@@ -35,6 +35,11 @@ The mode is selected by the Visual Studio build configuration, not a command-lin
 | **Solution** | `Solution_Release` | Solution mode tests the solution code generated in another pass. It calls the generated function to draw a graph of the function for theta within the target range. |
 
 Debug configurations are available for development; use Release configurations for timing.
+
+## Stock market data for MoneyMaker
+
+The data that was used to test MoneyMaker was obtained from: https://stooq.com/db/h/
+It must be placed in a folder named "StockMarketData" at the same level as the main FireStarter repository folder. Download h_us_txt.zip and unzip it inside the StockMarketData folder.
 
 ## Computational substrate
 
