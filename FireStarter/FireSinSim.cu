@@ -8,9 +8,12 @@
 #include "FireSinSim.h"
 #include "CUDADefines.h"
 
-// FireSinSim is an implementation of the original SinSim minimal neural network experiment.
-// The original version runs on a single CPU core with only a single member and produced only a three digits of accuracy.
-// This version uses a CUDA kernal running on the GPU with a population size of 65536 and converges to 6 digits of accuracy.
+// This is an improved GPU implementation of the original CPU SinSim neural network from around 2008.
+// It uses just four neurons and successfully matches the target function with an average error close to six digits of accuracy over the evaluated sample sequence.
+// That does not mean that the evolved code will be able to achieve close to six digits of accuracy for all values of theta or even all the individual samples.
+// The Sin() simulation initializes the neuron weights and then runs the simulation over 256 warmup samples and 4096 error calculation samples.
+// The input is Cos(theta) and the target function is Sin(theta) where theta is offset 45 samples or about 36.42 degrees.
+// This version runs using CUDA on the GPU with a population size of 65536.
 
 GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, const unsigned long long generation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {

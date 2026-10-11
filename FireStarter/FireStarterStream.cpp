@@ -556,7 +556,7 @@ void FireStarterStream::EvolveSinSimStream(void)
 void FireStarterStream::SinSimStream(void)
 {
     // This is an improved GPU implementation of the original CPU SinSim neural network from around 2008.
-    // It uses just four neurons and successfully matches the target function with an average error close to six digits of accuracy over [0, 2*pi] for the set of samples.
+    // It uses just four neurons and successfully matches the target function with an average error close to six digits of accuracy over the evaluated sample sequence.
     // That does not mean that the evolved code will be able to achieve close to six digits of accuracy for all values of theta or even all the individual samples.
     // The Sin() simulation initializes the neuron weights and then runs the simulation over 256 warmup samples and 4096 error calculation samples.
     // The input is Cos(theta) and the target function is Sin(theta) where theta is offset 45 samples or about 36.42 degrees.
