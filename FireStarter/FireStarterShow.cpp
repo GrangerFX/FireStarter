@@ -377,7 +377,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
 
     // Create the log file.
     unsigned long long test = state.m_test;
-    std::string logPath = Format("Logs\\%s_%s_%lld.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(FIRESTARTER_MODE), test);
+    size_t testLength = std::to_string(settings.m_tests).length();
+    std::string logPath = Format("Logs\\%s_%s_%0*lld.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(FIRESTARTER_MODE), testLength, test);
     if (!std::filesystem::exists(logPath))
         Dispatch([logPath, cudaText, settingsText] {
             FireStarterSource::AppendSource(cudaText, logPath);
@@ -442,7 +443,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         }
 
         statusString += Format("  Best=%.8f ", bestResult);
-        if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
+        if ((state.PassMode() != FIRESTARTER_SPEEDTEST) && (state.PassMode() != FIRESTARTER_MONEYMAKER) && (state.PassMode() != FIRESTARTER_MONEYOPTIMIZE) && (state.PassMode() != FIRESTARTER_SINSIM) && (state.PassMode() != FIRESTARTER_EVOLVE_SINSIM))
             statusString += Format("BestError=%.8f", bestError);
 
         // Only used for debugging.

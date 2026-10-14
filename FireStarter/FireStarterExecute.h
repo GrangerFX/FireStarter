@@ -225,6 +225,19 @@ public:
         ExecuteSynchronize();
     } // ExecuteSetStocks
 
+    inline void ExecuteSelectOptimize(FireStarterStates& optimizeStates, FireStarterBestCodes& bestCodes, unsigned int generation)
+    {
+        FireStarterSettings optimizeSettings = optimizeStates[0].Settings();
+        unsigned long long test = optimizeStates[0].m_test;
+        size_t numStates = optimizeStates.size();
+        for (size_t index = 0; index < numStates; index++) {
+            FireStarterCodeVector bestCode;
+            bestCodes.GetBestCode(bestCode);
+            optimizeStates[index].InitState(optimizeSettings, generation, index, 0, test);
+            optimizeStates[index].CopyCode(bestCode);
+        }
+    } // ExecuteSelectOptimize
+
     inline void ExecuteGenerateEvolve(unsigned int mode)
     {
         for (FireStarterExecute* unit : *this)

@@ -105,7 +105,7 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
             bestState.m_oldResult = oldBestResult;
 
             // Test the precision of the results.
-            if ((bestState.PassMode() != FIRESTARTER_MONEYMAKER) && (bestState.PassMode() != FIRESTARTER_MONEYOPTIMIZE))
+            if ((bestState.PassMode() != FIRESTARTER_SPEEDTEST) && (bestState.PassMode() != FIRESTARTER_MONEYMAKER) && (bestState.PassMode() != FIRESTARTER_MONEYOPTIMIZE) && (bestState.PassMode() != FIRESTARTER_SINSIM) && (bestState.PassMode() != FIRESTARTER_EVOLVE_SINSIM))
                 bestState.m_precision = bestState.TestResults();
 
             // Reset the best state age to zero.
@@ -172,14 +172,11 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, cons
 bool FireStarterComplete::CompleteState(FireStarterState& bestState, const FireStarterState& state, const MoneyMakerStocks* stocks, const MoneyMakerStocks* tradingResults)
 {
     DispatchSync([this, &bestState, &state, stocks, tradingResults] {
-        // Skip if the best state was already completed.
-        if (!bestState.Complete()) {        // Update the best state and display the results.
-            if (UpdateBestState(bestState, state))
-                DisplayResults(bestState, stocks, tradingResults);
+        if (UpdateBestState(bestState, state))
+            DisplayResults(bestState, stocks, tradingResults);
 
-            // Update the render status after every pass.
-            CompleteStatus(bestState, state, state.m_generation);
-        }
+        // Update the render status after every pass.
+        CompleteStatus(bestState, state, state.m_generation);
     });
     return bestState.Complete();
 } // CompleteState

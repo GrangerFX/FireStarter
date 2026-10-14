@@ -1290,7 +1290,7 @@ void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& optimizeState, 
         if (Module().m_executeFunction) {
             if (InitPopulation(optimizeState.Settings())) {
                 optimizeState.m_optimize_pass = 0;
-                while (!WillTerminate() && !bestState.Complete() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
+                while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                     // Execute the optimization passes.
                     optimizeState.m_timer.Start();
                     ExecuteSmartOptimizePasses(optimizeState);

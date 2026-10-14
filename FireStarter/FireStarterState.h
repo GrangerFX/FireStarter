@@ -930,14 +930,14 @@ public:
     inline FireStarterStates(size_t states, const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long id = 0, unsigned long long test = 0)
     {
         reserve(states);
-        for (size_t i = 0; i < states; i++)
-            AddState(FireStarterState(settings, generation, id, test));
+        for (size_t index = 0; index < states; index++)
+            AddState(FireStarterState(settings, generation, index, id, test));
     } // FireStarterStates
 
     inline FireStarterStates(size_t states = 0)
     {
         reserve(states);
-        for (size_t i = 0; i < states; i++)
+        for (size_t index = 0; index < states; index++)
             AddState(FireStarterState());
     } // FireStarterStates
 }; // class FireStarterStates

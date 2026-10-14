@@ -48,7 +48,7 @@ void FireStarterStream::RandomStream(void)
             resultText += Format("Seed=%u  ", evolveState.Settings().m_evolveSeed);
         if (evolveState.Settings().m_tests > 1)
             resultText += Format("Test=%u  ", evolveState.m_test);
-        resultText += Format("Random Result=%.8f\n", evolveState.MaxResults());
+        resultText += Format("Random Result=%.8f  Precision=%.8f\n", evolveState.MaxResults(), evolveState.m_precision);
         FireStarterSource::AppendSource(resultText, Format("Logs\\%s_Random_Results.txt", streamDate.c_str()));
     }
 
@@ -150,7 +150,7 @@ void FireStarterStream::EvolveSelectStream(void)
 
                     // Output the optimize results.
                     if (!WillTerminate()) {
-                        resultText += Format("  Optimize Result=%.8f", optimizeState.MaxResults());
+                        resultText += Format("  Optimize Result=%.8f  Precision=%.8f", optimizeState.MaxResults(), optimizeState.m_precision);
                         if ((bestEvolveState.MaxResults() > selectSettings.m_target) && (optimizeState.MaxResults() <= selectSettings.m_target))
                             resultText += " *";
                     }
@@ -206,21 +206,21 @@ void FireStarterStream::EvolveCPUStream(void)
         FireStarterStates states(numStates);
         FireStarterStates allStates;
         unsigned long long test = FIRESTARTER_START_TEST + t;
-        FireStarterState bestEvolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
+        FireStarterState bestState = FireStarterState(evolveSettings, 0, 0, 0, test);
 
         // Keep track of the tested instructions so they don't get generated again.
         TestedCodes testedCodes;
 
         // Evolve the current test.
         unsigned long long generation = 0;
-        while (!WillTerminate() && !bestEvolveState.Complete()) {
+        while (!WillTerminate() && !bestState.Complete()) {
             // Evolve a new generation.
             executeEvolve->EvolveStates(test, evolveSettings, states, allStates, testedCodes, generation);
 
             // Execute each state using one of the evolution execution units.
             // Note: ExecuteEvolveOptimize must be async because the compiles come back out of order.
-            bestEvolveState.m_age++;
-            evolutionUnits.ExecuteEvolveOptimize(states, bestEvolveState, complete);
+            bestState.m_age++;
+            evolutionUnits.ExecuteEvolveOptimize(states, bestState, complete);
 
             // Store the valid results from the current set of states in the list of all states.
             for (unsigned int i = 0; i < numStates; i++) {
@@ -244,16 +244,16 @@ void FireStarterStream::EvolveCPUStream(void)
 
         // Optimize the best state.
         if (!WillTerminate() && !allStates.empty()) {
-            double duration = bestEvolveState.Duration();
+            double duration = bestState.Duration();
             totalDuration += duration;
             totalGenerations += generation;
 
             // Output the evolve results.
-            std::string resultText = Format("Seed=%u  Test=%3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Best Generations=%3u  Evolutions=%3u  Duration: %6.1f  Average: %6.1f", bestEvolveState.Settings().m_evolveSeed, test, generation, totalGenerations, bestEvolveState.MaxResults(), bestEvolveState.m_generation, bestEvolveState.m_evolution, duration, totalDuration / (t + 1));
+            std::string resultText = Format("Seed=%u  Test=%3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Best Generations=%3u  Evolutions=%3u  Duration: %6.1f  Average: %6.1f", bestState.Settings().m_evolveSeed, test, generation, totalGenerations, bestState.MaxResults(), bestState.m_generation, bestState.m_evolution, duration, totalDuration / (t + 1));
 
             // Optimize the evolved state.
             if (evolveSettings.m_optimize) {
-                FireStarterState optimizeState(bestEvolveState);
+                FireStarterState optimizeState(bestState);
                 FireStarterState optimizeBestState(optimizeState);
                 optimizeBestState.SetComplete();
 
@@ -273,14 +273,14 @@ void FireStarterStream::EvolveCPUStream(void)
 
                     // Output the optimize results.
                     if (!WillTerminate()) {
-                        resultText += Format("  Optimize Result=%.8f", optimizeState.MaxResults());
-                        if ((bestEvolveState.MaxResults() > evolveSettings.m_target) && (optimizeState.MaxResults() <= evolveSettings.m_target))
+                        resultText += Format("  Optimize Result=%.8f  Precision=%.8f", optimizeState.MaxResults(), optimizeState.m_precision);
+                        if ((bestState.MaxResults() > evolveSettings.m_target) && (optimizeState.MaxResults() <= evolveSettings.m_target))
                             resultText += " *";
                     }
                 }
             }
 
-            if (bestEvolveState.MaxResults() <= evolveSettings.m_target)
+            if (bestState.MaxResults() <= evolveSettings.m_target)
                 resultText += " *******";
             resultText += "\n";
             FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveCPU_Results.txt", streamDate.c_str()));
@@ -306,8 +306,6 @@ void FireStarterStream::EvolveGPUStream(void)
     FireStarterSettings optimizeSettings(FIRESTARTER_EVOLVE_OPTIMIZE);
     std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
     double totalDuration = 0.0;
-    unsigned long long evolveID = 0;
-    unsigned long long optimizeID = 0;
     unsigned long long totalGenerations = 0;
 
 #if FIRESTARTER_MULTI_GPU
@@ -336,19 +334,13 @@ void FireStarterStream::EvolveGPUStream(void)
         FireStarterBestCodes bestCodes(evolveSettings);
 
         // Execute the initial GPU evolve.
-        evolveStates.InitStates(evolveSettings, 0, evolveID, test);
         evolveUnits.ExecuteEvolveGPU(evolveStates, bestCodes);
  
         // Evolve the current test.
         unsigned int generation = 0;
         while (!WillTerminate() && !bestState.Complete()) {
             // Get the best code to optimize.
-            for (size_t i = 0; i < optimizeStates.size(); i++) {
-                FireStarterCodeVector bestCode(optimizeSettings);
-                bestCodes.GetBestCode(bestCode);
-                optimizeStates[i].InitState(optimizeSettings, generation, i, optimizeID, test);
-                optimizeStates[i].CopyCode(bestCode);
-            }
+            optimizeUnits.ExecuteSelectOptimize(optimizeStates, bestCodes, generation);
             optimizeUnits.ExecuteGenerateOptimize(optimizeStates);
 
             // Execute the next GPU evolve while the optimize code is compiling.
@@ -374,7 +366,7 @@ void FireStarterStream::EvolveGPUStream(void)
             totalDuration += duration;
             for (size_t i = 0; i < evolveStates.size(); i++) {
                 totalGenerations += evolveStates[i].m_generation;
-                std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %6.1f  GenTime: %4.1f  Total: %8.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
+                std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Precision=%.8f  Duration: %6.1f  GenTime: %4.1f  Total: %8.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), bestState.m_precision, duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
                 if (bestState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
@@ -470,7 +462,7 @@ void FireStarterStream::EvolveNewStream(void)
             totalDuration += duration;
             for (size_t i = 0; i < evolveStates.size(); i++) {
                 totalGenerations += evolveStates[i].m_generation;
-                std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %6.2f  GenTime: %4.2f  Total: %8.2f  Average: %4.2f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
+                std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Precision=%.8f  Duration: %6.2f  GenTime: %4.2f  Total: %8.2f  Average: %4.2f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), bestState.m_precision, duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
                 if (bestState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
@@ -872,7 +864,7 @@ void FireStarterStream::OptimizeStream(void)
             // Output the test results.
             if (!WillTerminate()) {
                 // Output the evolve results.
-                std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResults(), optimizeState.MaxResults(), bestState.Duration());
+                std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Precision=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResults(), optimizeState.MaxResults(), optimizeState.m_precision, bestState.Duration());
                 if (bestState.MaxResults() <= optimizeSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
