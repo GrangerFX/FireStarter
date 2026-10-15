@@ -242,49 +242,16 @@ void FireStarterStream::EvolveCPUStream(void)
                 break;
         }
 
-        // Optimize the best state.
-        if (!WillTerminate() && !allStates.empty()) {
-            double duration = bestState.Duration();
-            totalDuration += duration;
-            totalGenerations += generation;
+        // Output the results.
+        double duration = bestState.Duration();
+        totalDuration += duration;
+        totalGenerations += generation;
 
-            // Output the evolve results.
-            std::string resultText = Format("Seed=%u  Test=%3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Best Generations=%3u  Evolutions=%3u  Duration: %6.1f  Average: %6.1f", bestState.Settings().m_evolveSeed, test, generation, totalGenerations, bestState.MaxResults(), bestState.m_generation, bestState.m_evolution, duration, totalDuration / (t + 1));
-
-            // Optimize the evolved state.
-            if (evolveSettings.m_optimize) {
-                FireStarterState optimizeState(bestState);
-                FireStarterState optimizeBestState(optimizeState);
-                optimizeBestState.SetComplete();
-
-                // Generate the optimize code.
-                if (executeOptimize->ExecuteGenerateOptimize(optimizeState)) {
-                    // Loop until the the optimize completion condition or the host program is quit.
-                    while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize) && !optimizeBestState.Complete()) {
-                        // Optimize the current generation.
-                        executeOptimize->ExecuteOptimize(optimizeState);
-
-                        // Update the results in the UI and check for completion.
-                        complete->CompleteState(optimizeBestState, optimizeState);
-
-                        // Increment the generation.
-                        optimizeState.m_optimize_pass++;
-                    }
-
-                    // Output the optimize results.
-                    if (!WillTerminate()) {
-                        resultText += Format("  Optimize Result=%.8f  Precision=%.8f", optimizeState.MaxResults(), optimizeState.m_precision);
-                        if ((bestState.MaxResults() > evolveSettings.m_target) && (optimizeState.MaxResults() <= evolveSettings.m_target))
-                            resultText += " *";
-                    }
-                }
-            }
-
-            if (bestState.MaxResults() <= evolveSettings.m_target)
-                resultText += " *******";
-            resultText += "\n";
-            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveCPU_Results.txt", streamDate.c_str()));
-        }
+        std::string resultText = Format("Seed=%u  Test=%3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Precision=%.8f  Best Generations=%3u  Evolutions=%3u  Duration: %6.1f  Average: %6.1f", bestState.Settings().m_evolveSeed, test, generation, totalGenerations, bestState.MaxResults(), bestState.m_precision, bestState.m_generation, bestState.m_evolution, duration, totalDuration / (t + 1));
+        if (bestState.MaxResults() <= evolveSettings.m_target)
+            resultText += " *******";
+        resultText += "\n";
+        FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveCPU_Results.txt", streamDate.c_str()));
     }
 
     // Delete the completion unit.
