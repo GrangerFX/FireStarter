@@ -146,9 +146,36 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, cons
     m_resultsTime = duration;
     m_resultsCount++;
 
-    // Update the status text.
-    m_fireShow.ShowStatus(bestState, state, generation, m_generationTime, duration);
+    // Keep every pass and its timing while parallel units finish their work.
+    if (m_statusBatch)
+        m_statusResults.push_back({ state, generation, m_generationTime, duration });
+    else
+        m_fireShow.ShowStatus(bestState, state, generation, m_generationTime, duration);
 } // CompleteStatus
+
+void FireStarterComplete::BeginStatusBatch(void)
+{
+    DispatchSync([this] {
+        m_statusResults.clear();
+        m_statusBatch = true;
+    });
+} // BeginStatusBatch
+
+void FireStarterComplete::EndStatusBatch(const FireStarterState& bestState)
+{
+    DispatchSync([this, &bestState] {
+        m_statusBatch = false;
+        std::stable_sort(m_statusResults.begin(), m_statusResults.end(), [](const StatusResult& left, const StatusResult& right) {
+            return std::make_tuple(left.m_state.m_index, left.m_state.m_optimize_pass) <
+                std::make_tuple(right.m_state.m_index, right.m_state.m_optimize_pass);
+        });
+
+        // The Best columns describe the completed batch, independent of arrival order.
+        for (const StatusResult& result : m_statusResults)
+            m_fireShow.ShowStatus(bestState, result.m_state, result.m_generation, result.m_generationTime, result.m_runTime);
+        m_statusResults.clear();
+    });
+} // EndStatusBatch
 
 bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarterState& state, const MoneyMakerStocks* stocks, const MoneyMakerStocks* tradingResults)
 {

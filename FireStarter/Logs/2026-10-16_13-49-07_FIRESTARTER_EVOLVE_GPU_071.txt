@@ -1,0 +1,40 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+units = 1
+states = 1
+population = 65536
+generations = 0
+passes = 384
+samples = 15
+usePrecision = 1
+precisionSamples = 256
+iterations = 64
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=71  Index=0  Generation=0  Result=0.00000164  Precision=0.00000191  Best=0.00000088 BestError=0.00000120  Time=   0.2  Run Time=   0.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=71  Index=1  Generation=0  Result=0.00013692  Precision=0.00015555  Best=0.00000088 BestError=0.00000120  Time=   0.3  Run Time=   0.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=71  Index=2  Generation=0  Result=0.00674926  Precision=0.00693893  Best=0.00000088 BestError=0.00000120  Time=   0.2  Run Time=   0.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=71  Index=3  Generation=0  Result=0.00000088  Precision=0.00000120  Best=0.00000088 BestError=0.00000120  Time=   0.3  Run Time=   0.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=71  Index=0  Generation=1  Result=0.00006045  Precision=0.00006300  Best=0.00000031 BestError=0.00000077  Time=   0.2  Run Time=   1.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=71  Index=1  Generation=1  Result=0.00000031  Precision=0.00000077  Best=0.00000031 BestError=0.00000077  Time=   0.2  Run Time=   1.3
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=71  Index=2  Generation=1  Result=0.00175979  Precision=0.00182913  Best=0.00000031 BestError=0.00000077  Time=   0.3  Run Time=   1.3
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=71  Index=3  Generation=1  Result=0.00018410  Precision=0.00020158  Best=0.00000031 BestError=0.00000077  Time=   0.3  Run Time=   1.3

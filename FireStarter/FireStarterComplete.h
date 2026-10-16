@@ -13,6 +13,15 @@ private:
 	bool m_saveBestState = true;
     bool m_complete = false;
 
+    struct StatusResult {
+        FireStarterState m_state;
+        unsigned long long m_generation;
+        double m_generationTime;
+        double m_runTime;
+    };
+    std::vector<StatusResult> m_statusResults;
+    bool m_statusBatch = false;
+
 	void SaveBestState(const FireStarterState& bestState);
 	void SaveBestCode(const FireStarterState& bestState);
 	void SaveSolution(const FireStarterState& bestState);
@@ -23,6 +32,8 @@ public:
 	void DisplayResults(const FireStarterState& bestState, const MoneyMakerStocks* stocks = nullptr, const MoneyMakerStocks* tradingResults = nullptr);
     void SaveResults(const FireStarterState& bestState);
 	void CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation = 0);
+    void BeginStatusBatch(void);
+    void EndStatusBatch(const FireStarterState& bestState);
     bool CompleteState(FireStarterState& bestState, FireStarterState& state, const MoneyMakerStocks* stocks = nullptr, const MoneyMakerStocks* tradingResults = nullptr);
     bool CompleteStates(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
     bool CompleteSelect(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);

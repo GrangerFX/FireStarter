@@ -281,11 +281,15 @@ public:
     {
         size_t numStates = optimizeStates.size();
         size_t numUnits = this->size();
+        if (complete)
+            complete->BeginStatusBatch();
         for (size_t index = 0; index < numStates; index++) {
             FireStarterExecute* unit = (*this)[index % numUnits];
             unit->ExecuteEvolveOptimize(optimizeStates[index], bestState, complete, false);
         }
         ExecuteSynchronize();
+        if (complete)
+            complete->EndStatusBatch(bestState);
     } // ExecuteEvolveOptimize
 
     inline void ExecuteMoneyEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)

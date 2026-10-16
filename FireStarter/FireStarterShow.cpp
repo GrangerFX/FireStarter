@@ -375,15 +375,10 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             FireStarterSource::SaveSource(settingsCode, settingsPath);
     }
 
-    // Create the log file.
+    // Create the log path.
     unsigned long long test = state.m_test;
     size_t testLength = std::to_string(settings.m_tests).length();
-    std::string logPath = Format("Logs\\%s_%s_%0*lld.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(FIRESTARTER_MODE), testLength, test);
-    if (!std::filesystem::exists(logPath))
-        Dispatch([logPath, cudaText, settingsText] {
-            FireStarterSource::AppendSource(cudaText, logPath);
-            FireStarterSource::AppendSource(settingsText, logPath);
-        }, sync);
+    std::string logPath = Format("Logs\\%s_%s_%0*llu.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(FIRESTARTER_MODE), (int)testLength, test);
 
     // Update the log file and window status text.
     std::string statusString;
@@ -442,8 +437,11 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("Result=%.8f", maxResult);
         }
 
-        if ((state.PassMode() == FIRESTARTER_EVOLVE_OPTIMIZE) && settings.UsePrecision())
+        if ((state.PassMode() == FIRESTARTER_EVOLVE_OPTIMIZE) && settings.UsePrecision()) {
             statusString += Format("  Index=%llu  Generation=%llu  Result=%.8f  Precision=%.8f", state.m_index, state.m_generation, maxResult, state.m_precision);
+            if (settings.m_optimize > 1)
+                statusString += Format("  Optimize=%llu", state.m_optimize_pass);
+        }
         statusString += Format("  Best=%.8f ", bestResult);
         if ((state.PassMode() != FIRESTARTER_SPEEDTEST) && (state.PassMode() != FIRESTARTER_MONEYMAKER) && (state.PassMode() != FIRESTARTER_MONEYOPTIMIZE) && (state.PassMode() != FIRESTARTER_SINSIM) && (state.PassMode() != FIRESTARTER_EVOLVE_SINSIM))
             statusString += Format("BestError=%.8f", bestError);
@@ -466,7 +464,12 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     }
 
     // Update the log file.
-    Dispatch([logPath, statusString, registersString] {
+    Dispatch([logPath, cudaText, settingsText, statusString, registersString] {
+        // Check on the writer thread so queued rows cannot each add a header.
+        if (!std::filesystem::exists(logPath)) {
+            FireStarterSource::AppendSource(cudaText, logPath);
+            FireStarterSource::AppendSource(settingsText, logPath);
+        }
         FireStarterSource::AppendSource(statusString + "\r\n", logPath);
         if (!registersString.empty())
             FireStarterSource::AppendSource(registersString + "\r\n", logPath);
