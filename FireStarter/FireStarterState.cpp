@@ -1,6 +1,8 @@
 #include "FireStarterState.h"
 #include "Format.h"
 #include <algorithm>
+#include <string_view>
+#include <unordered_set>
 
 size_t FireStarterBestCodes::BestCodes::Size(void)
 {
@@ -150,7 +152,7 @@ FireStarterBestCodes::~FireStarterBestCodes(void)
     Synchronize();
 } // FireStarterBestCodes
 
-void FireStarterState::SettingsText(const FireStarterSettings& settings, std::string& text, const std::string& prefix, const std::string& postfix)
+void FireStarterState::SettingsText(const FireStarterSettings& settings, std::string& text, const std::string& prefix, const std::string& postfix, bool diagnostics)
 {
     text += prefix + Format("variations = %u", settings.m_variations) + postfix + "\r\n";
     text += prefix + Format("instructions = %u", settings.m_instructions) + postfix + "\r\n";
@@ -180,6 +182,10 @@ void FireStarterState::SettingsText(const FireStarterSettings& settings, std::st
     text += prefix + Format("generations = %u", settings.m_generations) + postfix + "\r\n";
     text += prefix + Format("passes = %u", settings.m_passes) + postfix + "\r\n";
     text += prefix + Format("samples = %u", settings.m_samples) + postfix + "\r\n";
+    if (diagnostics && settings.SupportsPrecision()) {
+        text += prefix + Format("usePrecision = %u", settings.UsePrecision() ? 1u : 0u) + "\r\n";
+        text += prefix + Format("precisionSamples = %u", FIRESTARTER_PRECISION) + "\r\n";
+    }
     text += prefix + Format("iterations = %u", settings.m_iterations) + postfix + "\r\n";
     text += prefix + Format("optimize = %u", settings.m_optimize) + postfix + "\r\n";
     text += "\r\n";
@@ -193,7 +199,7 @@ void FireStarterState::SaveSettings(std::string& text) const
 {
     text += "inline void LoadSettings(FireStarterSettings& settings)\r\n";
     text += "{\r\n";
-    SettingsText(m_settings, text, "    settings.m_", ";");
+    SettingsText(m_settings, text, "    settings.m_", ";", false);
     text += "} // LoadSettings\r\n";
     text += "\r\n";
 } // SaveSettings
@@ -284,21 +290,109 @@ void FireStarterState::SaveState(std::string& text) const
     text += Format("    state.m_bestResult = %.8ff;\r\n", m_bestResult);
     text += Format("    state.m_oldResult = %.8ff;\r\n", m_oldResult);
     text += Format("    state.m_evolveWeight = %ff;\r\n", m_evolveWeight);
+    text += Format("    state.m_precision = %.9ef;\r\n", m_precision);
+    text += Format("    state.m_precisionValid = %s;\r\n", m_precisionValid ? "true" : "false");
     text += Format("    state.m_optimizeValid = %s;\r\n", m_optimizeValid ? "true" : "false");
     text += "} // LoadState\r\n";
 } // SaveState
+
+bool FireStarterState::UpdateBest(FireStarterState& state)
+{
+    if (!state.m_optimizeValid)
+        return false;
+
+    // Validate every candidate, including ones with worse sampled fitness.
+    if (state.Settings().UsePrecision())
+        state.UpdatePrecision();
+    if (state.BetterEvolutionResult(*this) || !m_optimizeValid) {
+        float oldBestResult = m_bestResult;
+        *this = state;
+        m_bestResult = state.MaxResults();
+        m_oldResult = oldBestResult;
+        if (!state.Settings().UsePrecision() && m_settings.SupportsPrecision())
+            UpdatePrecision();
+        m_age = 0;
+        SetComplete();
+        return true;
+    }
+    m_age++;
+    return false;
+} // UpdateBest
+
+unsigned int FireStarterState::SelectOptimizeResult(const FireStarterPopulation* population, unsigned int sampledIndex, unsigned int variation) const
+{
+    if (!m_settings.UsePrecision())
+        return sampledIndex;
+
+    const FireStarterResult* bestResult = FireStarterPopulation::PopulationResult(population, m_settings, sampledIndex);
+    unsigned int bestIndex = sampledIndex;
+    float bestPrecision = m_settings.m_startResult;
+    size_t dataSize = FireStarterData::DataSize(m_settings.m_registers);
+    std::vector<float> workBuffer(m_settings.m_registers);
+    FireStarterData* workData = (FireStarterData*)workBuffer.data();
+    std::unordered_set<std::string_view> testedData;
+    testedData.reserve(m_settings.m_population);
+
+    // Start with the sampled winner, then consider every distinct valid member.
+    // Sampled error is not a cutoff: a worse sampled member can have better precision.
+    if (isfinite(bestResult->MaxResult()) && (bestResult->MaxResult() < m_settings.m_startResult)) {
+        bestPrecision = TestVariation(bestResult->Data(), workData, variation, bestPrecision);
+        testedData.insert(std::string_view((const char*)bestResult->Data(), dataSize));
+    }
+    for (unsigned int index = 0; index < m_settings.m_population; index++) {
+        const FireStarterResult* result = FireStarterPopulation::PopulationResult(population, m_settings, index);
+        if (!isfinite(result->MaxResult()) || (result->MaxResult() >= m_settings.m_startResult))
+            continue;
+        // Views refer to the unchanged host population for the duration of this scan.
+        if (!testedData.insert(std::string_view((const char*)result->Data(), dataSize)).second)
+            continue;
+        float precision = TestVariation(result->Data(), workData, variation, bestPrecision);
+        if ((precision < bestPrecision) || ((precision == bestPrecision) &&
+            (std::make_tuple(result->MaxResult(), index) < std::make_tuple(bestResult->MaxResult(), bestIndex)))) {
+            bestResult = result;
+            bestIndex = index;
+            bestPrecision = precision;
+        }
+    }
+    return bestIndex;
+} // SelectOptimizeResult
+
+float FireStarterState::TestVariation(const FireStarterData* initData, FireStarterData* workData, unsigned int variation, float limit) const
+{
+    const FireStarterCode* testCode = Code();
+#if FIRESTARTER_PRECISION
+    unsigned int samples = FIRESTARTER_PRECISION;
+#else
+    unsigned int samples = m_settings.m_samples;
+#endif
+    if (!testCode || !initData || !workData || (samples < 2))
+        return m_settings.m_startResult;
+    size_t dataSize = FireStarterData::DataSize(m_settings.m_registers);
+    float sampleStep = (m_settings.m_targetMax - m_settings.m_targetMin) / (samples - 1);
+    float result = 0.0f;
+    for (unsigned int sample = 0; sample < samples; sample++) {
+        float theta = m_settings.m_targetMin + sample * sampleStep;
+        float target = Target(theta, variation + FIRESTARTER_VARIATION);
+        memcpy(workData, initData, dataSize);
+        float n = testCode->Evaluate(*workData, theta, m_settings.m_instructions);
+        float error = fabsf(n - target);
+        if (!isfinite(error) || (error >= m_settings.m_startResult))
+            return m_settings.m_startResult;
+        result = std::max(result, error);
+        // This candidate cannot win once its actual dense error exceeds the leader.
+        if (result > limit)
+            break;
+    }
+    return result;
+} // TestVariation
 
 float FireStarterState::TestResults(void) const
 {
     // Get an accurate test result for the state.
     const FireStarterCode* testCode = Code();
-    unsigned int instructions = Settings().m_instructions;
     unsigned int registers = Settings().m_registers;
     size_t dataSize = FireStarterData::DataSize(registers);
-    FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
     unsigned int variations = Settings().m_variations;
-    float targetMin = Settings().m_targetMin;
-    float targetMax = Settings().m_targetMax;
     float startResult = Settings().m_startResult;
     float testResult = 0.0f;
     float maxResult = MaxResults();
@@ -307,29 +401,19 @@ float FireStarterState::TestResults(void) const
 #else
     unsigned int samples = Settings().m_samples;
 #endif
-    float sampleStep = (targetMax - targetMin) / (samples - 1);
+    if (!testCode || !variations || (samples < 2) || !isfinite(maxResult) || (maxResult >= startResult))
+        return startResult;
+    FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
+    if (!workData)
+        return startResult;
     if (maxResult < startResult) {
         for (unsigned int v = 0; v < variations; v++) {
             const FireStarterData* initData = Result(v)->Data();
-            float result = 0.0f;
-
-            for (unsigned int i = 0; i < samples; i++) {
-                float theta = targetMin + i * sampleStep;
-                float target = Target(theta, v + FIRESTARTER_VARIATION);
-
-                memcpy(workData, initData, dataSize);
-                float n = testCode->Evaluate(*workData, theta, instructions);
-                float error = fabsf(n - target);
-
-                if (!isfinite(error) || (error >= startResult)) {
-                    testResult = startResult;
-                    break;
-                }
-                result = std::max(result, error);
-            }
-
-            if (testResult >= startResult)
+            float result = TestVariation(initData, workData, v, startResult);
+            if (result >= startResult) {
+                testResult = startResult;
                 break;
+            }
 
 #if FIRESTARTER_PRECISION
             testResult = std::max(testResult, result);
@@ -398,6 +482,8 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_optimize_pass = 0;
     m_bestResult = m_settings.m_startResult;
     m_oldResult = m_settings.m_startResult;
+    m_precision = m_settings.m_startResult;
+    m_precisionValid = false;
     m_optimizeValid = false;
     m_complete.store(false);
     m_evaluateCode.clear();
@@ -410,6 +496,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
 
 void FireStarterState::InitCode(const FireStarterSettings& settings, const FireStarterCode* codes, float result, unsigned int index)
 {
+    m_precisionValid = false;
     // Load the state's program from the GPU evolved code.
     if (codes)
         CopyCode(codes->Member(settings, index));
@@ -423,6 +510,7 @@ void FireStarterState::InitCode(const FireStarterSettings& settings, const FireS
 
 void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index, unsigned int variation)
 {
+    m_precisionValid = false;
     // Load the state's data from the population data.
     if (population) {
         const FireStarterResult* result = FireStarterPopulation::PopulationResult(FireStarterPopulation::PopulationVariation(population, settings, variation), settings, index);

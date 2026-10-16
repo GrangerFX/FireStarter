@@ -1,0 +1,52 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+units = 1
+states = 1
+population = 65536
+generations = 0
+passes = 384
+samples = 15
+usePrecision = 1
+precisionSamples = 256
+iterations = 64
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=3  Generation=0  Result=0.00066177  Precision=0.00068849  Best=0.00066177 BestError=0.00068849  Time=   0.3  Run Time=   0.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=0  Generation=0  Result=0.00009436  Precision=0.00011866  Best=0.00009436 BestError=0.00011866  Time=   0.4  Run Time=   1.0
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=1  Generation=0  Result=0.00000520  Precision=0.00000650  Best=0.00000520 BestError=0.00000650  Time=   0.5  Run Time=   1.0
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=2  Generation=0  Result=0.00012685  Precision=0.00014204  Best=0.00000520 BestError=0.00000650  Time=   0.5  Run Time=   1.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=2  Generation=1  Result=0.00001419  Precision=0.00001746  Best=0.00000520 BestError=0.00000650  Time=   0.2  Run Time=   1.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=0  Generation=1  Result=0.00000211  Precision=0.00000283  Best=0.00000211 BestError=0.00000283  Time=   0.3  Run Time=   1.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=1  Generation=1  Result=0.00000447  Precision=0.00000602  Best=0.00000211 BestError=0.00000283  Time=   0.3  Run Time=   1.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=3  Generation=1  Result=0.00008872  Precision=0.00009663  Best=0.00000211 BestError=0.00000283  Time=   0.3  Run Time=   1.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=2  Generation=2  Result=0.00004030  Precision=0.00004864  Best=0.00000211 BestError=0.00000283  Time=   0.3  Run Time=   2.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=1  Generation=2  Result=0.00010765  Precision=0.00012052  Best=0.00000211 BestError=0.00000283  Time=   0.4  Run Time=   2.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=0  Generation=2  Result=0.00013483  Precision=0.00016910  Best=0.00000211 BestError=0.00000283  Time=   0.4  Run Time=   2.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=3  Generation=2  Result=0.00029618  Precision=0.00030589  Best=0.00000211 BestError=0.00000283  Time=   0.3  Run Time=   2.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=1  Generation=3  Result=0.00074263  Precision=0.00078452  Best=0.00000211 BestError=0.00000283  Time=   0.1  Run Time=   2.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=0  Generation=3  Result=0.00001818  Precision=0.00002946  Best=0.00000211 BestError=0.00000283  Time=   0.2  Run Time=   3.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=2  Generation=3  Result=0.00008585  Precision=0.00009578  Best=0.00000211 BestError=0.00000283  Time=   0.3  Run Time=   3.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=3  Generation=3  Result=0.00006365  Precision=0.00006568  Best=0.00000211 BestError=0.00000283  Time=   0.3  Run Time=   3.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=1  Generation=4  Result=0.00005205  Precision=0.00005537  Best=0.00000211 BestError=0.00000283  Time=   0.1  Run Time=   3.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=0  Generation=4  Result=0.00000030  Precision=0.00000054  Best=0.00000030 BestError=0.00000054  Time=   0.3  Run Time=   3.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=2  Generation=4  Result=0.00025365  Precision=0.00028002  Best=0.00000030 BestError=0.00000054  Time=   0.3  Run Time=   3.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=149  Index=3  Generation=4  Result=0.00002780  Precision=0.00003317  Best=0.00000030 BestError=0.00000054  Time=   0.3  Run Time=   3.9

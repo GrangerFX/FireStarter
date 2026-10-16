@@ -90,32 +90,13 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
     }
 } // SaveSolution
 
-bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const FireStarterState& state)
+bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, FireStarterState& state)
 {
     // Get the result.
     if (state.m_optimizeValid) {
         static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
         std::lock_guard<std::mutex> lock(bestStateMutex);
-        bool update = ((state.MaxResults() < bestState.MaxResults())) || !bestState.m_optimizeValid;
-        if (update) {
-            // Update the best state.
-            float oldBestResult = bestState.m_bestResult;
-            bestState = state;
-            bestState.m_bestResult = state.MaxResults();
-            bestState.m_oldResult = oldBestResult;
-
-            // Test the precision of the results.
-            if ((bestState.PassMode() != FIRESTARTER_SPEEDTEST) && (bestState.PassMode() != FIRESTARTER_MONEYMAKER) && (bestState.PassMode() != FIRESTARTER_MONEYOPTIMIZE) && (bestState.PassMode() != FIRESTARTER_SINSIM) && (bestState.PassMode() != FIRESTARTER_EVOLVE_SINSIM))
-                bestState.m_precision = bestState.TestResults();
-
-            // Reset the best state age to zero.
-            bestState.m_age = 0;
-
-            // Determine if the best state has met the evolution completion fittness test.
-            bestState.SetComplete();
-        } else
-            bestState.m_age++;
-        return update;
+        return bestState.UpdateBest(state);
     }
     return false;
 } // UpdateBestState
@@ -169,7 +150,7 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, cons
     m_fireShow.ShowStatus(bestState, state, generation, m_generationTime, duration);
 } // CompleteStatus
 
-bool FireStarterComplete::CompleteState(FireStarterState& bestState, const FireStarterState& state, const MoneyMakerStocks* stocks, const MoneyMakerStocks* tradingResults)
+bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarterState& state, const MoneyMakerStocks* stocks, const MoneyMakerStocks* tradingResults)
 {
     DispatchSync([this, &bestState, &state, stocks, tradingResults] {
         if (UpdateBestState(bestState, state))

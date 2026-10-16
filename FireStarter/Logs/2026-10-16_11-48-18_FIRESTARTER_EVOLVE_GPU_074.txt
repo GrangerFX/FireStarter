@@ -1,0 +1,60 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+units = 1
+states = 1
+population = 65536
+generations = 0
+passes = 384
+samples = 15
+usePrecision = 1
+precisionSamples = 256
+iterations = 64
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=1  Generation=0  Result=0.00000969  Precision=0.00001180  Best=0.00000969 BestError=0.00001180  Time=   0.2  Run Time=   0.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=2  Generation=0  Result=0.00224355  Precision=0.00224572  Best=0.00000969 BestError=0.00001180  Time=   0.3  Run Time=   0.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=3  Generation=0  Result=0.00027245  Precision=0.00029731  Best=0.00000969 BestError=0.00001180  Time=   0.3  Run Time=   0.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=0  Generation=0  Result=0.00378293  Precision=0.00395468  Best=0.00000969 BestError=0.00001180  Time=   0.5  Run Time=   1.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=3  Generation=1  Result=0.00179716  Precision=0.00199662  Best=0.00000969 BestError=0.00001180  Time=   0.3  Run Time=   1.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=0  Generation=1  Result=0.00000924  Precision=0.00000961  Best=0.00000924 BestError=0.00000961  Time=   0.3  Run Time=   1.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=1  Generation=1  Result=0.00088136  Precision=0.00089905  Best=0.00000924 BestError=0.00000961  Time=   0.3  Run Time=   1.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=2  Generation=1  Result=0.00005139  Precision=0.00006963  Best=0.00000924 BestError=0.00000961  Time=   0.4  Run Time=   1.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=0  Generation=2  Result=0.00021694  Precision=0.00023536  Best=0.00000924 BestError=0.00000961  Time=   0.3  Run Time=   2.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=1  Generation=2  Result=0.00646792  Precision=0.00686896  Best=0.00000924 BestError=0.00000961  Time=   0.4  Run Time=   2.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=2  Generation=2  Result=0.00002499  Precision=0.00002551  Best=0.00000924 BestError=0.00000961  Time=   0.3  Run Time=   2.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=3  Generation=2  Result=0.00098825  Precision=0.00098825  Best=0.00000924 BestError=0.00000961  Time=   0.4  Run Time=   2.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=1  Generation=3  Result=0.00068005  Precision=0.00069296  Best=0.00000924 BestError=0.00000961  Time=   0.2  Run Time=   3.2
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=2  Generation=3  Result=0.00027746  Precision=0.00031489  Best=0.00000924 BestError=0.00000961  Time=   0.2  Run Time=   3.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=3  Generation=3  Result=0.00066230  Precision=0.00079152  Best=0.00000924 BestError=0.00000961  Time=   0.3  Run Time=   3.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=0  Generation=3  Result=0.00002725  Precision=0.00002968  Best=0.00000924 BestError=0.00000961  Time=   0.4  Run Time=   3.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=0  Generation=4  Result=0.00025374  Precision=0.00027084  Best=0.00000924 BestError=0.00000961  Time=   0.2  Run Time=   3.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=3  Generation=4  Result=0.00001010  Precision=0.00001192  Best=0.00000924 BestError=0.00000961  Time=   0.3  Run Time=   4.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=2  Generation=4  Result=0.00029883  Precision=0.00034320  Best=0.00000924 BestError=0.00000961  Time=   0.3  Run Time=   4.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=1  Generation=4  Result=0.00037769  Precision=0.00039968  Best=0.00000924 BestError=0.00000961  Time=   0.3  Run Time=   4.1
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=0  Generation=5  Result=0.00020357  Precision=0.00022599  Best=0.00000924 BestError=0.00000961  Time=   0.2  Run Time=   4.7
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=3  Generation=5  Result=0.00022998  Precision=0.00029245  Best=0.00000924 BestError=0.00000961  Time=   0.3  Run Time=   4.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=1  Generation=5  Result=0.00005134  Precision=0.00005472  Best=0.00000924 BestError=0.00000961  Time=   0.3  Run Time=   4.8
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=2  Generation=5  Result=0.00234342  Precision=0.00245020  Best=0.00000924 BestError=0.00000961  Time=   0.3  Run Time=   4.9
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=3  Generation=6  Result=0.00000021  Precision=0.00000036  Best=0.00000021 BestError=0.00000036  Time=   0.2  Run Time=   5.4
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=2  Generation=6  Result=0.00015148  Precision=0.00016475  Best=0.00000021 BestError=0.00000036  Time=   0.3  Run Time=   5.5
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=1  Generation=6  Result=0.00287431  Precision=0.00290602  Best=0.00000021 BestError=0.00000036  Time=   0.3  Run Time=   5.6
+FIRESTARTER_EVOLVE_OPTIMIZE: Seed=0  Test=74  Index=0  Generation=6  Result=0.00025421  Precision=0.00027066  Best=0.00000021 BestError=0.00000036  Time=   0.4  Run Time=   5.7

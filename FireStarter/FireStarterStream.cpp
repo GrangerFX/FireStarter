@@ -48,7 +48,8 @@ void FireStarterStream::RandomStream(void)
             resultText += Format("Seed=%u  ", evolveState.Settings().m_evolveSeed);
         if (evolveState.Settings().m_tests > 1)
             resultText += Format("Test=%u  ", evolveState.m_test);
-        resultText += Format("Random Result=%.8f  Precision=%.8f\n", evolveState.MaxResults(), evolveState.m_precision);
+        const FireStarterState& resultState = randomSettings.UsePrecision() ? bestState : evolveState;
+        resultText += Format("Random Result=%.8f  Precision=%.8f\n", resultState.MaxResults(), resultState.m_precision);
         FireStarterSource::AppendSource(resultText, Format("Logs\\%s_Random_Results.txt", streamDate.c_str()));
     }
 
@@ -109,7 +110,7 @@ void FireStarterStream::EvolveSelectStream(void)
                 if (newState.m_optimizeValid) {
                     // Replace the old state with the new state if it improved.
                     FireStarterState& oldState = allStates[newState.m_id];
-                    if (newState.MaxResults() < oldState.MaxResults()) {
+                    if (newState.BetterEvolutionResult(oldState)) {
                         newState.m_generation = oldState.m_generation + 1;
                         newState.m_age = 1;
                         oldState = newState;
@@ -150,14 +151,15 @@ void FireStarterStream::EvolveSelectStream(void)
 
                     // Output the optimize results.
                     if (!WillTerminate()) {
-                        resultText += Format("  Optimize Result=%.8f  Precision=%.8f", optimizeState.MaxResults(), optimizeState.m_precision);
-                        if ((bestEvolveState.MaxResults() > selectSettings.m_target) && (optimizeState.MaxResults() <= selectSettings.m_target))
+                        const FireStarterState& resultState = selectSettings.UsePrecision() ? optimizeBestState : optimizeState;
+                        resultText += Format("  Optimize Result=%.8f  Precision=%.8f", resultState.MaxResults(), resultState.m_precision);
+                        if (!bestEvolveState.MeetsTarget() && optimizeBestState.MeetsTarget())
                             resultText += " *";
                     }
                 }
             }
 
-            if ((bestEvolveState.MaxResults() <= selectSettings.m_target) || bestEvolveState.Complete())
+            if (bestEvolveState.MeetsTarget() || bestEvolveState.Complete())
                 resultText += " *******";
             resultText += "\n";
             FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveSelect_Results.txt", streamDate.c_str()));
@@ -228,7 +230,7 @@ void FireStarterStream::EvolveCPUStream(void)
                 if (newState.m_optimizeValid) {
                     // Replace the old state with the new state if it improved.
                     FireStarterState& oldState = allStates[newState.m_id];
-                    if (newState.MaxResults() < oldState.MaxResults()) {
+                    if (newState.BetterEvolutionResult(oldState)) {
                         newState.m_generation = oldState.m_generation + 1;
                         newState.m_age = 1;
                         oldState = newState;
@@ -248,7 +250,7 @@ void FireStarterStream::EvolveCPUStream(void)
         totalGenerations += generation;
 
         std::string resultText = Format("Seed=%u  Test=%3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Precision=%.8f  Best Generations=%3u  Evolutions=%3u  Duration: %6.1f  Average: %6.1f", bestState.Settings().m_evolveSeed, test, generation, totalGenerations, bestState.MaxResults(), bestState.m_precision, bestState.m_generation, bestState.m_evolution, duration, totalDuration / (t + 1));
-        if (bestState.MaxResults() <= evolveSettings.m_target)
+        if (bestState.MeetsTarget())
             resultText += " *******";
         resultText += "\n";
         FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveCPU_Results.txt", streamDate.c_str()));
@@ -334,7 +336,7 @@ void FireStarterStream::EvolveGPUStream(void)
             for (size_t i = 0; i < evolveStates.size(); i++) {
                 totalGenerations += evolveStates[i].m_generation;
                 std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Precision=%.8f  Duration: %6.1f  GenTime: %4.1f  Total: %8.1f  Average: %4.1f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), bestState.m_precision, duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
-                if (bestState.MaxResults() <= evolveSettings.m_target)
+                if (bestState.MeetsTarget())
                     resultText += " *******";
                 resultText += "\n";
                 FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveGPU_Results.txt", streamDate.c_str()));
@@ -430,7 +432,7 @@ void FireStarterStream::EvolveNewStream(void)
             for (size_t i = 0; i < evolveStates.size(); i++) {
                 totalGenerations += evolveStates[i].m_generation;
                 std::string resultText = Format("Seed: %u  Test: %3u  Id: %3u  Generation=%3u  Total=%6u  Evolve Result=%.8f  Optimize Result=%.8f  Precision=%.8f  Duration: %6.2f  GenTime: %4.2f  Total: %8.2f  Average: %4.2f", evolveSettings.m_evolveSeed, test, evolveStates[i].m_id, evolveStates[i].m_generation, totalGenerations, evolveStates[i].MaxResults(), bestState.MaxResults(), bestState.m_precision, duration, duration / evolveStates[i].m_generation, totalDuration, totalDuration / (t + 1));
-                if (bestState.MaxResults() <= evolveSettings.m_target)
+                if (bestState.MeetsTarget())
                     resultText += " *******";
                 resultText += "\n";
                 FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveNew_Results.txt", streamDate.c_str()));
@@ -831,8 +833,9 @@ void FireStarterStream::OptimizeStream(void)
             // Output the test results.
             if (!WillTerminate()) {
                 // Output the evolve results.
-                std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Precision=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResults(), optimizeState.MaxResults(), optimizeState.m_precision, bestState.Duration());
-                if (bestState.MaxResults() <= optimizeSettings.m_target)
+                const FireStarterState& resultState = optimizeSettings.UsePrecision() ? bestState : optimizeState;
+                std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Precision=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResults(), resultState.MaxResults(), resultState.m_precision, bestState.Duration());
+                if (bestState.MeetsTarget())
                     resultText += " *******";
                 resultText += "\n";
                 FireStarterSource::AppendSource(resultText, Format("Logs\\%s_Optimize_Results.txt", streamDate.c_str()));

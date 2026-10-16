@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <set>
+#include <tuple>
 
 #define FIRESTARTER_STATE_DEBUG 1
 
@@ -477,6 +478,7 @@ public:
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_evolveWeight = 0.0f;
     float m_precision = 0.0f;
+    bool m_precisionValid = false;
     std::atomic<bool> m_complete = false;
     bool m_optimizeValid = false;
 
@@ -507,6 +509,7 @@ private:
         m_oldResult = other.m_oldResult;
         m_evolveWeight = other.m_evolveWeight;
         m_precision = other.m_precision;
+        m_precisionValid = other.m_precisionValid;
         m_optimizeValid = other.m_optimizeValid;
 //      m_complete.store(false);
     } // swap
@@ -638,10 +641,44 @@ public:
         return m_results.size() == ResultSize();
     } // Initialized
 
+    inline float EvolutionResult(void) const
+    {
+        if (m_settings.UsePrecision())
+            return m_precisionValid && isfinite(m_precision) ? m_precision : m_settings.m_startResult;
+        return MaxResults();
+    } // EvolutionResult
+
+    inline bool BetterEvolutionResult(const FireStarterState& other) const
+    {
+        float result = EvolutionResult();
+        float otherResult = other.EvolutionResult();
+        if (result != otherResult)
+            return result < otherResult;
+        if (!m_settings.UsePrecision())
+            return false;
+
+        // Resolve equal precision independently of asynchronous completion order.
+        return std::make_tuple(MaxResults(), m_generation, m_id, m_index) <
+            std::make_tuple(other.MaxResults(), other.m_generation, other.m_id, other.m_index);
+    } // BetterEvolutionResult
+
+    inline bool MeetsTarget(void) const
+    {
+        if (m_settings.UsePrecision() && (!m_optimizeValid || !m_precisionValid || !isfinite(m_precision)))
+            return false;
+        return EvolutionResult() < m_settings.m_target;
+    } // MeetsTarget
+
+    inline void UpdatePrecision(void)
+    {
+        m_precision = TestResults();
+        m_precisionValid = true;
+    } // UpdatePrecision
+
     inline bool SetComplete(void)
     {
         // Note: This is called from FireStarterComplete::UpdateBestState().
-        if (MaxResults() < m_settings.m_target) {
+        if (MeetsTarget()) {
             m_complete.store(true, std::memory_order_release);
             return true;
         }
@@ -665,12 +702,12 @@ public:
 
     inline float SelectWeight(void) const
     {
-        return MaxResults() * m_age;
+        return EvolutionResult() * m_age;
     } // SelectWeight
 
     inline float EvolveWeight(void) const
     {
-        return MaxResults() * m_generation;
+        return EvolutionResult() * m_generation;
     } // EvolveWeight
 
     inline unsigned long long EvolutionSeed(unsigned long long evolvePass = 0) const
@@ -723,11 +760,13 @@ public:
 
     inline void RandomInstruction(void)
     {
+        m_precisionValid = false;
         Code()->RandomInstruction(m_seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_opcodes);
     } // RandomInstruction
 
     inline void CopyCode(const FireStarterCodeVector& srcCode, unsigned int uniqueRegisters = 0)
     {
+        m_precisionValid = false;
         if (!srcCode.size() || (srcCode.size() != CodeSize()))
             std::terminate();
         m_code = srcCode;
@@ -738,6 +777,7 @@ public:
 
     inline void CopyCode(const FireStarterCode* srcCode, unsigned int uniqueRegisters = 0)
     {
+        m_precisionValid = false;
         FireStarterCode* dstCode = Code();
         if (srcCode && dstCode) {
             memcpy(dstCode, srcCode, FireStarterCode::CodeSize(m_settings));
@@ -759,11 +799,13 @@ public:
 
     inline void RandomCode(void)
     {
+        m_precisionValid = false;
         Code()->InitCode(m_seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_opcodes);
     } // RandomCode
 
     inline unsigned int OptimizeCode(void)
     {
+        m_precisionValid = false;
         m_uniqueRegisters = Code()->Optimize();
         return m_uniqueRegisters;
     } // OptimizeCode
@@ -812,23 +854,28 @@ public:
         InitGenerationSeed();
     } // NextGeneration
 
-    static void SettingsText(const FireStarterSettings& settings, std::string& text, const std::string& prefix = "", const std::string& postfix = "");
+    static void SettingsText(const FireStarterSettings& settings, std::string& text, const std::string& prefix = "", const std::string& postfix = "", bool diagnostics = true);
     void SaveSettings(std::string& code) const;
     void SaveCode(std::string& code) const;
     void SaveStats(std::string& code) const;
     void SaveVariation(unsigned int variation, std::string& code) const;
     void SaveResults(std::string& code) const;
     void SaveState(std::string& code) const;
+    bool UpdateBest(FireStarterState& state);
+    unsigned int SelectOptimizeResult(const FireStarterPopulation* population, unsigned int sampledIndex, unsigned int variation = 0) const;
+    float TestVariation(const FireStarterData* initData, FireStarterData* workData, unsigned int variation, float limit) const;
     float TestResults(void) const;
     float EvaluateCode(void) const;
 
     inline void InitResult(unsigned int variation = 0)
     {
+        m_precisionValid = false;
         m_results.InitResult(m_settings, variation);
     } // InitResults
 
     inline void InitResults(void)
     {
+        m_precisionValid = false;
         m_results.InitResults(m_settings);
     } // InitResults
 

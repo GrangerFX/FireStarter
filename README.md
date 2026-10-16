@@ -96,6 +96,8 @@ For another mode, substitute its configuration and executable name, such as `Evo
 
 Edit [FireStarterSettings.h](FireStarter/FireStarterSettings.h) to configure instruction and register counts, target variations, sample counts, target error, random seeds, populations, passes, and test counts. Many settings are specific to a mode. Several population defaults are sized around an RTX 5090; adjust them for other GPUs and record the settings when comparing results.
 
+Set `FIRESTARTER_USE_PRECISION` to `1` to rank mathematical candidates and stop evolution using the dense CPU precision check. The default `0` retains sampled-fitness selection and completion. GPU mutation fitness remains sampled; precision mode also screens the resulting population before selecting register data. See [precision selection](docs/precision-selection.md) for the scope and validation checks.
+
 The file to edit for the target behavior depends on the experiment:
 
 | Experiment | Where to make changes |

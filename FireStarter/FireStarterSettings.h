@@ -76,6 +76,16 @@
 #define FIRESTARTER_SINSIM_WARMUP   256         // Sinsim samples to skip during warm up
 #define FIRESTARTER_PRECISION       256         // Tests required to accurately determine precision
 
+#ifndef FIRESTARTER_USE_PRECISION
+#define FIRESTARTER_USE_PRECISION   1           // Use dense CPU precision for candidate selection and completion; GPU fitness remains sampled.
+#endif
+#if (FIRESTARTER_USE_PRECISION != 0) && (FIRESTARTER_USE_PRECISION != 1)
+#error FIRESTARTER_USE_PRECISION must be 0 or 1.
+#endif
+#if FIRESTARTER_USE_PRECISION && (FIRESTARTER_PRECISION < 2)
+#error Precision-based evolution requires FIRESTARTER_PRECISION to be at least 2.
+#endif
+
 #define FIRESTARTER_NUM_BEST        16          // The number of best evolved codes for optimization
 
 #define FIRESTARTER_SCALE           0.3f
@@ -282,6 +292,19 @@ public:
     unsigned int m_optimize =       0;
     unsigned int m_tests =          0;
     float        m_target =         0.0f;
+
+    inline bool SupportsPrecision(void) const
+    {
+        return (m_mode == FIRESTARTER_RANDOM) || (m_mode == FIRESTARTER_EVOLVE_SELECT) ||
+            (m_mode == FIRESTARTER_EVOLVE_CPU) || (m_mode == FIRESTARTER_EVOLVE_GPU) ||
+            (m_mode == FIRESTARTER_EVOLVE_NEW) || (m_mode == FIRESTARTER_EVOLVE_OPTIMIZE) ||
+            (m_mode == FIRESTARTER_OPTIMIZE) || (m_mode == FIRESTARTER_SOLUTION);
+    } // SupportsPrecision
+
+    inline bool UsePrecision(void) const
+    {
+        return FIRESTARTER_USE_PRECISION && SupportsPrecision();
+    } // UsePrecision
 
     static inline const char* Mode(unsigned int mode)
     {

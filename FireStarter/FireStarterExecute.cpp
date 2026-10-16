@@ -786,6 +786,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     }
 
     // Store the state's best result.
+    minIndex = state.SelectOptimizeResult(hostVariation, minIndex, variation);
     state.InitResult(settings, hostPopulation, minIndex, variation);
     state.m_minIndex = minIndex;
 } // ExecuteOptimizePass
@@ -815,7 +816,7 @@ void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
 void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
 {
     unsigned int variations = state.Settings().m_variations;
-    if ((variations > 1) && state.m_evolution) {
+    if ((variations > 1) && state.m_evolution && !state.Settings().UsePrecision()) {
         float oldResult = state.m_bestResult;
         float maxResult = 0.0f;
         unsigned int minIndex = 0;
@@ -1296,8 +1297,12 @@ void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& optimizeState, 
                     ExecuteSmartOptimizePasses(optimizeState);
 
                     // Update the results in the UI and check for completion.
-                    if (complete && complete->CompleteState(bestState, optimizeState))
-                        break;
+                    if (complete) {
+                        bool completed = complete->CompleteState(bestState, optimizeState);
+                        // In precision mode each asynchronous unit follows its own stopping test.
+                        if (optimizeState.Settings().UsePrecision() ? optimizeState.MeetsTarget() : completed)
+                            break;
+                    }
 
                     // Increment the generation.
                     optimizeState.m_optimize_pass++;

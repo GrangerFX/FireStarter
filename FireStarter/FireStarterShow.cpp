@@ -442,6 +442,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("Result=%.8f", maxResult);
         }
 
+        if ((state.PassMode() == FIRESTARTER_EVOLVE_OPTIMIZE) && settings.UsePrecision())
+            statusString += Format("  Index=%llu  Generation=%llu  Result=%.8f  Precision=%.8f", state.m_index, state.m_generation, maxResult, state.m_precision);
         statusString += Format("  Best=%.8f ", bestResult);
         if ((state.PassMode() != FIRESTARTER_SPEEDTEST) && (state.PassMode() != FIRESTARTER_MONEYMAKER) && (state.PassMode() != FIRESTARTER_MONEYOPTIMIZE) && (state.PassMode() != FIRESTARTER_SINSIM) && (state.PassMode() != FIRESTARTER_EVOLVE_SINSIM))
             statusString += Format("BestError=%.8f", bestError);
