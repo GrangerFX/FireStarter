@@ -77,7 +77,7 @@
 #define FIRESTARTER_PRECISION       256         // Tests required to accurately determine precision
 
 #ifndef FIRESTARTER_USE_PRECISION
-#define FIRESTARTER_USE_PRECISION   1           // Use dense CPU precision for candidate selection and completion; GPU fitness remains sampled.
+#define FIRESTARTER_USE_PRECISION   0           // Use dense CPU precision for candidate selection and completion; GPU fitness remains sampled.
 #endif
 #if (FIRESTARTER_USE_PRECISION != 0) && (FIRESTARTER_USE_PRECISION != 1)
 #error FIRESTARTER_USE_PRECISION must be 0 or 1.
