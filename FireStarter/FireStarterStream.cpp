@@ -12,7 +12,7 @@ void FireStarterStream::RandomStream(void)
     // The results demonstrate that some random code instructions are far more evolvable than others.
     // This discovery was the basis for the EvolveGPU code evolution method.
     FireStarterSettings randomSettings(FIRESTARTER_RANDOM);
-    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
+    std::string streamDate = FileNameDate();
 
     // Create the execution unit.
     FireStarterExecute* execute = new FireStarterExecute();
@@ -67,7 +67,7 @@ void FireStarterStream::EvolveSelectStream(void)
     FireStarterSettings selectSettings(FIRESTARTER_EVOLVE_SELECT);
     FireStarterSettings optimizeSettings(FIRESTARTER_EVOLVE_OPTIMIZE);
     unsigned int numStates = selectSettings.m_states;
-    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
+    std::string streamDate = FileNameDate();
 
     // Create the evolution code generator.
     FireStarterExecute* executeSelect = new FireStarterExecute("SelectStates");
@@ -185,7 +185,7 @@ void FireStarterStream::EvolveCPUStream(void)
     // This method works best for more difficult problems like finding a single piece of code that can solve multiple variations of Sin().
     FireStarterSettings evolveSettings(FIRESTARTER_EVOLVE_CPU);
     unsigned int numStates = evolveSettings.m_states;
-    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
+    std::string streamDate = FileNameDate();
     unsigned long long totalGenerations = 0;
     double totalDuration = 0.0;
 
@@ -273,7 +273,7 @@ void FireStarterStream::EvolveGPUStream(void)
     // This method works best for simple problems like generating the Sin() function.
     FireStarterSettings evolveSettings(FIRESTARTER_EVOLVE_GPU);
     FireStarterSettings optimizeSettings(FIRESTARTER_EVOLVE_OPTIMIZE);
-    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
+    std::string streamDate = FileNameDate();
     double totalDuration = 0.0;
     unsigned long long totalGenerations = 0;
 
@@ -361,7 +361,7 @@ void FireStarterStream::EvolveNewStream(void)
     // tested to find the ones that work best to solve the problem.
     FireStarterSettings evolveSettings(FIRESTARTER_EVOLVE_NEW);
     FireStarterSettings optimizeSettings(FIRESTARTER_EVOLVE_OPTIMIZE);
-    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
+    std::string streamDate = FileNameDate();
     double totalDuration = 0.0;
     unsigned long long evolveID = 0;
     unsigned long long optimizeID = 0;
@@ -457,7 +457,7 @@ void FireStarterStream::EvolveSinSimStream(void)
     // evolve itself. Currently the results are poor compared to the original SinSim() and EvolveGPU.
     FireStarterSettings evolveSettings(FIRESTARTER_EVOLVE_SINSIM);
     FireStarterSettings optimizeSettings(FIRESTARTER_EVOLVE_SINSIM);
-    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
+    std::string streamDate = FileNameDate();
     double totalDuration = 0.0;
     unsigned long long totalGenerations = 0;
 
@@ -523,7 +523,7 @@ void FireStarterStream::SinSimStream(void)
     // The input is Cos(theta) and the target function is Sin(theta) where theta is offset 45 samples or about 36.42 degrees.
     // This version runs using CUDA on the GPU with a population size of 65536.
     FireStarterSettings sinSimSettings(FIRESTARTER_SINSIM);
-    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
+    std::string streamDate = FileNameDate();
     double totalDuration = 0.0;
     unsigned long long totalGenerations = 0;
 
@@ -596,7 +596,7 @@ void FireStarterStream::MoneyMakerStream(void)
     // Note: These are used by the units so they must be declared first so they are destroyed last.
     FireStarterSettings evolveSettings(FIRESTARTER_MONEYMAKER);
     FireStarterSettings optimizeSettings(FIRESTARTER_MONEYOPTIMIZE);
-    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
+    std::string streamDate = FileNameDate();
     std::string streamResultsPath = Format("Logs\\%s_MoneyMaker_Results.txt", streamDate.c_str());
     unsigned long long evolveID = 0;
     unsigned long long optimizeID = 0;
@@ -794,7 +794,7 @@ void FireStarterStream::OptimizeStream(void)
     // In addition, Optimize can run multiple tests to find alternate register data values.
     // This is also a way to test the Optimize pass separately from the Evolve passes.
     FireStarterSettings optimizeSettings(FIRESTARTER_OPTIMIZE);
-    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
+    std::string streamDate = FileNameDate();
     FireStarterState evolveState;
     LoadState(evolveState);
 
@@ -855,7 +855,7 @@ void FireStarterStream::SpeedTestStream(void)
     // SpeedTest can be used to test the performance impact of changes to the evolve code.
     // Paste the code you wish to modify into FireSpeedTest.cu before making changes and use it as a reference.
     FireStarterSettings speedTestSettings(FIRESTARTER_SPEEDTEST);
-    std::string streamDate = FileNameDate(SimpleTimer::RunSecond());
+    std::string streamDate = FileNameDate();
 
     // Create the optimization execution unit.
     FireStarterExecute* execute = new FireStarterExecute();

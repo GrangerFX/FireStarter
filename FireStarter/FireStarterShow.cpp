@@ -369,7 +369,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     static std::string settingsPath;
     if (settingsPath.empty()) {
         const std::string settingsFileName = "FireStarterSettings.h";
-        settingsPath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), settingsFileName.c_str());
+        settingsPath = Format("Logs\\%s_%s", FileNameDate().c_str(), settingsFileName.c_str());
         std::string settingsCode;
         if (FireStarterSource::LoadSource(settingsCode, settingsFileName))
             FireStarterSource::SaveSource(settingsCode, settingsPath);
@@ -378,7 +378,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     // Create the log path.
     unsigned long long test = state.m_test;
     size_t testLength = std::to_string(settings.m_tests).length();
-    std::string logPath = Format("Logs\\%s_%s_%0*llu.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(FIRESTARTER_MODE), (int)testLength, test);
+    std::string logPath = Format("Logs\\%s_%s_%0*llu.txt", FileNameDate().c_str(), settings.Mode(FIRESTARTER_MODE), (int)testLength, test);
 
     // Update the log file and window status text.
     std::string statusString;

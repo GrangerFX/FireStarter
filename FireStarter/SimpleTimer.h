@@ -6,12 +6,18 @@
 
 class SimpleTimer {
 private:
-    inline static time_t s_second = 0;
-    inline static long s_nanosecond = 0;
-    time_t m_second;
-    long m_nanosecond;
-public:
+    static timespec InitRunTime(void)
+    {
+        timespec runTime;
+        timespec_get(&runTime, TIME_UTC);
+        return runTime;
+    } // InitRunTime
 
+    inline static const timespec s_runTime = InitRunTime();
+    time_t m_second = s_runTime.tv_sec;
+    long m_nanosecond = s_runTime.tv_nsec;
+
+public:
     inline double Start(void)
     {
         timespec time;
@@ -33,7 +39,7 @@ public:
     {
         timespec time;
         timespec_get(&time, TIME_UTC);
-        return (double)(time.tv_sec - s_second) + (double)(time.tv_nsec - s_nanosecond) * 0.000000001;
+        return (double)(time.tv_sec - s_runTime.tv_sec) + (double)(time.tv_nsec - s_runTime.tv_nsec) * 0.000000001;
     } // RunDuration
 
     inline std::string StartDate(void) const
@@ -49,7 +55,7 @@ public:
     {
         std::stringstream sstream;
         tm localTime;
-        localtime_s(&localTime, &s_second);
+        localtime_s(&localTime, &s_runTime.tv_sec);
         sstream << std::put_time(&localTime, "%c %Z");
         return sstream.str();
     } // RunDate
@@ -61,25 +67,12 @@ public:
 
     inline static time_t RunSecond(void)
     {
-        return s_second;
+        return s_runTime.tv_sec;
     } // RunSecond
 
     inline SimpleTimer(bool start = true)
     {
         // Synchronize the start times of all timers by default.
-        if (!s_second && !s_nanosecond) {
-            static std::mutex s_mtx;
-            s_mtx.lock();
-            if (!s_second && !s_nanosecond) {
-                timespec time;
-                timespec_get(&time, TIME_UTC);
-                s_nanosecond = time.tv_nsec;
-                s_second = time.tv_sec;
-            }
-            s_mtx.unlock();
-        }
-        m_second = s_second;
-        m_nanosecond = s_nanosecond;
         if (start)
             Start();
     } // SimpleTimer

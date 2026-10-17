@@ -19,10 +19,10 @@ inline std::string CurrentDate(void)
     return sstream.str();
 } // CurrentDate
 
-inline std::string FileNameDate(time_t fileTime = 0)
+inline std::string FileNameDate(time_t fileTime)
 {
     if (!fileTime)
-        fileTime = time(nullptr);
+        fileTime = SimpleTimer::RunSecond();
     struct tm tm_struct;
     struct tm* tm = &tm_struct;
     errno_t err = localtime_s(tm, &fileTime);
@@ -31,3 +31,15 @@ inline std::string FileNameDate(time_t fileTime = 0)
     return Format("%04d-%02d-%02d_%02d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
 } // FileNameDate
 
+inline std::string FileNameDate(void)
+{
+    static std::string s_fileNameDate;
+    if (s_fileNameDate.empty()) {
+        static std::mutex s_mtx;
+        s_mtx.lock();
+        if (s_fileNameDate.empty())
+            s_fileNameDate = FileNameDate(SimpleTimer::RunSecond());
+        s_mtx.unlock();
+    }
+    return s_fileNameDate;
+} // FileNameDate

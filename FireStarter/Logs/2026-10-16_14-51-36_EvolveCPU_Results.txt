@@ -1,0 +1,64 @@
+Seed=0  Test=  0  Generation=  7  Total=     7  Evolve Result=0.00000061  Precision=0.00000083  Best Generations= 16  Evolutions=  1  Duration:   40.9  Average:   40.9 *******
+Seed=0  Test=  1  Generation= 15  Total=    22  Evolve Result=0.00000030  Precision=0.00000090  Best Generations=157  Evolutions=  4  Duration:   88.7  Average:   64.8 *******
+Seed=0  Test=  2  Generation=  4  Total=    26  Evolve Result=0.00000026  Precision=0.00000095  Best Generations= 31  Evolutions=  3  Duration:   23.6  Average:   51.1 *******
+Seed=0  Test=  3  Generation=  6  Total=    32  Evolve Result=0.00000025  Precision=0.00000048  Best Generations= 42  Evolutions=  4  Duration:   35.8  Average:   47.2 *******
+Seed=0  Test=  4  Generation=  2  Total=    34  Evolve Result=0.00000049  Precision=0.00000083  Best Generations=  5  Evolutions=  1  Duration:   12.1  Average:   40.2 *******
+Seed=0  Test=  5  Generation=  7  Total=    41  Evolve Result=0.00000030  Precision=0.00000054  Best Generations= 65  Evolutions=  6  Duration:   41.3  Average:   40.4 *******
+Seed=0  Test=  6  Generation=  5  Total=    46  Evolve Result=0.00000033  Precision=0.00000089  Best Generations= 46  Evolutions=  4  Duration:   29.9  Average:   38.9 *******
+Seed=0  Test=  7  Generation=  4  Total=    50  Evolve Result=0.00000015  Precision=0.00000048  Best Generations= 34  Evolutions=  3  Duration:   23.5  Average:   37.0 *******
+Seed=0  Test=  8  Generation=  3  Total=    53  Evolve Result=0.00000029  Precision=0.00000095  Best Generations= 16  Evolutions=  1  Duration:   17.2  Average:   34.8 *******
+Seed=0  Test=  9  Generation=  5  Total=    58  Evolve Result=0.00000029  Precision=0.00000054  Best Generations= 50  Evolutions=  1  Duration:   28.8  Average:   34.2 *******
+Seed=0  Test= 10  Generation=  8  Total=    66  Evolve Result=0.00000030  Precision=0.00000048  Best Generations= 52  Evolutions=  4  Duration:   47.1  Average:   35.4 *******
+Seed=0  Test= 11  Generation=  5  Total=    71  Evolve Result=0.00000072  Precision=0.00000089  Best Generations= 10  Evolutions=  1  Duration:   29.3  Average:   34.8 *******
+Seed=0  Test= 12  Generation=  7  Total=    78  Evolve Result=0.00000034  Precision=0.00000060  Best Generations= 30  Evolutions=  5  Duration:   42.1  Average:   35.4 *******
+Seed=0  Test= 13  Generation= 20  Total=    98  Evolve Result=0.00000041  Precision=0.00000089  Best Generations=167  Evolutions=  6  Duration:  117.6  Average:   41.3 *******
+Seed=0  Test= 14  Generation= 17  Total=   115  Evolve Result=0.00000028  Precision=0.00000083  Best Generations= 31  Evolutions=  2  Duration:   98.6  Average:   45.1 *******
+Seed=0  Test= 15  Generation=  3  Total=   118  Evolve Result=0.00000026  Precision=0.00000054  Best Generations= 13  Evolutions=  2  Duration:   17.9  Average:   43.4 *******
+Seed=0  Test= 16  Generation=  6  Total=   124  Evolve Result=0.00000024  Precision=0.00000083  Best Generations= 59  Evolutions=  4  Duration:   35.5  Average:   42.9 *******
+Seed=0  Test= 17  Generation=  7  Total=   131  Evolve Result=0.00000026  Precision=0.00000048  Best Generations= 31  Evolutions=  5  Duration:   41.0  Average:   42.8 *******
+Seed=0  Test= 18  Generation=  6  Total=   137  Evolve Result=0.00000033  Precision=0.00000085  Best Generations= 35  Evolutions=  4  Duration:   35.2  Average:   42.4 *******
+Seed=0  Test= 19  Generation=  3  Total=   140  Evolve Result=0.00000034  Precision=0.00000089  Best Generations= 20  Evolutions=  2  Duration:   18.0  Average:   41.2 *******
+Seed=0  Test= 20  Generation=  4  Total=   144  Evolve Result=0.00000021  Precision=0.00000075  Best Generations= 21  Evolutions=  2  Duration:   24.9  Average:   40.4 *******
+Seed=0  Test= 21  Generation=  7  Total=   151  Evolve Result=0.00000030  Precision=0.00000080  Best Generations= 73  Evolutions=  3  Duration:   40.9  Average:   40.4 *******
+Seed=0  Test= 22  Generation=  7  Total=   158  Evolve Result=0.00000056  Precision=0.00000098  Best Generations= 94  Evolutions=  3  Duration:   41.6  Average:   40.5 *******
+Seed=0  Test= 23  Generation= 18  Total=   176  Evolve Result=0.00000052  Precision=0.00000083  Best Generations=163  Evolutions=  7  Duration:  105.4  Average:   43.2 *******
+Seed=0  Test= 24  Generation=  3  Total=   179  Evolve Result=0.00000012  Precision=0.00000024  Best Generations= 15  Evolutions=  2  Duration:   18.3  Average:   42.2 *******
+Seed=0  Test= 25  Generation= 18  Total=   197  Evolve Result=0.00000041  Precision=0.00000092  Best Generations=138  Evolutions=  6  Duration:  106.1  Average:   44.7 *******
+Seed=0  Test= 26  Generation=  3  Total=   200  Evolve Result=0.00000014  Precision=0.00000048  Best Generations= 10  Evolutions=  2  Duration:   18.0  Average:   43.7 *******
+Seed=0  Test= 27  Generation=  6  Total=   206  Evolve Result=0.00000056  Precision=0.00000072  Best Generations=  9  Evolutions=  1  Duration:   36.6  Average:   43.4 *******
+Seed=0  Test= 28  Generation= 11  Total=   217  Evolve Result=0.00000015  Precision=0.00000060  Best Generations= 79  Evolutions=  3  Duration:   64.9  Average:   44.2 *******
+Seed=0  Test= 29  Generation=  3  Total=   220  Evolve Result=0.00000015  Precision=0.00000054  Best Generations= 19  Evolutions=  2  Duration:   18.7  Average:   43.3 *******
+Seed=0  Test= 30  Generation=  9  Total=   229  Evolve Result=0.00000018  Precision=0.00000072  Best Generations= 15  Evolutions=  3  Duration:   53.1  Average:   43.6 *******
+Seed=0  Test= 31  Generation=  3  Total=   232  Evolve Result=0.00000030  Precision=0.00000054  Best Generations= 11  Evolutions=  2  Duration:   17.7  Average:   42.8 *******
+Seed=0  Test= 32  Generation=  8  Total=   240  Evolve Result=0.00000050  Precision=0.00000095  Best Generations= 68  Evolutions=  3  Duration:   48.1  Average:   43.0 *******
+Seed=0  Test= 33  Generation=  5  Total=   245  Evolve Result=0.00000019  Precision=0.00000052  Best Generations= 60  Evolutions=  3  Duration:   29.2  Average:   42.6 *******
+Seed=0  Test= 34  Generation=  2  Total=   247  Evolve Result=0.00000024  Precision=0.00000063  Best Generations=  8  Evolutions=  1  Duration:   12.1  Average:   41.7 *******
+Seed=0  Test= 35  Generation=  4  Total=   251  Evolve Result=0.00000062  Precision=0.00000095  Best Generations= 16  Evolutions=  2  Duration:   24.7  Average:   41.2 *******
+Seed=0  Test= 36  Generation= 13  Total=   264  Evolve Result=0.00000027  Precision=0.00000057  Best Generations= 43  Evolutions=  4  Duration:   77.0  Average:   42.2 *******
+Seed=0  Test= 37  Generation=  5  Total=   269  Evolve Result=0.00000054  Precision=0.00000083  Best Generations= 55  Evolutions=  4  Duration:   28.7  Average:   41.8 *******
+Seed=0  Test= 38  Generation=  6  Total=   275  Evolve Result=0.00000026  Precision=0.00000063  Best Generations= 67  Evolutions=  2  Duration:   37.4  Average:   41.7 *******
+Seed=0  Test= 39  Generation=  5  Total=   280  Evolve Result=0.00000033  Precision=0.00000060  Best Generations= 49  Evolutions=  3  Duration:   29.3  Average:   41.4 *******
+Seed=0  Test= 40  Generation= 28  Total=   308  Evolve Result=0.00000047  Precision=0.00000095  Best Generations= 47  Evolutions=  3  Duration:  161.7  Average:   44.4 *******
+Seed=0  Test= 41  Generation=  7  Total=   315  Evolve Result=0.00000054  Precision=0.00000083  Best Generations=  7  Evolutions=  3  Duration:   40.8  Average:   44.3 *******
+Seed=0  Test= 42  Generation=  3  Total=   318  Evolve Result=0.00000027  Precision=0.00000094  Best Generations= 20  Evolutions=  1  Duration:   18.8  Average:   43.7 *******
+Seed=0  Test= 43  Generation= 11  Total=   329  Evolve Result=0.00000029  Precision=0.00000048  Best Generations= 81  Evolutions=  4  Duration:   64.8  Average:   44.2 *******
+Seed=0  Test= 44  Generation= 10  Total=   339  Evolve Result=0.00000066  Precision=0.00000077  Best Generations= 23  Evolutions=  2  Duration:   58.3  Average:   44.5 *******
+Seed=0  Test= 45  Generation=  8  Total=   347  Evolve Result=0.00000047  Precision=0.00000095  Best Generations= 85  Evolutions=  3  Duration:   46.7  Average:   44.5 *******
+Seed=0  Test= 46  Generation=  4  Total=   351  Evolve Result=0.00000046  Precision=0.00000095  Best Generations= 24  Evolutions=  3  Duration:   23.2  Average:   44.1 *******
+Seed=0  Test= 47  Generation=  7  Total=   358  Evolve Result=0.00000019  Precision=0.00000031  Best Generations= 80  Evolutions=  4  Duration:   42.6  Average:   44.0 *******
+Seed=0  Test= 48  Generation= 11  Total=   369  Evolve Result=0.00000023  Precision=0.00000060  Best Generations= 17  Evolutions=  3  Duration:   65.0  Average:   44.5 *******
+Seed=0  Test= 49  Generation= 18  Total=   387  Evolve Result=0.00000030  Precision=0.00000074  Best Generations= 86  Evolutions=  5  Duration:  109.5  Average:   45.8 *******
+Seed=0  Test= 50  Generation= 11  Total=   398  Evolve Result=0.00000027  Precision=0.00000070  Best Generations= 85  Evolutions=  4  Duration:   64.4  Average:   46.1 *******
+Seed=0  Test= 51  Generation=  4  Total=   402  Evolve Result=0.00000030  Precision=0.00000077  Best Generations=  4  Evolutions=  1  Duration:   23.6  Average:   45.7 *******
+Seed=0  Test= 52  Generation=  4  Total=   406  Evolve Result=0.00000040  Precision=0.00000077  Best Generations= 10  Evolutions=  2  Duration:   24.4  Average:   45.3 *******
+Seed=0  Test= 53  Generation=  7  Total=   413  Evolve Result=0.00000024  Precision=0.00000095  Best Generations= 80  Evolutions=  4  Duration:   40.0  Average:   45.2 *******
+Seed=0  Test= 54  Generation=  5  Total=   418  Evolve Result=0.00000050  Precision=0.00000089  Best Generations= 34  Evolutions=  3  Duration:   30.0  Average:   44.9 *******
+Seed=0  Test= 55  Generation=  4  Total=   422  Evolve Result=0.00000009  Precision=0.00000042  Best Generations= 36  Evolutions=  3  Duration:   23.2  Average:   44.5 *******
+Seed=0  Test= 56  Generation= 20  Total=   442  Evolve Result=0.00000017  Precision=0.00000072  Best Generations= 56  Evolutions=  5  Duration:  114.2  Average:   45.8 *******
+Seed=0  Test= 57  Generation= 13  Total=   455  Evolve Result=0.00000041  Precision=0.00000079  Best Generations=105  Evolutions=  8  Duration:   74.4  Average:   46.2 *******
+Seed=0  Test= 58  Generation= 27  Total=   482  Evolve Result=0.00000056  Precision=0.00000072  Best Generations=184  Evolutions=  4  Duration:  156.6  Average:   48.1 *******
+Seed=0  Test= 59  Generation= 14  Total=   496  Evolve Result=0.00000052  Precision=0.00000077  Best Generations=142  Evolutions=  7  Duration:   81.8  Average:   48.7 *******
+Seed=0  Test= 60  Generation= 19  Total=   515  Evolve Result=0.00000057  Precision=0.00000083  Best Generations= 97  Evolutions=  2  Duration:  111.0  Average:   49.7 *******
+Seed=0  Test= 61  Generation=  6  Total=   521  Evolve Result=0.00000029  Precision=0.00000083  Best Generations= 64  Evolutions=  3  Duration:   35.9  Average:   49.5 *******
+Seed=0  Test= 62  Generation= 10  Total=   531  Evolve Result=0.00000048  Precision=0.00000072  Best Generations= 58  Evolutions=  6  Duration:   58.7  Average:   49.6 *******
+Seed=0  Test= 63  Generation=  7  Total=   538  Evolve Result=0.00000022  Precision=0.00000060  Best Generations= 31  Evolutions=  4  Duration:   39.8  Average:   49.5 *******

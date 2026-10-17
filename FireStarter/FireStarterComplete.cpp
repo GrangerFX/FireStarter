@@ -8,7 +8,7 @@ void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
 {
     std::string bestStateCode;
     std::string saveFile = "FireStarter_LoadState.h";
-    std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
+    std::string savePath = Format("Logs\\%s_%s", FileNameDate().c_str(), saveFile.c_str());
 
     bestState.SaveState(bestStateCode);
     FireStarterSource::SaveSource(bestStateCode, savePath);
@@ -37,7 +37,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
         if (!evolveProgram.empty()) {
             std::string bestCode = evolveProgram;
             FireStarterSource::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
-            std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), evolveProgramName.c_str());
+            std::string savePath = Format("Logs\\%s_%s", FileNameDate().c_str(), evolveProgramName.c_str());
             FireStarterSource::SaveSource(bestCode, savePath);
         }
 
@@ -45,7 +45,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
         if (!optimizeProgram.empty()) {
             std::string bestCode = optimizeProgram;
             FireStarterSource::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
-            std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), optimizeProgramName.c_str());
+            std::string savePath = Format("Logs\\%s_%s", FileNameDate().c_str(), optimizeProgramName.c_str());
             FireStarterSource::SaveSource(bestCode, savePath);
 
 #if FIRESTARTER_SAVE_BESTCODE
@@ -77,7 +77,7 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
             saveFile = "FireStarter_MoneyMakerSolution.h";
         else
             saveFile = "FireStarter_Solution.h";
-        std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%lld", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
+        std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%lld", FileNameDate().c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
         std::string solutionCode;
 
         FireStarterGenerate generate;   // Note: CPU only generation in Complete to avoid stalling the GPU.
