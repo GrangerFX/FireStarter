@@ -20,13 +20,14 @@
 // Each signal is checked for infinite numbers which will end the trading simulation.
 // Either the winning daily trade percent or the trading profit/loss will be returned.
 #if MONEYMAKER_WINS
-inline bool MoneyEvolveEvaluate(const FireStarterSettings* settings, const FireStarterCode& code, const FireStarterData& data, const MoneyMakerStock& stock, unsigned int startDay, unsigned int tradingDays, float& result)
+inline bool MoneyEvolveEvaluate(const FireStarterCode& code, const FireStarterData& data, const MoneyMakerStock& stock, unsigned int startDay, unsigned int tradingDays, float& result)
 {
     FireStarterData workData(data);
-    bool holding = false;
     unsigned int wins = 0;
     unsigned int index = startDay;
     float oldPrice = stock[index];
+    float startFunds = result;
+    bool holding = false;
 
     // Use the evaluation to trade the stock.
     // Starts at 1 because the first day is used to set the oldPrice.
@@ -53,10 +54,11 @@ inline bool MoneyEvolveEvaluate(const FireStarterSettings* settings, const FireS
     return true;
 } // MoneyEvolveEvaluate
 #else
-inline bool MoneyEvolveEvaluate(const FireStarterSettings* settings, const FireStarterCode& code, const FireStarterData& data, const MoneyMakerStock& stock, unsigned int startDay, unsigned int tradingDays, float& result)
+inline bool MoneyEvolveEvaluate(const FireStarterCode& code, const FireStarterData& data, const MoneyMakerStock& stock, unsigned int startDay, unsigned int tradingDays, float& result)
 {
     FireStarterData workData(data);
-    float funds = settings->m_funds;
+    float startFunds = result;
+    float funds = startFunds;
     unsigned int shares = 0;
     unsigned int index = startDay;
     float oldPrice = stock[index];
@@ -92,23 +94,23 @@ inline bool MoneyEvolveEvaluate(const FireStarterSettings* settings, const FireS
     funds += shares * oldPrice;
 
     // Caclulate the trading profit and daily profit.
-    float tradingProfit = funds - settings->m_funds;
+    float tradingProfit = funds - startFunds;
 
 #if MONEYMAKER_ADDEDVALUE
     // Calculate the stock performance during the trading days.
     float stockStartPrice = stock[startDay];
     float stockEndPrice = stock[startDay + tradingDays - 1];
     float stockPerformance = stockEndPrice / stockStartPrice;
-    float stockFunds = settings->m_funds * stockPerformance;
-    float stockProfit = stockFunds - settings->m_funds;
+    float stockFunds = startFunds * stockPerformance;
+    float stockProfit = stockFunds - startFunds;
 
     // The result profit is the trading profit minus the stock profit to measure added value.
     float resultProfit = tradingProfit - stockProfit;
-    float resultPercent = resultProfit / settings->m_funds;
+    float resultPercent = resultProfit / startFunds;
     float resultDailyPercent = resultPercent / (tradingDays - 1);
 #else
     // Caclulate the trading profit and daily profit.
-    float tradingPercent = tradingProfit / settings->m_funds;
+    float tradingPercent = tradingProfit / startFunds;
     float resultDailyPercent = tradingPercent / (tradingDays - 1);
 #endif
 
@@ -123,8 +125,11 @@ inline bool MoneyEvolveEvaluateStocks(const FireStarterSettings* settings, const
 {
     float sessionsResult = 0.0f;
     unsigned int sessions = settings->m_sessions * settings->m_stocks;
-    unsigned int stock = 0;
-    unsigned int variation = settings->m_variation + 1;
+    unsigned int stock = settings->m_stock;
+    unsigned int numStocks = settings->m_stocks;
+    unsigned int variation = settings->m_variation;
+    unsigned int sessionDays = settings->m_trading;
+    float startFunds = settings->m_funds;
 
     for (unsigned int session = 0; session < sessions; session++) {
         // Check if the user is trying to abort and quit the application.
@@ -132,13 +137,12 @@ inline bool MoneyEvolveEvaluateStocks(const FireStarterSettings* settings, const
             return false;
 
         unsigned long long sessionSeed = SEED9(session) + seed;
-        unsigned int sessionStart = RANDOMMOD(sessionSeed, variation);
-        unsigned int sessionDays = settings->m_trading;
-        float stockResult = settings->m_startResult;
-        if (!MoneyEvolveEvaluate(settings, code, data, stocks->Stock(stock + settings->m_stock), sessionStart, sessionDays, stockResult))
+        unsigned int sessionStart = variation ? RANDOMMOD(sessionSeed, variation + 1) : 0;
+        float stockResult = startFunds;
+        if (!MoneyEvolveEvaluate(code, data, stocks->Stock(stock), sessionStart, sessionDays, stockResult))
             return false;
         sessionsResult += stockResult / sessions;
-        if (++stock == settings->m_stocks)
+        if (++stock == numStocks)
             stock = 0;
     }
     if (sessionsResult < result) {

@@ -14,14 +14,21 @@
 #define FIRESTARTER_EVOLVE_INIT     10          // Number of attempts to initialized code and/or data
 #define FIRESTARTER_EVOLVE_MAX_AGE  3           // Maximum failed evolution attempts before re-randomization
 
-#define MONEYMAKER_OFFSET           0           // Starting offset in days for stock trading.
-#define MONEYMAKER_VARIATION        256         // Variation modulo for the stock data start offset
-#define MONEYMAKER_TRADING          64          // Days used for stock trading
-#define MONEYMAKER_VALIDATION       64          // Days used for prediction validation
-#define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_TRADING + MONEYMAKER_VALIDATION)   // Days of stock history data
-#define MONEYMAKER_STOCK            0           // Starting stock
-#define MONEYMAKER_STOCKS           1           // Stocks with history data
+#if 1
+#define MONEYMAKER_SESSIONS         1           // Number of trading sessions
+#define MONEYMAKER_TRADING          256         // Days used for stock trading
+#define MONEYMAKER_VARIATION        0           // Variation modulo for the stock data start offset
+#define MONEYMAKER_VALIDATION       32          // Days used for prediction validation
+#else
 #define MONEYMAKER_SESSIONS         256         // Number of trading sessions
+#define MONEYMAKER_TRADING          64          // Days used for stock trading
+#define MONEYMAKER_VARIATION        256         // Variation modulo for the stock data start offset
+#define MONEYMAKER_VALIDATION       64          // Days used for prediction validation
+#endif
+#define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_TRADING + MONEYMAKER_VALIDATION)   // Days of stock history data
+#define MONEYMAKER_OFFSET           0           // Starting offset in days for stock trading.
+#define MONEYMAKER_STOCK            0           // Starting stock
+#define MONEYMAKER_STOCKS           1           // Stocks to evolve together
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
 #define MONEYMAKER_ADDEDVALUE       1           // Set to 1 to compare the value of the predicted trades vs a buy-and-hold strategy.
 #define MONEYMAKER_WINS             0           // Set to 1 to grade by wins vs losses. Set to 0 for profits.
@@ -179,7 +186,7 @@
 #define FIRESTARTER_MONEYMAKER_POPULATION       4 * FIRESTARTER_POPULATION
 #define FIRESTARTER_MONEYMAKER_PASSES           8
 #define FIRESTARTER_MONEYMAKER_OPTIMIZE         1
-#define FIRESTARTER_MONEYMAKER_TESTS            8
+#define FIRESTARTER_MONEYMAKER_TESTS            16
 
 #define FIRESTARTER_MONEYOPTIMIZE_UNITS         1
 #define FIRESTARTER_MONEYOPTIMIZE_STATES        1
