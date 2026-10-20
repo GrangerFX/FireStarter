@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Life2\CodeBlob.cpp" />
-    <ClCompile Include="Life2\FireStarter.cpp" />
     <ClCompile Include="Life2\GLDisplay.cpp" />
     <ClCompile Include="Life2\Application.cpp" />
     <ClCompile Include="Life2\Life2.cpp" />
@@ -13,9 +12,6 @@
     <ClInclude Include="Life2\CheckErrors.h" />
     <ClInclude Include="Life2\CodeBlob.h" />
     <ClInclude Include="Life2\CUDADefines.h" />
-    <ClInclude Include="Life2\FireStarter.h" />
-    <ClInclude Include="Life2\FireStarterCUDA.h" />
-    <ClInclude Include="Life2\FireStarterTensor.h" />
     <ClInclude Include="Life2\GLDisplay.h" />
     <ClInclude Include="Life2\PixelDisplay.h" />
     <ClInclude Include="Life2\Application.h" />
