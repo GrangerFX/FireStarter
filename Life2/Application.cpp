@@ -113,6 +113,7 @@ void Application::MainThread(void)
 
 	delete m_codeBlob;
 	m_codeBlob = nullptr;
+	gl_display.Release();
 	glfwMakeContextCurrent(nullptr);
 } // MainThread
 

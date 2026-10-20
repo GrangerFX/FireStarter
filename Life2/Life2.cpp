@@ -55,17 +55,20 @@ public:
 #endif
 	} // StepMonsters
 
-	void DrawFrame(GLBuffer &buffer)
+	void DrawFrame(pixel_display::Buffer &buffer)
 	{
-		unsigned char *pixels = (unsigned char*)buffer.Pixels();
-		unsigned int pixelSize = buffer.PixelSize();
 #if GPU_LIFE
+		// Driver launches use the legacy default stream. Map/unmap on that stream too.
+		auto mapping = buffer.MapCuda(cudaStreamLegacy);
+		auto pixels = mapping.Pixels();
 		m_codeBlob->BlockSize(CUDA_WARP_SIZE);
 		m_codeBlob->GridSize((GRID_SIZE * GRID_SIZE + (CUDA_WARP_SIZE - 1)) / CUDA_WARP_SIZE);
-		m_codeBlob->Launch("DrawFrame", &m_GPUMonsters, &m_grid, &pixels, &pixelSize);
+		m_codeBlob->Launch("DrawFrame", &m_GPUMonsters, &m_grid, &pixels);
 #else
-		m_CPUMonsters->DrawFrame(m_grid, pixels, pixelSize);
+		auto mapping = buffer.MapCpu();
+		m_CPUMonsters->DrawFrame(m_grid, mapping.Pixels());
 #endif
+		mapping.Close();
 	} // DrawFrame
 
 	LifeView(CodeBlob *codeBlob) : m_codeBlob(codeBlob)
@@ -167,9 +170,21 @@ bool Life2::DrawFrame(GLDisplay &gl_display, unsigned int width, unsigned int he
 
 Life2::Life2(void)
 {
+#if GPU_LIFE
+	// The display library does not choose a CUDA device for its caller. Select
+	// the GPU owning this OpenGL context before initializing the simulator.
+	unsigned int deviceCount = 0;
+	int device = 0;
+	CUDA_CHECK(cudaGLGetDevices(&deviceCount, &device, 1, cudaGLDeviceListAll));
+	if (!deviceCount)
+		throw std::runtime_error("Life2: no CUDA device for the OpenGL context");
+	CUDA_CHECK(cudaSetDevice(device));
+#endif
 	m_frameBuffer.Resize(GRID_SIZE, GRID_SIZE);
+#if GPU_LIFE
 	Generate();
 	Compile();
+#endif
 	m_lifeView = new LifeView(this);
 	m_generation = 0;
 } // Life2

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CUDADefines.h"
+#include "PixelDisplay.h"
 
 #define GPU_LIFE 1
 
@@ -420,33 +421,34 @@ public:
 			StepMonster(grid, oldGrid, i);
 	} // StepMonsters
 
-	void DrawPixel(const Grid *grid, unsigned char *pixels, unsigned int pixelSize, unsigned int x, unsigned int y)
+	void DrawPixel(const Grid *grid, pixel_display::View pixels, unsigned int x, unsigned int y)
 	{
-		unsigned char *pixel = pixels + (y * GRID_SIZE + x) * pixelSize;
+		auto& pixel = pixels.Pixel(x, y);
+		pixel.a = 255;
 		int g = grid->Value(x, y);
 		if (g == GRID_DEAD) {
-			pixel[0] = 0;
-			pixel[1] = 0;
-			pixel[2] = 0;
+			pixel.r = 0;
+			pixel.g = 0;
+			pixel.b = 0;
 		} else if (g == GRID_LIFE) {
-			pixel[0] = 0;
-			pixel[1] = 64;
-			pixel[2] = 0;
+			pixel.r = 0;
+			pixel.g = 64;
+			pixel.b = 0;
 		} else {
 			float energy = m_monsters[g].m_energy;
 			energy = MIN(energy, SPLIT_ENERGY);
 			char e = (unsigned char)(energy * (1.0f / SPLIT_ENERGY) * 255.0f);
-			pixel[0] = e;
-			pixel[1] = 128;
-			pixel[2] = 255 - e;
+			pixel.r = e;
+			pixel.g = 128;
+			pixel.b = 255 - e;
 		}
 	} // DrawPixel
 
-	void DrawFrame(const Grid *grid, unsigned char *pixels, unsigned int pixelSize)
+	void DrawFrame(const Grid *grid, pixel_display::View pixels)
 	{
 		for (unsigned int y = 0; y < GRID_SIZE; y++)
 			for (unsigned int x = 0; x < GRID_SIZE; x++)
-				DrawPixel(grid, pixels, pixelSize, x, y);
+				DrawPixel(grid, pixels, x, y);
 	} // DrawFrame
 
 	inline MonsterManager(void)
@@ -484,13 +486,13 @@ GPU_GLOBAL void GrowLife(Grid *grid, const Grid *oldGrid)
 	}
 } // GrowLife
 
-GPU_GLOBAL void DrawFrame(MonsterManager *monsters, const Grid *grid, unsigned char *pixels, unsigned int pixelSize)
+GPU_GLOBAL void DrawFrame(MonsterManager *monsters, const Grid *grid, pixel_display::View pixels)
 {
 	unsigned int index = blockDim.x * blockIdx.x + threadIdx.x;
 	unsigned int yi = index / GRID_SIZE;
 	if (yi < GRID_SIZE) {
 		unsigned int xi = index & (GRID_SIZE - 1);
-		monsters->DrawPixel(grid, pixels, pixelSize, xi, yi);
+		monsters->DrawPixel(grid, pixels, xi, yi);
 	}
 } // DrawFrame
 

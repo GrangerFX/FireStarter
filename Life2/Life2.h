@@ -4,7 +4,7 @@
 class Life2 : public CodeBlob
 {
 private:
-	GLBuffer m_frameBuffer;
+	pixel_display::Buffer m_frameBuffer;
 	class LifeView *m_lifeView;
 	unsigned long long m_generation;
 

@@ -1,12 +1,10 @@
 #pragma once
+// Compatibility adapter for existing FireStarter callers. New applications can
+// include PixelDisplay.h directly, without these application-specific headers.
+#include "PixelDisplay.h"
 #include "CUDADefines.h"
-#include "CheckErrors.h"
 #include "GLBuffer.h"
-#include "glad/glad.h"
-#include <stdint.h>
-#include <string>
 
-/// OpenGL pixel formats
 typedef enum GLDisplayPixelFormat
 {
 	GLDISPLAY_PIXEL_FORMAT_NONE = 0,		///< three halfs, RGB
@@ -22,21 +20,49 @@ typedef enum GLDisplayPixelFormat
 } GLDisplayPixelFormat;
 
 class GLDisplay {
+    mutable pixel_display::Presenter m_presenter;
+    int m_width = 0, m_height = 0;
+    static pixel_display::Format Format(GLDisplayPixelFormat format) {
+        using F = pixel_display::Format;
+        switch (format) {
+        case GLDISPLAY_PIXEL_FORMAT_UCHAR: return F::R8;
+        case GLDISPLAY_PIXEL_FORMAT_UCHAR3: return F::RGB8;
+        case GLDISPLAY_PIXEL_FORMAT_UCHAR4: return F::RGBA8;
+        case GLDISPLAY_PIXEL_FORMAT_HALF: return F::R16F;
+        case GLDISPLAY_PIXEL_FORMAT_HALF3: return F::RGB16F;
+        case GLDISPLAY_PIXEL_FORMAT_HALF4: return F::RGBA16F;
+        case GLDISPLAY_PIXEL_FORMAT_FLOAT: return F::R32F;
+        case GLDISPLAY_PIXEL_FORMAT_FLOAT3: return F::RGB32F;
+        case GLDISPLAY_PIXEL_FORMAT_FLOAT4: return F::RGBA32F;
+        default: throw std::invalid_argument("Unknown display format");
+        }
+    }
 public:
-	static size_t PixelSize(GLDisplayPixelFormat format);
-	void ScreenResolution(int32_t screen_res_x, int32_t screen_res_y);
-	void Display(GLBuffer &buffer, GLDisplayPixelFormat format = GLDisplayPixelFormat::GLDISPLAY_PIXEL_FORMAT_UCHAR4) const;
-	GLDisplay(void);
-
-private:
-	GLuint m_render_tex = 0u;
-	GLuint m_program = 0u;
-	GLint m_render_tex_uniform_loc = -1;
-	GLuint m_quad_vertex_buffer = 0;
-
-	int32_t m_screen_res_x;
-	int32_t m_screen_res_y;
-
-	static const std::string s_vert_source;
-	static const std::string s_frag_source;
-}; // class GLDisplay
+    static size_t PixelSize(GLDisplayPixelFormat format) {
+        switch (format) {
+        case GLDISPLAY_PIXEL_FORMAT_NONE: return 0;
+        case GLDISPLAY_PIXEL_FORMAT_UCHAR: return 1;
+        case GLDISPLAY_PIXEL_FORMAT_UCHAR3: return 3;
+        case GLDISPLAY_PIXEL_FORMAT_UCHAR4: return 4;
+        case GLDISPLAY_PIXEL_FORMAT_HALF: return 2;
+        case GLDISPLAY_PIXEL_FORMAT_HALF3: return 6;
+        case GLDISPLAY_PIXEL_FORMAT_HALF4: return 8;
+        case GLDISPLAY_PIXEL_FORMAT_FLOAT: return 4;
+        case GLDISPLAY_PIXEL_FORMAT_FLOAT3: return 12;
+        case GLDISPLAY_PIXEL_FORMAT_FLOAT4: return 16;
+        default: throw std::invalid_argument("Unknown display format");
+        }
+    }
+    void ScreenResolution(int width, int height) { m_width = width; m_height = height; }
+    void Display(const pixel_display::Buffer& buffer) const {
+        m_presenter.Present(buffer, m_width, m_height);
+    }
+    void Display(GLBuffer& buffer, GLDisplayPixelFormat format = GLDISPLAY_PIXEL_FORMAT_UCHAR4) const {
+        if (format == GLDISPLAY_PIXEL_FORMAT_NONE || m_width <= 0 || m_height <= 0) return;
+        if (PixelSize(format) != buffer.PixelSize())
+            throw std::invalid_argument("Display format does not match buffer pixel size");
+        m_presenter.PresentBuffer(buffer.PBO(), buffer.Width(), buffer.Height(),
+                                  m_width, m_height, Format(format));
+    }
+    void Release() { m_presenter.Release(); }
+};

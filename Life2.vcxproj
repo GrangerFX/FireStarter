@@ -46,7 +46,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_MBCS;PIXEL_DISPLAY_ENABLE_CUDA=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(CUDA_PATH)/include;Life2/GLFW;Life2/GLFW/include;Life2</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -91,13 +91,15 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy /Y "$(ProjectDir)Life2\OpenGL\*.dll" "$(TargetDir)"
 if not exist "$(TargetDir)kernels" mkdir "$(TargetDir)kernels"
 copy /Y "$(ProjectDir)Life2\Life2CUDA.h" "$(TargetDir)kernels\"
-copy /Y "$(ProjectDir)Life2\CUDADefines.h" "$(TargetDir)kernels\"</Command>
+copy /Y "$(ProjectDir)Life2\CUDADefines.h" "$(TargetDir)kernels\"
+copy /Y "$(ProjectDir)Life2\PixelDisplay.h" "$(TargetDir)kernels\"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy /Y "$(ProjectDir)Life2\OpenGL\*.dll" "$(TargetDir)"
 if not exist "$(TargetDir)kernels" mkdir "$(TargetDir)kernels"
 copy /Y "$(ProjectDir)Life2\Life2CUDA.h" "$(TargetDir)kernels\"
-copy /Y "$(ProjectDir)Life2\CUDADefines.h" "$(TargetDir)kernels\"</Command>
+copy /Y "$(ProjectDir)Life2\CUDADefines.h" "$(TargetDir)kernels\"
+copy /Y "$(ProjectDir)Life2\PixelDisplay.h" "$(TargetDir)kernels\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -116,6 +118,7 @@ copy /Y "$(ProjectDir)Life2\CUDADefines.h" "$(TargetDir)kernels\"</Command>
     <ClInclude Include="Life2\FireStarterTensor.h" />
     <ClInclude Include="Life2\GLBuffer.h" />
     <ClInclude Include="Life2\GLDisplay.h" />
+    <ClInclude Include="Life2\PixelDisplay.h" />
     <ClInclude Include="Life2\Application.h" />
     <ClInclude Include="Life2\Life2.h" />
     <ClInclude Include="Life2\Life2CUDA.h" />

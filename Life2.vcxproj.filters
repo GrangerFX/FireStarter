@@ -17,6 +17,7 @@
     <ClInclude Include="Life2\FireStarterCUDA.h" />
     <ClInclude Include="Life2\FireStarterTensor.h" />
     <ClInclude Include="Life2\GLDisplay.h" />
+    <ClInclude Include="Life2\PixelDisplay.h" />
     <ClInclude Include="Life2\Application.h" />
     <ClInclude Include="Life2\Life2.h" />
     <ClInclude Include="Life2\Life2CUDA.h" />
