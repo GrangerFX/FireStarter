@@ -20,16 +20,17 @@
 #define NEURON_MOTOR_Y  4
 #define NEURON_COUNT    26
 
-// Simulation values: Modified manually before running simulation.
+// Simulation values: Experiment by modifying these before running the simulation.
 #define COUNT_MIN       640
 #define COUNT_MAX       20000
-#define MAX_ENERGY      3.0f
-#define STEP_ENERGY     0.001f
-#define MOVE_ENERGY     0.28f
+#define MAX_ENERGY      2.5f
+#define STEP_ENERGY     0.0f
+#define MOVE_ENERGY     0.4f
 #define LIFE_ENERGY     2.0f
 #define EAT_ENERGY      1.0f
 #define DIE_ENERGY      0.0f
 #define DEAD_ENERGY     -1.0e+6f
+#define EVOLVE_RATE     0.25f
 
 // Evolved values: These could be adjusted randomly and affect species survival.
 #define SPLIT_ENERGY    2.0f
@@ -210,18 +211,11 @@ private:
 
 			inline void Evolve(unsigned int &seed)
 			{
-#if 1
-                unsigned int n = RANDOMMOD(seed, NEURON_COUNT);
-                unsigned int s = RANDOMMOD(seed, NEURON_COUNT);
-                m_synapses[n][s] = (RANDOMNUM(seed) * 2.0f - 1.0f) / NEURON_COUNT;
-#else
-				unsigned int c = RANDOMMOD(seed, 4);
-				for (unsigned int i = 0; i < c; i++) {
-					unsigned int n = RANDOMMOD(seed, NEURON_COUNT);
-					unsigned int s = RANDOMMOD(seed, NEURON_COUNT);
-                    m_synapses[n][s] += (RANDOMNUM(seed) * 2.0f - 1.0f) / NEURON_COUNT;
-				}
-#endif
+                if (RANDOMNUM(seed) < EVOLVE_RATE) {
+                    unsigned int n = RANDOMMOD(seed, NEURON_COUNT);
+                    unsigned int s = RANDOMMOD(seed, NEURON_COUNT);
+                    m_synapses[n][s] = (RANDOMNUM(seed) * 2.0f - 1.0f) / NEURON_COUNT;
+                }
 			} // Evolve
 
 			inline void Random(unsigned int seed)
